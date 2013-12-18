@@ -1,5 +1,5 @@
 {
-  "name": "ufds/webui",
+  "name": "ufds/libwebui",
   "description": "Generel webui i dart for apps in UFDS",
   "license": "UFDS privat",
 }
