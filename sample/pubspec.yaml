@@ -1,0 +1,6 @@
+name: webuiSample
+description: Sample app for framework
+dependencies:
+  browser: any
+  json: any
+  path: any

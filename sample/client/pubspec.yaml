@@ -1,0 +1,4 @@
+name: webuiSample
+description: Sample app for framework
+dependencies:
+  json: any

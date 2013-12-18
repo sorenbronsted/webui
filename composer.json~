@@ -1,0 +1,16 @@
+{
+  "name": "ufds/libdatabase",
+  "description": "Generel ORM mapper baseret på PDO",
+  "license": "UFDS privat",
+  "require": {
+    "ruckusing/ruckusing-migrations" : "dev-master"
+  },
+  
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "http://dev.ufds.lan/git/ruckusing-migrations.git"
+    }
+  ]
+}
+
