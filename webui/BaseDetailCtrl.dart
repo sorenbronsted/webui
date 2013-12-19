@@ -13,6 +13,7 @@ class BaseDetailCtrl {
   }
 
   BaseDetailView get view => _view;
+  String get name => _name;
   
   void display(String event) {
     var pattern = new RegExp("$_name/[0-9]+\$");

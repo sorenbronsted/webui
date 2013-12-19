@@ -1,0 +1,7 @@
+name:  ras
+description:  UFDS Renteadministration
+
+dependencies:
+  logging: any
+  webdriver: any
+  unittest: any  
