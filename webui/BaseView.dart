@@ -14,6 +14,7 @@ part 'BaseListView.dart';
 part 'BaseListCtrl.dart';
 part 'BaseDetailView.dart';
 part 'BaseDetailCtrl.dart';
+part 'NullTreeSanitizer.dart';
 
 typedef void Handler(String data);
 
@@ -38,11 +39,18 @@ abstract class BaseView {
       onLoad();
     });
   }
+
+  String getInputValue(String name) => (querySelector("input[name=$name]") as InputElement).value;
+  String getSelectValue(String name) => (querySelector("select[name=$name]") as SelectElement).value;
   
+  setInputValue(String name, String value) => (querySelector("input[name=$name]") as InputElement).value = value;
+  setSelectValue(String name, String value) => (querySelector("select[name=$name]") as SelectElement).value = value;
+
   onLoad() {}
 
   addHandler(String key, Handler handler) {
-    _handlers[key] = handler;    
+    _handlers[key] = handler;      
+
   }
 
   executeHandler(String key, bool validRequired, [String data]) {
@@ -70,18 +78,18 @@ abstract class BaseView {
     });
   }
   
-  onChange(String selector, String handlerId) {
-    querySelector(selector).onChange.listen((event) {
-      String data;
-      event.preventDefault();
-      Handler handle = _handlers[handlerId];
-      handle(data);
-      //executeHandler(handlerId, true);
+  onChange(String selector, bool validRequired) {
+    querySelectorAll(selector).forEach((elem) {
+      elem.onChange.listen((event) {
+        event.preventDefault();
+        SelectElement element = event.target;
+        executeHandler(element.name, validRequired);
+      });
     });
   }
   
   onClick(String selector, bool validRequired) {
-    querySelectorAll(selector).forEach((elem){
+    querySelectorAll(selector).forEach((elem) {
       elem.onClick.listen((event) {
         event.preventDefault();
         InputElement element = event.target;
@@ -95,14 +103,7 @@ abstract class BaseView {
       elem.onClick.listen((event) {
         event.preventDefault();
         AnchorElement anchor =  event.target;
-        var name = '';
-        String classes = anchor.attributes['class'];
-        if (classes.contains('edit')) {
-          name = 'edit';
-        }
-        if (classes.contains('delete')) {
-          name = 'delete';
-        }
+        var name = anchor.classes.first;
         executeHandler(name, false, anchor.href);
       });
     });

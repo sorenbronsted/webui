@@ -1,8 +1,7 @@
 
 library uitest;
 
-//import 'dart:async';
-import 'dart:io';
+import 'dart:async';
 import 'package:unittest/unittest.dart';
 import 'package:webdriver/webdriver.dart';
 

@@ -50,9 +50,4 @@ class BaseDetailView extends BaseView {
   }
 
   Map get formdata => UiHelper.getFormdata("formdata");
-  
-  String getInputValue(String name) => (querySelector("input[name=$name]") as InputElement).value;
-  
-  setInputValue(String name, String value) => (querySelector("input[name=$name]") as InputElement).value = value;
-  setSelectValue(String name, String value) => (querySelector("select[name=$name]") as SelectElement).value = value;
 }

@@ -49,4 +49,20 @@ class Address {
   void back() {
     window.history.back();
   }
+  
+  String getHashUrl() {
+    if (_current.contains("#")) {
+      var urls = _current.split("#");
+      return urls[1];
+    }
+    return null;
+  }
+  
+  List<String> getHashUrlElements() {
+    var url = getHashUrl();
+    if (url != null) {
+      return url.split("/");
+    }
+    return null;
+  }
 }

@@ -17,7 +17,7 @@ class Format {
   
   static String display(Iterable classes, String value) {
     assert(classes != null);
-    if (value == null) {
+    if (value == null || value == 'null') {
       return "";
     }
     return _execute(classes, value, (Formatter fmt, String value) => fmt.display(value));
@@ -107,10 +107,9 @@ class AmountFmt implements Formatter {
   
   String display(String input) {
     assert(input != null);
-    if (input == "null") {
+    if (input == "null" || input == "") {
       return "0,00";
     }
-    StringBuffer str = new StringBuffer();
     var number = "0";
     var fraction = "00";
     if (input.contains(".")) {
@@ -122,6 +121,7 @@ class AmountFmt implements Formatter {
       number = input;
     }
     
+    StringBuffer str = new StringBuffer();
     for (var i = 0; i < number.length; i++) {
       if (i > 0 && (number.length - i) % 3 == 0) {
         str.write('.');

@@ -16,25 +16,25 @@ class BaseDetailCtrl {
   String get name => _name;
   
   void display(String event) {
-    var pattern = new RegExp("$_name/[0-9]+\$");
     var url = Address.instance.current;
+    var pattern = new RegExp("$_name/new");
     if (pattern.hasMatch(url)) {
       Future f = _view.show();
-      f.then((_) {
-        List<Future> futures = loadTypes(_view);
-        assert(futures != null);
-        var elements = url.split("/");
-        var id = elements.last;
-        Future completed = Future.wait(futures);
-        completed.then((response) => load(id));
+      f.then((result) {
+        loadTypes(_view);
       });
     }
     else {
-      pattern = new RegExp("$_name/new");
+      pattern = new RegExp("$_name/\\w+\$");
       if (pattern.hasMatch(url)) {
         Future f = _view.show();
-        f.then((result) {
-          loadTypes(_view);
+        f.then((_) {
+          List<Future> futures = loadTypes(_view);
+          assert(futures != null);
+          var elements = url.split("/");
+          var id = elements.last;
+          Future completed = Future.wait(futures);
+          completed.then((response) => load(id));
         });
       }
     }

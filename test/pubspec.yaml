@@ -1,7 +1,7 @@
-name:  ras
-description:  UFDS Renteadministration
-
+name: ras
+description: UFDS Renteadministration
 dependencies:
   logging: any
+  meta: any
+  unittest: any
   webdriver: any
-  unittest: any  

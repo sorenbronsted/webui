@@ -1,19 +1,23 @@
 
 part of webui;
 
-typedef String TableRowValue(String name, Set classes, Map row);
+typedef String TableRowValue(String name, Set classes, Map row, String suggestion);
 typedef String SelectOption(Map row);
 
 class UiHelper {
   
   static populateSelect(String name, List data, SelectOption callback) {
-    var options = new StringBuffer();
+    var options = new DocumentFragment();
     data.forEach((Map elem) {
-      options.write("<option value='${elem['uid']}'>${callback(elem)}</option>");
+      var option = new OptionElement();
+      option.value = "${elem['uid']}";
+      option.appendText(callback(elem));
+      options.append(option);
     });
     SelectElement select = querySelector("select[name=$name]");
     if (select != null) {
-      select.innerHtml = options.toString();
+      select.children.clear();
+      select.append(options);
     }
   }
   
@@ -31,58 +35,75 @@ class UiHelper {
         elem.value = "${data[elem.name]}";
       }
     });
+    elements = querySelectorAll("form[name=$name] textarea");
+    elements.forEach((TextAreaElement elem) {
+      elem.children.clear();
+      elem.appendText("${data[elem.name]}");
+    });
   }
   
   static populateTable(String id, List rows, [String linkPrefix, TableRowValue rowValue]) {
+    var fragment = new DocumentFragment();
+    
     TableSectionElement tbody = querySelector("$id tbody");
     if (tbody != null) {
-      tbody.innerHtml = "";
+      tbody.children.clear();
     }
     var columns = querySelectorAll("$id thead th");
-    var tmp = new StringBuffer();
     if (rows.length == 0) {
-      tmp.write("<tr><td colspan='${columns.length}'>Ingen rækker fundet</td><tr>");
-      tbody.setInnerHtml(tmp.toString());
+      var tableCell = new TableCellElement();
+      tableCell.colSpan = columns.length;
+      tableCell.appendText('Ingen rækker fundet');
+      var tableRow = new TableRowElement();
+      tableRow.append(tableCell);
+      fragment.append(tableRow);
     }
     else {
       var rowCount = 0;
       rows.forEach((Map row){
-        tmp.write("<tr class=${rowCount % 2 == 0 ? "row-even" : "row-odd"}>");
+        var tableRow = new TableRowElement();
+        tableRow.classes.add(rowCount % 2 == 0 ? "row-even" : "row-odd");
         columns.forEach((TableCellElement column) {
           var value = "&nbsp;";
-
-          if (rowValue != null) {
-            value = rowValue(column.id, column.classes, row);
-          }
-          else {
-            var href = null;
-            if (linkPrefix != null) {
-              href = "/$linkPrefix/${row['uid']}";
-            }
-            switch(column.id) {
-              case "edit":
-                if (href == null) {
-                  throw "Missing link prefix";
-                }
-                value = "<a class='edit' href='$href'>E</a>";
-                break;
-              case "delete":
-                if (href == null) {
-                  throw "Missing link prefix";
-                }
-                value = "<a class='delete' href='$href'>X</a>";
-                break;
-              default:
-                value = Format.display(column.classes, "${row[column.id]}");
-            }
+          var href = null;
+          if (linkPrefix != null) {
+            href = "/$linkPrefix/${row['uid']}";
           }
           
-          tmp.write("<td>$value</td>");
+          if (column.classes.contains('edit')) {
+            if (row[column.id] == null) {
+              value = 'E';
+            }
+            else {
+              value = row[column.id];
+            }
+            value = "<a class='edit' href='$href'>$value</a>";
+          }
+          else if (column.classes.contains('delete')) {
+            if (row[column.id] == null) {
+              value = 'X';
+            }
+            value = "<a class='delete' href='$href'>$value</a>";
+          }
+          else if (column.classes.contains('children')) {
+            href += "/${column.id}";
+            value = "<a class='children' href='$href'>se</a>";
+          }
+          else {
+            value = Format.display(column.classes, "${row[column.id]}");
+          }
+          if (rowValue != null) {
+            value = rowValue(column.id, column.classes, row, value);
+          }
+          
+          var tableCell = new TableCellElement();
+          tableCell.appendHtml(value);
+          tableRow.append(tableCell);
         });
-        tmp.write("</tr>");
+        fragment.append(tableRow);
         rowCount++;
-        tbody.setInnerHtml(tmp.toString());
       });
+      tbody.append(fragment);
     }
   }
   

@@ -11,6 +11,7 @@ class BaseListCtrl {
     _view.addHandler("create", create);
     _view.addHandler("edit", edit);
     _view.addHandler("delete", delete);
+    _view.addHandler("children", children);
     eventBus.addListener(Address.eventAddressChanged, display);
     onInit(_view);
   }
@@ -68,5 +69,9 @@ class BaseListCtrl {
     if (parts.length > 1) {
       Address.instance.goto("${parts[1]}/new");
     }
+  }
+  
+  children(String href) {
+    Address.instance.goto(href);
   }
 }
