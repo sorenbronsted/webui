@@ -80,7 +80,7 @@ class DateFmt implements Formatter {
 }
 
 class DateTimeFmt implements Formatter {
-  // Excepted input format yyyy-mm-dd
+  // Excepted input format yyyy-mm-dd hh:mm:ss
   String display(String input) {
     var tmp = input.split(" ");
     if (tmp.length != 2) {
@@ -93,8 +93,18 @@ class DateTimeFmt implements Formatter {
     return "${date} ${time}";
   }
   
-  // Excepted input format is dd-mm-yyyy
+  // Excepted input format is dd-mm-yyyy hh:mm:ss
   String internal(String input) {
+    if (input.length == 0) {
+      return input;
+    }
+    var parts = input.split(" ");
+    assert(parts.length == 2);
+    var tmp = parts[0].split("-");
+    if (tmp.length != 3) {
+      return input;
+    }
+    return "${tmp[0]}-${tmp[1]}-${tmp[2]} ${parts[1]}";
   }
 }
 

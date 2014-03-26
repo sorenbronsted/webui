@@ -11,6 +11,7 @@ class Validators {
     _methods = new Map();
     setMethod("required", required);
     setMethod("date", date);
+    //TODO setMethod("datetime", datetime);
     setMethod("caseNumber", caseNumber);
     setMethod("amountInt", amountInt);
     setMethod("amount", amount);

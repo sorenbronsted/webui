@@ -33,8 +33,7 @@ class BaseDetailCtrl {
           assert(futures != null);
           var elements = url.split("/");
           var id = elements.last;
-          Future completed = Future.wait(futures);
-          completed.then((response) => load(id));
+          Future.wait(futures).then((response) => load(id));
         });
       }
     }
