@@ -103,6 +103,9 @@ abstract class BaseView {
       elem.onClick.listen((event) {
         event.preventDefault();
         AnchorElement anchor =  event.target;
+        if (anchor.classes.isEmpty) {
+          throw "onLinkClick needed handler";
+        }
         var name = anchor.classes.first;
         executeHandler(name, false, anchor.href);
       });
