@@ -64,6 +64,6 @@ table th, table td {
   border: 1px solid green;
 }
 
-#edit, #delete {
+.edit, .delete {
   width: 10px;
 }

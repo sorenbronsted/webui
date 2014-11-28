@@ -4,6 +4,7 @@ library server;
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:json/json.dart' as json;
+import 'package:mime_type/mime_type.dart' as mime;
 
 part 'Person.dart';
 
@@ -91,6 +92,7 @@ class Server {
     final File file = new File('${_basePath}${stringPath}');
     file.exists().then((bool found) {
       if (found) {
+        res.headers.contentType = ContentType.parse(mime.mime(file.path)); 
         file.openRead().pipe(request.response).catchError((e) { 
           res.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
           res.close();
