@@ -169,11 +169,13 @@ class CaseNumberFmt implements Formatter {
       return input;
     }
     var year = int.parse(tmp[1]);
-    if (year < 40) {
-      year += 2000;
-    }
-    else {
-      year += 1900;
+    if (year < 100) {
+      if (year < 40) {
+        year += 2000;
+      }
+      else {
+        year += 1900;
+      }
     }
     var number = int.parse(tmp[0]);
     return "${year*10000+number}";
