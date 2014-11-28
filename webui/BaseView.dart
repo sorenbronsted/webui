@@ -82,7 +82,7 @@ abstract class BaseView {
     querySelectorAll(selector).forEach((elem) {
       elem.onChange.listen((event) {
         event.preventDefault();
-        SelectElement element = event.target;
+        var element = event.target;
         executeHandler(element.name, validRequired);
       });
     });
@@ -92,7 +92,7 @@ abstract class BaseView {
     querySelectorAll(selector).forEach((elem) {
       elem.onClick.listen((event) {
         event.preventDefault();
-        InputElement element = event.target;
+        var element = event.target;
         executeHandler(element.name, validRequired);
       });
     });
