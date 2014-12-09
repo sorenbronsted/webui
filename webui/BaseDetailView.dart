@@ -17,8 +17,7 @@ class BaseDetailView extends BaseView {
     onClick("input[name=save]", true);
     onClick("input[name=cancel]", false);
 
-    querySelectorAll("input[type='text']").forEach((InputElement input) => preventPageLeaveEvents.add(input.onKeyUp.listen(fieldHasChanged)));
-    querySelectorAll("select").forEach((SelectElement select) => preventPageLeaveEvents.add(select.onKeyUp.listen(fieldHasChanged)));
+    querySelectorAll("input[type='text'], select, textarea").forEach((Element input) => preventPageLeaveEvents.add(input.onKeyUp.listen(fieldHasChanged)));
     querySelectorAll("#tabs a").forEach((AnchorElement a) => preventPageLeaveEvents.add(a.onClick.listen(leaveConfirmationDialog)));
   }
 

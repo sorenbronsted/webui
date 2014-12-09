@@ -37,8 +37,7 @@ class UiHelper {
     });
     elements = querySelectorAll("form[name=$name] textarea");
     elements.forEach((TextAreaElement elem) {
-      elem.children.clear();
-      elem.appendText("${data[elem.name]}");
+      elem.value = "${data[elem.name]}"; 
     });
   }
   
