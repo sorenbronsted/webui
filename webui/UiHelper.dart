@@ -102,8 +102,8 @@ class UiHelper {
         fragment.append(tableRow);
         rowCount++;
       });
+      tbody.append(fragment);
     }
-    tbody.append(fragment);
   }
   
   static Map getFormdata(String name) {

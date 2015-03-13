@@ -3,7 +3,7 @@ library rest;
 
 import 'dart:html';
 import 'dart:async';
-import 'package:json/json.dart';
+import 'dart:convert';
 import 'EventBus.dart';
 
 typedef void RestError(String text);
@@ -88,7 +88,7 @@ class Rest {
             var data = null;
             var errors = false;
             if (req.responseText.length > 0) {
-              data = parse(req.responseText);
+              data = JSON.decode(req.responseText);
               if (data is Map) {
                 if (data['error'] != null) {
                   errors = true;
