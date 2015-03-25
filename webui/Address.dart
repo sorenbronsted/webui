@@ -1,7 +1,6 @@
 
 library address;
 
-import 'dart:async';
 import 'dart:html';
 import 'EventBus.dart';
 
@@ -14,7 +13,7 @@ class Address {
   static Address _instance = null;
   
   Address._internal() {
-    Timer t = new Timer.periodic(const Duration(milliseconds: 200), (timer) {
+    window.onHashChange.listen((event) {
       if (_current != window.location.href) {
         _current = window.location.href;
         if (_eventBus != null) {
