@@ -9,16 +9,13 @@ class Address {
   static const eventAddressChanged = "AddressChanged";
   
   String _current = "";
-  EventBus _eventBus;
   static Address _instance = null;
   
   Address._internal() {
     window.onHashChange.listen((event) {
       if (_current != window.location.href) {
         _current = window.location.href;
-        if (_eventBus != null) {
-          _eventBus.fire(eventAddressChanged);
-        }
+        EventBus.instance.fire(eventAddressChanged);
       }
     });
   }
@@ -42,7 +39,6 @@ class Address {
     }
   }
   
-  set eventBus(EventBus eventBus) => _eventBus = eventBus;
   String get current => _current;
 
   void back() {

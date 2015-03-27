@@ -13,12 +13,8 @@ part 'PersonDetailView.dart';
 part 'PersonDetailCtrl.dart';
 
 void main() {
-  EventBus bus = new EventBus();
-  Address.instance.eventBus = bus;
-
-  var controllers = new List();
-  controllers.add(new PersonListCtrl(bus));
-  controllers.add(new PersonDetailCtrl(bus));
-  
+  var bus = EventBus.instance;
+  bus.register(new PersonListCtrl());
+  bus.register(new PersonDetailCtrl());
   Address.instance.goto("Person");
 }

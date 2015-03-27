@@ -1,15 +1,14 @@
 
 part of webui;
 
-class BaseDetailCtrl {
+class BaseDetailCtrl implements EventBusListener {
   BaseDetailView _view;
   String _name;
   
-  BaseDetailCtrl(EventBus eventBus, BaseDetailView this._view, String this._name) {
+  BaseDetailCtrl(BaseDetailView this._view, String this._name) {
     _view.setViewName(_name);
     _view.addHandler("save", save);
     _view.addHandler("cancel", cancel);
-    eventBus.addListener(Address.eventAddressChanged, display);
   }
 
   BaseDetailView get view => _view;
@@ -77,5 +76,10 @@ class BaseDetailCtrl {
     this._view.formHasChanged = false;
 
     Address.instance.back();
+  }
+
+  @override
+  void register(EventBus eventBus) {
+    eventBus.listenOn(Address.eventAddressChanged, display);
   }
 }

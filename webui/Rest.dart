@@ -9,11 +9,9 @@ import 'EventBus.dart';
 typedef void RestError(String text);
 
 class Rest {
-  static final instance = new Rest._internal();
-  EventBus _eventBus;
+  static Rest _instance;
   RestError _errorHandler;
-  int _waitHandle;
-  
+
   Rest._internal() {
     // Default error handler
     _errorHandler = (text) {
@@ -21,7 +19,13 @@ class Rest {
     };
   }
   
-  set eventBus(EventBus eventBus) => _eventBus = eventBus;
+  static Rest get instance {
+    if (_instance == null) {
+      _instance = new Rest._internal();
+    }
+    return _instance;
+  }
+
   set errorHandler(RestError handler) => _errorHandler = handler;
   
   Future load(String url) {
@@ -30,14 +34,10 @@ class Rest {
     req.open('GET', url);
     req.onReadyStateChange.listen((Event e) {
       if (req.readyState == HttpRequest.HEADERS_RECEIVED) {
-        if (_eventBus != null) {
-          _eventBus.fire("RestRequestStart");
-        }
+        EventBus.instance.fire("RestRequestStart");
       }
       else if (req.readyState == HttpRequest.DONE) {
-        if (_eventBus != null) {
-          _eventBus.fire("RestRequestDone");
-        }
+        EventBus.instance.fire("RestRequestDone");
         switch (req.status) {
           case 0:
           case 200:
@@ -74,14 +74,10 @@ class Rest {
     var req = new HttpRequest();
     req.onReadyStateChange.listen((Event e) {
       if (req.readyState == HttpRequest.OPENED) {
-        if (_eventBus != null) {
-          _eventBus.fire("RestRequestStart");
-        }
+        EventBus.instance.fire("RestRequestStart");
       }
       else if (req.readyState == HttpRequest.DONE) {
-        if (_eventBus != null) {
-          _eventBus.fire("RestRequestDone");
-        }
+        EventBus.instance.fire("RestRequestDone");
         switch (req.status) {
           case 0:
           case 200:

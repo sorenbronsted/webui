@@ -1,18 +1,17 @@
 
 part of webui;
 
-class BaseListCtrl {
+class BaseListCtrl implements EventBusListener {
 
   BaseListView _view;
   String _name;
   
-  BaseListCtrl(EventBus eventBus, BaseListView this._view, String this._name) {
+  BaseListCtrl(BaseListView this._view, String this._name) {
     _view.setViewName(_name);
     _view.addHandler("create", create);
     _view.addHandler("edit", edit);
     _view.addHandler("delete", delete);
     _view.addHandler("children", children);
-    eventBus.addListener(Address.eventAddressChanged, display);
     onInit(_view);
   }
 
@@ -73,5 +72,10 @@ class BaseListCtrl {
   
   children(String href) {
     Address.instance.goto(href);
+  }
+
+  @override
+  void register(EventBus eventBus) {
+    eventBus.listenOn(Address.eventAddressChanged, display);
   }
 }

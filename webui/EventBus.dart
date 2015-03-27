@@ -1,24 +1,44 @@
 
 library eventbus;
 
-typedef void EventBusListener(String event);
+typedef void EventBusAction(String event);
+
+class EventBusListener {
+  void register(EventBus eventBus) {}
+}
 
 class EventBus {
-  Map eventListenerMap = new Map<String, List<EventBusListener> >();
+  Map eventListenerMap = new Map<String, List<EventBusAction> >();
 
-  void addListener(String event, EventBusListener listener) {
+  static EventBus _instance;
+
+  EventBus._internal() {
+  }
+
+  static EventBus get instance {
+    if (_instance == null) {
+      _instance = new EventBus._internal();
+    }
+    return _instance;
+  }
+  
+  void register(EventBusListener listener) {
+    listener.register(this);
+  }
+  
+  void listenOn(String event, EventBusAction listener) {
     assert(event != null);
     assert(listener != null);
     
     var listeners = eventListenerMap[event];
     if (listeners == null) {
-      listeners = new List<EventBusListener>();
+      listeners = new List<EventBusAction>();
       eventListenerMap[event] = listeners;
     }
     listeners.add(listener);
   }
   
-  void removeListener(String event, listener) {
+  void listenOff(String event, EventBusAction listener) {
     assert(event != null);
     assert(listener != null);
 
