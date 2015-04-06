@@ -1,6 +1,6 @@
 
 import 'package:unittest/unittest.dart';
-import '../webui/EventBus.dart';
+import '../lib/src/EventBus.dart';
 
 class Test implements EventBusListener {
   

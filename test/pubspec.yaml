@@ -1,4 +1,4 @@
-name: ras
+name: testWebui
 description: UFDS Renteadministration
 dependencies:
   unittest: any
