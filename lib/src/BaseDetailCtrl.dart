@@ -26,8 +26,7 @@ class BaseDetailCtrl implements EventBusListener {
     else {
       pattern = new RegExp("$_name/\\w+\$");
       if (pattern.hasMatch(url)) {
-        Future f = _view.show();
-        f.then((_) {
+        _view.show().then((_) {
           List<Future> futures = loadTypes(_view);
           assert(futures != null);
           var elements = url.split("/");
@@ -43,8 +42,7 @@ class BaseDetailCtrl implements EventBusListener {
   }
   
   void load(id) {
-    Future f = Rest.instance.get("/rest/$_name/$id");
-    f.then((data) {
+    Rest.instance.get("/rest/$_name/$id").then((data) {
       _view.populate(data);
     });
   }

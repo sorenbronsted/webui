@@ -5,9 +5,10 @@ typedef void Handler(String data);
 
 abstract class BaseView {
   Map<String, Handler> _handlers = new Map();
-  InputValidator _inputValidator; 
+  InputValidator _inputValidator;
+  String _bindId;
 
-  BaseView() {}
+  BaseView([String this._bindId = "#content"]);
   
   InputValidator get inputValidator => _inputValidator;
   
@@ -20,7 +21,7 @@ abstract class BaseView {
   Future show() {
     Future f = Rest.instance.load('view/${getViewName()}.html');
     return f.then((html) {
-      querySelector('#content').setInnerHtml(html.toString());
+      querySelector(_bindId).setInnerHtml(html.toString());
       onLoad();
     });
   }

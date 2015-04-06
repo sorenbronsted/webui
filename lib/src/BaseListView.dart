@@ -4,6 +4,8 @@ part of webui;
 class BaseListView extends BaseView {
   String _viewName;
   
+  BaseListView([String bindId]) : super(bindId);
+  
   setViewName(String name) => _viewName = "${name}List";
   String getViewName() => _viewName;
 
