@@ -8,7 +8,7 @@ abstract class BaseView {
   InputValidator _inputValidator;
   String _bindId;
 
-  BaseView([String this._bindId = "#content"]);
+  BaseView(String this._bindId);
   
   InputValidator get inputValidator => _inputValidator;
   

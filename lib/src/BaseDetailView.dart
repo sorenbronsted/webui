@@ -5,7 +5,7 @@ class BaseDetailView extends BaseView {
   String _viewName;
   bool formHasChanged;
   
-  BaseDetailView([String bindId]) : super(bindId);
+  BaseDetailView([String bindId = '#content']) : super(bindId);
   
   setViewName(String name) => _viewName = "${name}Detail";
   String getViewName() => _viewName;
