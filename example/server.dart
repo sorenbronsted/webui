@@ -2,8 +2,8 @@
 library server;
 
 import 'dart:io';
+import 'dart:convert';
 import 'package:path/path.dart' as path;
-import 'package:json/json.dart' as json;
 import 'package:mime_type/mime_type.dart' as mime;
 
 part 'Person.dart';
@@ -46,18 +46,18 @@ class Server {
         break;
       case 'GET':
         if (_persons.length == 0) {
-          var s = json.stringify([]);
+          var s = JSON.encode([]);
           res.write(s);
         }
         else if (request.uri.pathSegments.length == 2) { // eg. /rest/person
           print(_persons.values);
-          var s = json.stringify(new List.from(_persons.values));
+          var s = JSON.encode(new List.from(_persons.values));
           res.write(s);
         }          
         else if (request.uri.pathSegments.length == 3) { // eg /rest/person/1
           var uid = request.uri.pathSegments.last;
           if (_persons.containsKey(uid)) {
-            var s = json.stringify(_persons[uid]);
+            var s = JSON.encode(_persons[uid]);
             res.write(s);
           }
           else {

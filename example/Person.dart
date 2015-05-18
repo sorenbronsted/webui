@@ -5,7 +5,7 @@ class Person {
   String uid;
   String name;
   String address;
-  String zipcode;
+  int zipcode;
   String town;
   
   toJson() {
@@ -34,7 +34,7 @@ class Person {
             person.address = values[1];
             break;
           case 'zipcode':
-            person.zipcode = values[1];
+            person.zipcode = int.parse(values[1]);
             break;
           case 'town':
             person.town = values[1];

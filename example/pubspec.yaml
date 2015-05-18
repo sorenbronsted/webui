@@ -2,7 +2,6 @@ name: webuiSample
 description: Sample app for framework
 dependencies:
   browser: any
-  json: any
   mime_type: any
   path: any
   webui:

@@ -10,7 +10,7 @@ typedef void RestError(String text);
 
 class Rest {
   static const eventRequestStart = "eventRequestStart";
-  static const eventRequestDone = "eventRequestDOne";
+  static const eventRequestDone = "eventRequestDone";
   
   static Rest _instance;
   RestError _errorHandler;
@@ -77,10 +77,10 @@ class Rest {
     var req = new HttpRequest();
     req.onReadyStateChange.listen((Event e) {
       if (req.readyState == HttpRequest.OPENED) {
-        EventBus.instance.fire("RestRequestStart");
+        EventBus.instance.fire(eventRequestStart);
       }
       else if (req.readyState == HttpRequest.DONE) {
-        EventBus.instance.fire("RestRequestDone");
+        EventBus.instance.fire(eventRequestDone);
         switch (req.status) {
           case 0:
           case 200:
@@ -92,7 +92,6 @@ class Rest {
                 if (data['error'] != null) {
                   errors = true;
                   c.completeError(data['error']); //Futures must do the error them self
-                  //_errorHandler(data['error']);
                 }
               }
             }
