@@ -28,15 +28,21 @@ class Address {
   }
   
   void goto(String address) {
+    var newUrl = "";
     if (address.startsWith("http")) {
-      window.location.href = address;
+      newUrl = address;
     }
     else {
       var urls = window.location.href.split("#");
       if (urls.length >= 1) {
-        window.location.href = "${urls[0]}#${address}";
+        newUrl = "${urls[0]}#${address}";
       }
     }
+    // if they match no change is detected => no event
+    if (window.location.href == newUrl) {
+      window.location.href = "";
+    }
+    window.location.href = newUrl;
   }
   
   String get current => _current;

@@ -1,14 +1,13 @@
 
 part of webuiSample;
 
-class PersonListCtrl extends BaseListCtrl {
+class PersonListCtrl extends DefaultListCtrl {
+
+  PersonListCtrl() : super(new PersonListView(), "Person");
   
-  PersonListCtrl() : super(new PersonListView(), "Person") {}
-  
-  populateView(BaseListView view, String urlPrefix) {
-    Future f = Rest.instance.get('/rest/Person');
-    f.then((data) {
-      view.populate(data, urlPrefix);
+  populateView(PersonListView view, String urlPrefix) {
+    Rest.instance.get('/rest/Person').then((data) {
+      view.persons = data;
     });
   }
 }

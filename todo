@@ -1,0 +1,3 @@
+ - Optimize loading of pages so that thay displayed on correct url and otherwise hidden. Thier is a problem that
+   show return a Future, so when loaded that future is not needed any more.
+ - rename read and write method to get and set value

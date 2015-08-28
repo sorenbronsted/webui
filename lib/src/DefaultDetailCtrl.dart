@@ -1,25 +1,24 @@
 
 part of webui;
 
-class BaseDetailCtrl implements EventBusListener {
-  BaseDetailView _view;
+class DefaultDetailCtrl extends Controller {
+  DefaultDetailView _view;
   String _name;
   
-  BaseDetailCtrl(BaseDetailView this._view, String this._name) {
-    _view.setViewName(_name);
+  DefaultDetailCtrl(DefaultDetailView this._view, String this._name) {
+    _view.name = _name;
     _view.addHandler("save", save);
     _view.addHandler("cancel", cancel);
   }
 
-  BaseDetailView get view => _view;
+  DefaultDetailView get view => _view;
   String get name => _name;
   
-  void display(String event) {
+  void run(String event) {
     var url = Address.instance.current;
     var pattern = new RegExp("$_name/new");
     if (pattern.hasMatch(url)) {
-      Future f = _view.show();
-      f.then((result) {
+      _view.show().then((result) {
         loadTypes(_view);
       });
     }
@@ -37,26 +36,21 @@ class BaseDetailCtrl implements EventBusListener {
     }
   }
 
-  List<Future> loadTypes(BaseDetailView view) {
+  List<Future> loadTypes(DefaultDetailView view) {
     return new List();
   }
   
   void load(id) {
     Rest.instance.get("/rest/$_name/$id").then((data) {
-      _view.populate(data);
+      _view.formdata = data;
     });
   }
   
   void save(String empty) {
-    this._view.formHasChanged = false;
-
-    Future post = Rest.instance.post("/rest/$_name", _view.formdata);
-    post.then((Map postResult) {
-      this._view.removeLeaveEvents();
+    Rest.instance.post("/rest/$_name", _view.formdata).then((Map postResult) {
+      _view.isDirty = false;
       Address.instance.back();
     }).catchError((error) {
-      this._view.formHasChanged = true;
-
       if (error is Map) {
         _view.showErrors(error);
       }
@@ -70,14 +64,13 @@ class BaseDetailCtrl implements EventBusListener {
   }
   
   void cancel(String empty) {
-    this._view.removeLeaveEvents();
-    this._view.formHasChanged = false;
-
-    Address.instance.back();
-  }
-
-  @override
-  void register(EventBus eventBus) {
-    eventBus.listenOn(Address.eventAddressChanged, display);
+    var proceed = true;
+    if (_view.isDirty) {
+      proceed = _view.confirm("Siden er blevet ændret. Dine ændringer kan blive tabt. Ønsker du at fortsætte?");
+    }
+    if (proceed) {
+      _view.isDirty = false;
+      Address.instance.back();
+    }
   }
 }

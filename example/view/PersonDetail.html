@@ -3,8 +3,8 @@
     <form>
       <fieldset>
         <legend>Funktioner</legend>
-        <input type="button" name="save" value="Gem"/>
-        <input type="button" name="cancel" value="Fortryd"/>
+        <button name="save">Gem</button>
+        <button name="cancel">Fortryd</button>
       </fieldset>
     </form>
   </div>
@@ -24,11 +24,27 @@
         </li>
         <li>
           <label>Zipcode</label>
-          <input name="zipcode" class="required" type="text" size="6" />
+          <select name="zipcode"></select>
         </li>
         <li>
           <label>Town</label>
           <input name="town" class="required" type="text"/>
+        </li>
+        <li>
+          <label>Created</label>
+          <input name="created" class="required datetime" type="text"/>
+        </li>
+        <li>
+          <label>Born</label>
+          <input name="born" class="required date" type="text"/>
+        </li>
+        <li>
+          <label>Time</label>
+          <input name="time" class="required time" type="text"/>
+        </li>
+        <li>
+          <label>Height</label>
+          <input name="height" class="required amount" type="text"/>
         </li>
       </ul>
     </fieldset>

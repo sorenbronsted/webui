@@ -2,46 +2,70 @@
 part of server;
 
 class Person {
-  String uid;
+  int uid;
   String name;
   String address;
   int zipcode;
   String town;
+  DateTime created;
+  DateTime born;
+  int time;
+  double height;
   
   toJson() {
-    var result = {'uid':uid,'name':name,'address':address,'zipcode':zipcode,'town':town};
-    return result;
+    return {
+      'uid':uid,
+      'name':name,
+      'address':address,
+      'zipcode': zipcode.toString(),
+      'town':town,
+      'created' : created.toString(),
+      'born' : born.toString(),
+      'time' : time.toString(),
+      'height' : height.toString(),
+    };
   }
-  
-  static parse(String content) {
-    print(content);
+
+  toString() {
+    return toJson();
+  }
+
+  static parse(Map data) {
     var person = new Person();
-    person.uid = '';
-    
-    var fields = content.split('&');
-    for(var field in fields) {
-      var values = field.split('=');
-      print(values);
-      if (values.length == 2) {
-        switch(values[0]) {
-          case 'uid':
-            person.uid = values[1];
-            break;
-          case 'name':
-            person.name = values[1];
-            break;
-          case 'address':
-            person.address = values[1];
-            break;
-          case 'zipcode':
-            person.zipcode = int.parse(values[1]);
-            break;
-          case 'town':
-            person.town = values[1];
-            break;
-        }
+    person.uid = 0;
+    data.forEach((name, value) {
+      switch(name) {
+        case 'uid':
+          person.uid = value;
+          break;
+        case 'name':
+          person.name = value;
+          break;
+        case 'address':
+          person.address = value;
+          break;
+        case 'zipcode':
+          person.zipcode = int.parse(value);
+          break;
+        case 'town':
+          person.town = value;
+          break;
+        case 'created':
+          person.created = DateTime.parse(value);
+          break;
+        case 'born':
+          person.born = DateTime.parse(value);
+          break;
+        case 'time':
+          person.time = int.parse(value.replaceAll(':',''));
+          break;
+        case 'height':
+          person.height = double.parse(value);
+          break;
+        default:
+          throw "Unknown property ${name}";
       }
-    }
+    });
     return person;
   }
 }

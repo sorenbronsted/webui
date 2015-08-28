@@ -1,5 +1,5 @@
 This library contains the framework for web application at UFDS.
-To use it get it with composer and make a symlink from your dart client to the webui directory.
+To use it get it with pub from http://dev.ufds.lan/git/webui.git
 
 The sample directory contains a simple demo of how you make an dart web application with this library.
 To run this:

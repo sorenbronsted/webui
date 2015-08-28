@@ -50,68 +50,106 @@ class Format {
   
   static _loadFormatters() {
     addFormatter("date", new DateFmt());
+    addFormatter("time", new TimeFmt());
     addFormatter("datetime", new DateTimeFmt());
-    addFormatter("amountInt", new AmountFmt(0));
-    addFormatter("amount", new AmountFmt(2));
+    addFormatter("amountInt", new NumberFmt(0));
+    addFormatter("integer", new NumberFmt(0));
+    addFormatter("amount", new NumberFmt(2));
+    addFormatter("decimal", new NumberFmt(4)); //TODO encode decimal length
     addFormatter("caseNumber", new CaseNumberFmt());
   }
 }
 
 class DateFmt implements Formatter {
-  // Excepted input format yyyy-mm-dd
+  // Expected input format yyyy-mm-dd or yyyymmdd
   String display(String input) {
     assert(input != null);
-    var tmp = input.split("-");
+    var value = input.replaceAll("-", "");
+    if (input.length < 8) {
+      return input;
+    }
+    var yy = value.substring(0,4);
+    var mm = value.substring(4,6);
+    var dd = value.substring(6,8);
+    return "${dd}-${mm}-${yy}";
+  }
+  
+  // Expected input format is dd-mm-yyyy
+  String internal(String input) {
+    assert(input != null);
+    if (input.length < 10) {
+      return input;
+    }
+    var tmp = input.substring(0,10).split("-");
     if (tmp.length != 3) {
       return input;
     }
     return "${tmp[2]}-${tmp[1]}-${tmp[0]}";
   }
-  
-  // Excepted input format is dd-mm-yyyy
+}
+
+class TimeFmt implements Formatter {
+
+  // Expected input hh:mm:ss or hhmmss
+  String display(String input) {
+    assert(input != null);
+    var value = input.replaceAll(":", "");
+    if (value.length < 6) {
+      return input;
+    }
+    var hh = value.substring(0,2);
+    var mm = value.substring(2,4);
+    var ss = value.substring(4,6);
+    return "${hh}:${mm}:${ss}";
+  }
+
+  // Exptected input hh:mm:ss
   String internal(String input) {
     assert(input != null);
-    var tmp = input.split("-");
+    if (input.length < 10) {
+      return input;
+    }
+    var tmp = input.substring(0,8).split(":");
     if (tmp.length != 3) {
       return input;
     }
-    return "${tmp[0]}-${tmp[1]}-${tmp[2]}";
+    return "${tmp[0]}:${tmp[1]}:${tmp[2]}";
   }
 }
 
 class DateTimeFmt implements Formatter {
-  // Excepted input format yyyy-mm-dd hh:mm:ss
+  // Expected input format yyyy-mm-dd hh:mm:ss
   String display(String input) {
     var tmp = input.split(" ");
     if (tmp.length != 2) {
       return input;
     }
 
-    var fmt = new DateFmt();
-    var date = fmt.display(tmp[0]);
-    var time = tmp[1];
+    var fmtDate = new DateFmt();
+    var date = fmtDate.display(tmp[0]);
+    var fmtTime = new TimeFmt();
+    var time = fmtTime.display(tmp[1]);
     return "${date} ${time}";
   }
   
-  // Excepted input format is dd-mm-yyyy hh:mm:ss
+  // Expected input format is dd-mm-yyyy hh:mm:ss
   String internal(String input) {
-    if (input.length == 0) {
+    var tmp = input.split(" ");
+    if (tmp.length != 2) {
       return input;
     }
-    var parts = input.split(" ");
-    assert(parts.length == 2);
-    var tmp = parts[0].split("-");
-    if (tmp.length != 3) {
-      return input;
-    }
-    return "${tmp[0]}-${tmp[1]}-${tmp[2]} ${parts[1]}";
+    var fmtDate = new DateFmt();
+    var date = fmtDate.internal(tmp[0]);
+    var fmtTime = new TimeFmt();
+    var time = fmtTime.internal(tmp[1]);
+    return "${date}T${time}";
   }
 }
 
-class AmountFmt implements Formatter {
+class NumberFmt implements Formatter {
   int _decimalCount;
   
-  AmountFmt(this._decimalCount) {
+  NumberFmt(this._decimalCount) {
     assert(_decimalCount >= 0);
   }
   
