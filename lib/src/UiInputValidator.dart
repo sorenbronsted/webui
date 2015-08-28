@@ -67,7 +67,7 @@ class UiInputValidator {
     var msg = "Dato og tid er ikke en gyldig, fx 100917 1145";
     var value = input.trim();
     if (value.isEmpty) {
-      return;
+      return input;
     }
     try {
       var parts = input.split(" ");
@@ -93,7 +93,7 @@ class UiInputValidator {
     var msg = "Tidspunkt er ikke en gyldig, fx 1045 el 10:45.";
     var value = input.trim();
     if (value.isEmpty) {
-      return;
+      return input;
     }
     var now = new DateTime.now();
     var test;
@@ -144,7 +144,7 @@ class UiInputValidator {
     var msg = "Dato er ikke en gyldig, fx ddmmyy.";
     var value = input.trim();
     if (value.isEmpty) {
-      return;
+      return input;
     }
     var now = new DateTime.now();
     var test;

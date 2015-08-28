@@ -4,12 +4,11 @@ part of webui;
 typedef void Handler(String data);
 
 abstract class View {
-  Map<String, Handler> _handlers = new Map();
+  Map<String, Handler> _handlers;
+  List<UiBinding> _bindings;
   String _bindId;
-  bool _isDirty = false; // if true input has changed
-  bool _isValid = true; // if true input is valid
-
-  View(String this._bindId);
+  bool _isDirty; // if true input has changed
+  bool _isValid; // if true input is valid
 
   bool get isDirty => _isDirty;
   set isDirty(bool val) => _isDirty = val;
@@ -19,18 +18,31 @@ abstract class View {
 
   String get viewName;
 
+  View(String this._bindId) {
+    _isDirty = false;
+    _isValid = true;
+    _handlers = {};
+    _bindings = [];
+  }
+
   Future show() {
     return Rest.instance.load('view/${viewName}.html').then((html) {
       querySelector(_bindId).setInnerHtml(html.toString());
+      _bindings.clear();
       onLoad();
     });
   }
 
   onLoad() {}
 
+  UiBinding addBinding(UiBinding binding) {
+    binding.bind(this);
+    _bindings.add(binding);
+    return binding;
+  }
+
   addHandler(String key, Handler handler) {
     _handlers[key] = handler;      
-
   }
 
   executeHandler(String key, bool validRequired, [String data]) {

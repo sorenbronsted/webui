@@ -2,25 +2,26 @@
 part of webui;
 
 class UiInputBinding extends UiBinding {
-  View _view;
   InputElement _input;
 
-  UiInputBinding(View this._view, InputElement this._input) {
-
+  UiInputBinding(InputElement this._input) {
     if (!(this._input is InputElement || this._input is TextAreaElement)) {
       throw "Only works on input and textarea elements";
     }
+  }
 
+  void bind(View view) {
     _input.onFocus.listen((event) {
       UiInputValidator.reset(_input);
-      _view.isValid = true;
+      view.isValid = true;
     });
 
     _input.onBlur.listen((event) {
-      validate();
+      UiInputValidator.validate(_input);
+      view.isValid = _input.classes.contains('valid');
     });
 
-    _input.onKeyUp.listen((event) => _view.isDirty = true);
+    _input.onKeyUp.listen((event) => view.isDirty = true);
   }
 
   String read() {
@@ -29,10 +30,5 @@ class UiInputBinding extends UiBinding {
 
   void write(String value) {
     _input.value = Format.display(_input.classes, value);
-  }
-
-  void validate() {
-    UiInputValidator.validate(_input);
-    _view.isValid = _input.classes.contains('valid');
   }
 }

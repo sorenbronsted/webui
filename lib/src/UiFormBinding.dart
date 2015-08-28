@@ -2,28 +2,38 @@
 part of webui;
 
 class UiFormBinding extends UiBinding {
-  View _view;
-  FormElement _form;
   Map _data = {};
-  Map _bindings = {};
+  FormElement _form;
+  Map<String, UiBinding> _bindings;
 
-  UiFormBinding(View this._view, FormElement this._form) {
+  UiFormBinding(FormElement this._form) {
     if (_form == null) {
       throw "IllegalArgument: form must not be null";
     }
-    _bindings.clear();
     _data.clear();
+    _bindings = {};
+  }
+
+  void bind(View view) {
     _form.querySelectorAll('input[type="text"], input[type="checkbox"], textarea').forEach((elem) {
       if (elem.name == null) {
         throw "Name attribute must not be null";
       }
-      _bindings[elem.name] = new UiInputBinding(_view, elem);
+      var input = new UiInputBinding(elem);
+      input.bind(view);
+      _bindings[elem.name] = input;
     });
     _form.querySelectorAll('select').forEach((elem) {
       if (elem.name == null) {
         throw "Name attribute must not be null";
       }
-      _bindings[elem.name] = new UiSelectBinding(_view, elem);
+      var select = new UiSelectBinding(elem);
+      select.bind(view);
+      _bindings[elem.name] = select;
+    });
+    _form.onSubmit.listen((event) {
+      event.preventDefault();
+      view.executeHandler("save", true);
     });
   }
 
@@ -42,10 +52,6 @@ class UiFormBinding extends UiBinding {
         binding.write(value);
       }
     });
-  }
-
-  validate() {
-    _bindings.forEach((name, elem) => elem.validate());
   }
 }
 

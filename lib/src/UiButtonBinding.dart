@@ -3,16 +3,22 @@ part of webui;
 
 class UiButtonBinding extends UiBinding {
   ButtonElement _button;
-  View _view;
+  bool _validationRequired;
 
-  UiButtonBinding(View _view, ButtonElement this._button, bool validRequired) {
+  UiButtonBinding(ButtonElement this._button, bool this._validationRequired) {
     if (_button == null) {
       throw "IllegalArgument: button must not be null";
     }
+  }
+
+  void bind(View view) {
     _button.onClick.listen((event) {
       event.preventDefault();
       ButtonElement elem = event.target;
-      _view.executeHandler(elem.name, validRequired);
+      view.executeHandler(elem.name, _validationRequired);
     });
   }
+
+  Object read() => null;
+  void write(Object o) {}
 }

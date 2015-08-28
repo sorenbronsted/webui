@@ -2,15 +2,7 @@
 part of webui;
 
 class UiSelectBinding extends UiBinding {
-  View _view;
   SelectElement _select;
-
-  UiSelectBinding(View this._view, SelectElement this._select) {
-    if (_select == null) {
-      throw "IllegalArgument: argument must not be null";
-    }
-    _select.onChange.listen((event) => _view.isDirty = true);
-  }
 
   set options(List<Map> data) {
     var options = new DocumentFragment();
@@ -22,6 +14,16 @@ class UiSelectBinding extends UiBinding {
     });
     _select.children.clear();
     _select.append(options);
+  }
+
+  UiSelectBinding(SelectElement this._select) {
+    if (_select == null) {
+      throw "IllegalArgument: argument must not be null";
+    }
+  }
+
+  void bind(View view) {
+    _select.onChange.listen((event) => view.isDirty = true);
   }
 
   String read() {

@@ -3,8 +3,6 @@ part of webui;
 
 class DefaultDetailView extends View {
   UiFormBinding _form;
-  UiButtonBinding _save;
-  UiButtonBinding _cancel;
   String _name;
 
   DefaultDetailView([String bindId = '#content']) : super(bindId);
@@ -18,14 +16,20 @@ class DefaultDetailView extends View {
   UiFormBinding get form => _form;
 
   onLoad() {
+    var form = querySelector('form[name="formdata"]');
+    if (form == null) {
+      throw "Form not found";
+    }
+    _form = addBinding(new UiFormBinding(form));
+
     var save = querySelector('button[name="save"]');
-    save.onClick.listen((event) => _form.validate());
-    _save = new UiButtonBinding(this, save, true);
+    if (save != null) {
+      addBinding(new UiButtonBinding(save, true));
+    }
 
     var cancel = querySelector('button[name="cancel"]');
-    _cancel = new UiButtonBinding(this, cancel, false);
-
-    var form = querySelector('form[name="formdata"]');
-    _form = new UiFormBinding(this, form);
+    if (cancel != null) {
+      addBinding(new UiButtonBinding(cancel, false));
+    }
   }
 }

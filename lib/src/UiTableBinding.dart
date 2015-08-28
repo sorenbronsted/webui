@@ -1,19 +1,22 @@
 
 part of webui;
 
-class UiTableBinding {
-
+class UiTableBinding extends UiBinding {
   List _rows;
   TableElement _table;
-  View  _view;
   String _linkPrefix;
+  View _view;
 
-  UiTableBinding(View this._view, TableElement this._table, this._linkPrefix) {
-    [_view, _table, _linkPrefix].forEach((elem) {
+  UiTableBinding(TableElement this._table, this._linkPrefix) {
+    [_table, _linkPrefix].forEach((elem) {
       if (elem == null) {
         throw "IllegalArgument: argument must not null";
       }
     });
+  }
+
+  void bind(View view) {
+    _view = view;
   }
 
   List read() => _rows;

@@ -2,7 +2,6 @@
 part of webui;
 
 class DefaultListView extends View {
-  UiButtonBinding _create;
   UiTableBinding _table;
   String _name;
   
@@ -12,11 +11,16 @@ class DefaultListView extends View {
   set name(String name) => _name = name;
 
   void onLoad() {
-    var table = querySelector("#list table");
-    _table = new UiTableBinding(this, table, _name);
+    var table = querySelector("#tabledata");
+    if (table == null) {
+      throw "Table with id 'tabledata' is not found in ${viewName}";
+    }
+    _table = addBinding(new UiTableBinding(table, _name));
 
     var button = querySelector('button[name="create"]');
-    _create = new UiButtonBinding(this, button, false);
+    if (button != null) {
+      addBinding(new UiButtonBinding(button, false));
+    }
   }
 
   populate(List rows) {
