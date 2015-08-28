@@ -1,4 +1,4 @@
 name: webui
-version: 1.0.1
+version: 2.0
 author: Søren Brønsted
-description: A sample application
+description: GUI framework for single page applications
