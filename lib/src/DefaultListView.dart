@@ -11,16 +11,8 @@ class DefaultListView extends View {
   set name(String name) => _name = name;
 
   void onLoad() {
-    var table = querySelector("#tabledata");
-    if (table == null) {
-      throw "Table with id 'tabledata' is not found in ${viewName}";
-    }
-    _table = addBinding(new UiTableBinding(table, _name));
-
-    var button = querySelector('button[name="create"]');
-    if (button != null) {
-      addBinding(new UiButtonBinding(button, false));
-    }
+    _table = addBinding(new UiTableBinding("#tabledata", _name));
+    addBinding(new UiButtonBinding('button[name="create"]', false));
   }
 
   populate(List rows) {

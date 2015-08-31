@@ -3,6 +3,7 @@ part of webui;
 
 class UiSelectBinding extends UiBinding {
   SelectElement _select;
+  String _selector;
 
   set options(List<Map> data) {
     var options = new DocumentFragment();
@@ -16,13 +17,17 @@ class UiSelectBinding extends UiBinding {
     _select.append(options);
   }
 
-  UiSelectBinding(SelectElement this._select) {
-    if (_select == null) {
-      throw "IllegalArgument: argument must not be null";
-    }
+  UiSelectBinding(String this._selector);
+
+  UiSelectBinding.byElement(SelectElement select) {
+    _selector = 'select[name="${select.name}"]';
   }
 
   void bind(View view) {
+    _select = querySelector(_selector);
+    if (_select == null) {
+      throw "Select not found (selector $_selector)";
+    }
     _select.onChange.listen((event) => view.isDirty = true);
   }
 

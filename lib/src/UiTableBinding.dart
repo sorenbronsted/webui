@@ -4,11 +4,12 @@ part of webui;
 class UiTableBinding extends UiBinding {
   List _rows;
   TableElement _table;
+  String _selector;
   String _linkPrefix;
   View _view;
 
-  UiTableBinding(TableElement this._table, this._linkPrefix) {
-    [_table, _linkPrefix].forEach((elem) {
+  UiTableBinding(String this._selector, this._linkPrefix) {
+    [_selector, _linkPrefix].forEach((elem) {
       if (elem == null) {
         throw "IllegalArgument: argument must not null";
       }
@@ -16,6 +17,10 @@ class UiTableBinding extends UiBinding {
   }
 
   void bind(View view) {
+    _table = querySelector(_selector);
+    if (_table == null) {
+      throw "Table not found (selector: $_selector)";
+    }
     _view = view;
   }
 

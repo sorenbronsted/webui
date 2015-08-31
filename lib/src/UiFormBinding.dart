@@ -5,36 +5,40 @@ class UiFormBinding extends UiBinding {
   Map _data = {};
   FormElement _form;
   Map<String, UiBinding> _bindings;
+  String _selector;
 
-  UiFormBinding(FormElement this._form) {
-    if (_form == null) {
-      throw "IllegalArgument: form must not be null";
-    }
+  UiFormBinding(String this._selector) {
     _data.clear();
     _bindings = {};
   }
 
   void bind(View view) {
-    _form.querySelectorAll('input[type="text"], input[type="checkbox"], textarea').forEach((elem) {
-      if (elem.name == null) {
-        throw "Name attribute must not be null";
-      }
-      var input = new UiInputBinding(elem);
-      input.bind(view);
-      _bindings[elem.name] = input;
-    });
-    _form.querySelectorAll('select').forEach((elem) {
-      if (elem.name == null) {
-        throw "Name attribute must not be null";
-      }
-      var select = new UiSelectBinding(elem);
-      select.bind(view);
-      _bindings[elem.name] = select;
-    });
+    _form = querySelector(_selector);
+    if (_form == null) {
+      throw "Form not found (selector $_selector)";
+    }
     _form.onSubmit.listen((event) {
       event.preventDefault();
       view.executeHandler("save", true);
     });
+
+    if (_bindings.isEmpty) {
+      _form.querySelectorAll('input[type="text"], input[type="checkbox"], textarea').forEach((elem) {
+        if (elem.name == null) {
+          throw "Name attribute must not be null";
+        }
+        var input = new UiInputBinding.byElement(elem);
+        _bindings[elem.name] = input;
+      });
+      _form.querySelectorAll('select').forEach((elem) {
+        if (elem.name == null) {
+          throw "Name attribute must not be null";
+        }
+        var select = new UiSelectBinding.byElement(elem);
+        _bindings[elem.name] = select;
+      });
+    }
+    _bindings.values.forEach((UiBinding binding) => binding.bind(view));
   }
 
   UiBinding operator [](String name) => _bindings[name];

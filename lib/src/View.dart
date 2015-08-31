@@ -28,15 +28,14 @@ abstract class View {
   Future show() {
     return Rest.instance.load('view/${viewName}.html').then((html) {
       querySelector(_bindId).setInnerHtml(html.toString());
-      _bindings.clear();
       onLoad();
+      _bindings.forEach((UiBinding binding) => binding.bind(this));
     });
   }
 
-  onLoad() {}
+  void onLoad() {}
 
   UiBinding addBinding(UiBinding binding) {
-    binding.bind(this);
     _bindings.add(binding);
     return binding;
   }

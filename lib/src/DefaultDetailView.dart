@@ -15,21 +15,9 @@ class DefaultDetailView extends View {
 
   UiFormBinding get form => _form;
 
-  onLoad() {
-    var form = querySelector('form[name="formdata"]');
-    if (form == null) {
-      throw "Form not found";
-    }
-    _form = addBinding(new UiFormBinding(form));
-
-    var save = querySelector('button[name="save"]');
-    if (save != null) {
-      addBinding(new UiButtonBinding(save, true));
-    }
-
-    var cancel = querySelector('button[name="cancel"]');
-    if (cancel != null) {
-      addBinding(new UiButtonBinding(cancel, false));
-    }
+  void onLoad() {
+    _form = addBinding(new UiFormBinding('form[name="formdata"]'));
+    addBinding(new UiButtonBinding('button[name="save"]', true));
+    addBinding(new UiButtonBinding('button[name="cancel"]', false));
   }
 }
