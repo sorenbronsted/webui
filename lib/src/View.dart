@@ -29,12 +29,14 @@ abstract class View {
     return Rest.instance.load('view/${viewName}.html').then((html) {
       querySelector(_bindId).setInnerHtml(html.toString());
       onLoad();
-      try {
-        _bindings.forEach((UiBinding binding) => binding.bind(this));
-      }
-      on SelectException catch(e) {
-        print("Warning: ${e}");
-      }
+      _bindings.forEach((UiBinding binding) {
+        try {
+          binding.bind(this);
+        }
+        on SelectException catch(e) {
+          print("Warning: ${e}");
+        }
+      });
     });
   }
 
