@@ -11,8 +11,13 @@ class DefaultListView extends View {
   set name(String name) => _name = name;
 
   void onLoad() {
-    _table = addBinding(new UiTableBinding("#tabledata", _name));
-    addBinding(new UiButtonBinding('button[name="create"]', false));
+    try {
+      _table = addBinding(new UiTableBinding("#tabledata", _name));
+      addBinding(new UiButtonBinding('button[name="create"]', false));
+    }
+    on SelectException catch(e) {
+      print("Warning: ${e}");
+    }
   }
 
   populate(List rows) {

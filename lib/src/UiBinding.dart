@@ -13,3 +13,10 @@ abstract class UiBinding {
   /* This will write an object to the UiBinding */
   void write(Object);
 }
+
+class SelectException {
+  String _msg;
+
+  SelectException(String this._msg);
+  String toString() => _msg;
+}

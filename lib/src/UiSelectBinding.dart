@@ -26,7 +26,7 @@ class UiSelectBinding extends UiBinding {
   void bind(View view) {
     _select = querySelector(_selector);
     if (_select == null) {
-      throw "Select not found (selector $_selector)";
+      throw new SelectException("Select not found (selector $_selector)");
     }
     _select.onChange.listen((event) => view.isDirty = true);
   }

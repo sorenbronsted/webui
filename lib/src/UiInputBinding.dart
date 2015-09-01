@@ -14,7 +14,7 @@ class UiInputBinding extends UiBinding {
   void bind(View view) {
     _input = querySelector(this._selector);
     if (_input == null) {
-      throw "Element not found (selector $_selector";
+      throw new SelectException("Element not found (selector $_selector");
     }
     if (!(this._input is InputElement || this._input is TextAreaElement)) {
       throw "Only works on input and textarea elements";

@@ -19,7 +19,7 @@ class UiTableBinding extends UiBinding {
   void bind(View view) {
     _table = querySelector(_selector);
     if (_table == null) {
-      throw "Table not found (selector: $_selector)";
+      throw new SelectException("Table not found (selector: $_selector)");
     }
     _view = view;
   }
