@@ -23,7 +23,7 @@ class UiFormBinding extends UiBinding {
     });
 
     if (_bindings.isEmpty) {
-      _form.querySelectorAll('input[type="text"], input[type="checkbox"], textarea').forEach((elem) {
+      _form.querySelectorAll('input, textarea').forEach((elem) {
         if (elem.name == null) {
           throw "Name attribute must not be null";
         }
