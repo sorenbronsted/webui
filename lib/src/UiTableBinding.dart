@@ -66,6 +66,8 @@ class UiTableBinding extends UiBinding {
 
   TableCellElement _makeCell(TableCellElement column, Map row) {
     var result = new TableCellElement();
+    result.hidden = column.hidden;
+
     var href = "";
     if (_linkPrefix != null) {
       href = "/#${_linkPrefix}/${row['uid']}";
