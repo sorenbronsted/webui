@@ -1,53 +1,69 @@
 <div id="PersonDetail">
-  <div id="functions">
+  <div id="functions" class="page-header">
     <form>
-      <fieldset>
-        <legend>Funktioner</legend>
-        <button name="save">Gem</button>
-        <button name="cancel">Fortryd</button>
-      </fieldset>
+      <button name="save" class="btn btn-primary">Gem</button>
+      <button name="cancel"class="btn btn-primary">Fortryd</button>
     </form>
   </div>
   <div id="detail">
-  <form name="formdata">
+  <form name="formdata" class="form-horizontal">
     <input type="hidden" name="uid" /> 
-    <fieldset>
-      <legend>Person</legend>
-      <ul>
-        <li>
-          <label>Name</label>
-          <input name="name" class="required" type="text"/>
-        </li>
-        <li>
-          <label>Address</label>
-          <input name="address" class="required" type="text"/>
-        </li>
-        <li>
-          <label>Zipcode</label>
-          <select name="zipcode"></select>
-        </li>
-        <li>
-          <label>Town</label>
-          <input name="town" class="required" type="text"/>
-        </li>
-        <li>
-          <label>Created</label>
-          <input name="created" class="required datetime" type="text"/>
-        </li>
-        <li>
-          <label>Born</label>
-          <input name="born" class="required date" type="text"/>
-        </li>
-        <li>
-          <label>Time</label>
-          <input name="time" class="required time" type="text"/>
-        </li>
-        <li>
-          <label>Height</label>
-          <input name="height" class="required amount" type="text"/>
-        </li>
-      </ul>
-    </fieldset>
+
+    <div class="form-group">
+      <label for="name" class="col-sm-2 control-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="required form-control" id="name" name="name">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="address" class="col-sm-2 control-label">Address</label>
+      <div class="col-sm-10">
+        <input type="text" class="required form-control" id="address" name="address">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="zipcode" class="col-sm-2 control-label">Zipcode</label>
+      <div class="col-sm-10">
+        <select class="required integer form-control" id="zipcode" name="zipcode"></select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="town" class="col-sm-2 control-label">Town</label>
+      <div class="col-sm-10">
+        <input type="text" class="required form-control" id="town" name="town">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="created" class="col-sm-2 control-label">Created</label>
+      <div class="col-sm-10">
+        <input type="text" class="required datetime form-control" id="created" name="created">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="born" class="col-sm-2 control-label">Born</label>
+      <div class="col-sm-10">
+        <input type="text" class="required date form-control" id="born" name="born">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="time" class="col-sm-2 control-label">Time</label>
+      <div class="col-sm-10">
+        <input type="text" class="required time form-control" id="time" name="time">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="height" class="col-sm-2 control-label">Height</label>
+      <div class="col-sm-10">
+        <input type="text" class="required amount form-control" id="height" name="height">
+      </div>
+    </div>
   </form>
   </div>
 </div>

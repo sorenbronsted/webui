@@ -33,10 +33,10 @@ class Person {
   static parse(Map data) {
     var person = new Person();
     person.uid = 0;
-    data.forEach((name, value) {
+    data.forEach((String name, String value) {
       switch(name) {
         case 'uid':
-          person.uid = value;
+          person.uid = int.parse(value.length == 0 ? "0" : value);
           break;
         case 'name':
           person.name = value;
