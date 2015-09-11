@@ -60,7 +60,7 @@ class Rest {
   }
   
   Future post(String url, Map data) {
-    var encodedData = Uri.encodeComponent(JSON.encode(data));
+    var encodedData = encodeMap(data);
     return _execute('POST', url, encodedData);
   }
   
@@ -106,10 +106,17 @@ class Rest {
     });
     req.open(method, url);
     if (method == 'POST') {
-      req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded;charset=utf-8');
-      //req.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+      req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     }
     req.send(data);
     return c.future;
+  }
+
+  String encodeMap(Map data) {
+    StringBuffer sb = new StringBuffer();
+    sb.writeAll(data.keys.map((k) {
+      return data[k] != null ? '${Uri.encodeComponent(k)}=${Uri.encodeComponent(data[k])}' : '';
+    }), '&');
+    return sb.toString();
   }
 }

@@ -11,7 +11,7 @@ part 'Person.dart';
 class Server {
   
   String _basePath;
-  Map<int, Person> _persons;
+  Map<String, Person> _persons;
   
   Server(String this._basePath) {
     print("basePath ${_basePath}");
@@ -27,16 +27,15 @@ class Server {
     HttpResponse res = request.response;
     switch(request.method) {
       case 'POST':
-        print(Uri.decodeComponent(content));
-        var p = Person.parse(JSON.decode(Uri.decodeComponent(content)));
-        if (p.uid == 0) {
-          p.uid = _persons.length + 1;
+        var p = Person.parse(content);
+        if (p.uid.length == 0) {
+          p.uid = "${_persons.length + 1}";
         }
         _persons[p.uid] = p;
         break;
       case 'DELETE':
         if (request.uri.pathSegments.length == 3) { // eg /rest/person/1
-          var uid = int.parse(request.uri.pathSegments.last);
+          var uid = request.uri.pathSegments.last;
           if (_persons.containsKey(uid)) {
             _persons.remove(uid);          
           }
@@ -55,7 +54,7 @@ class Server {
           res.write(s);
         }          
         else if (request.uri.pathSegments.length == 3) { // eg /rest/person/1
-          int uid = int.parse(request.uri.pathSegments.last);
+          var uid = request.uri.pathSegments.last;
           if (_persons.containsKey(uid)) {
             var s = JSON.encode(_persons[uid]);
             res.write(s);
