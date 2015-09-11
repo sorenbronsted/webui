@@ -19,8 +19,7 @@ class UiButtonBinding extends UiBinding {
     }
     _button.onClick.listen((event) {
       event.preventDefault();
-      ButtonElement elem = event.target;
-      view.executeHandler(elem.name, _validationRequired);
+      view.executeHandler(_button.name, _validationRequired);
     });
   }
 

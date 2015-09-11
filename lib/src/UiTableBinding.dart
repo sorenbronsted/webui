@@ -91,7 +91,6 @@ class UiTableBinding extends UiBinding {
       a.text = (row[column.id] == null ? labels[elem] : row[column.id]);
       a.onClick.listen((event) {
         event.preventDefault();
-        AnchorElement a = event.target;
         _view.executeHandler(elem, false, a.href);
       });
       result.append(a);
