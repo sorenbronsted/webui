@@ -26,6 +26,8 @@ abstract class View {
   }
 
   Future show() {
+    //TODO view should not loaded when it has been ones
+    _bindings.clear();
     return Rest.instance.load('view/${viewName}.html').then((html) {
       querySelector(_bindId).setInnerHtml(html.toString());
       onLoad();
