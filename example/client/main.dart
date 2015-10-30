@@ -3,6 +3,7 @@ library webuiSample;
 
 import 'dart:async';
 import 'package:webui/webui.dart';
+import 'dart:html';
 
 part 'PersonListView.dart';
 part 'PersonListCtrl.dart';

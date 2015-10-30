@@ -27,9 +27,15 @@ class Server {
     HttpResponse res = request.response;
     switch(request.method) {
       case 'POST':
-        var p = Person.parse(content);
-        if (p.uid.length == 0) {
-          p.uid = "${_persons.length + 1}";
+        var parts = Uri.decodeComponent(content).split('&');
+        Map data = {};
+        parts.forEach((part) {
+          var nv = part.split('=');
+          data[nv[0]] = nv[1];
+        });
+        var p = Person.parse(data);
+        if (p.uid == 0) {
+          p.uid = _persons.length + 1;
         }
         _persons[p.uid] = p;
         break;
