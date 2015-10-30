@@ -6,14 +6,32 @@ class UiSelectBinding extends UiBinding {
   String _selector;
 
   set options(List<Map> data) {
+    _select.children.clear();
+    if (data.isEmpty) {
+      return;
+    }
+
+    var row = data[0];
+    var idxUid = row.keys.toList().indexOf('uid');
+    if (idxUid < 0) {
+      throw "Must have an uid in rows";
+    }
+
+    var idxValue = row.keys.toList().indexOf('name');
+    if (idxValue < 0) {
+      idxValue = row.keys.toList().indexOf('text');
+    }
+    if (idxValue < 0) {
+      throw "Most have a name or text in row";
+    }
+
     var options = new DocumentFragment();
     data.forEach((Map elem) {
       var option = new OptionElement();
-      option.value = "${elem[elem.keys.elementAt(0)]}";
-      option.appendText(elem[elem.keys.elementAt(1)]);
+      option.value = "${elem[elem.keys.elementAt(idxUid)]}";
+      option.appendText(elem[elem.keys.elementAt(idxValue)]);
       options.append(option);
     });
-    _select.children.clear();
     _select.append(options);
   }
 
