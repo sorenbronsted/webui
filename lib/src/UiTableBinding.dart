@@ -1,14 +1,21 @@
 
 part of webui;
 
+abstract class UiTableListener {
+  onTableRow(TableRowElement tableRow, Map row);
+  onTableCellValue(TableCellElement cell, String value);
+  onTableCellLink(TableCellElement cell, AnchorElement link);
+}
+
 class UiTableBinding extends UiBinding {
   List _rows;
   TableElement _table;
   String _selector;
   String _linkPrefix;
   View _view;
+  UiTableListener _listener;
 
-  UiTableBinding(String this._selector, this._linkPrefix) {
+  UiTableBinding(String this._selector, this._linkPrefix, this._listener) {
     [_selector, _linkPrefix].forEach((elem) {
       if (elem == null) {
         throw "IllegalArgument: argument must not null";
@@ -50,23 +57,21 @@ class UiTableBinding extends UiBinding {
 
   DocumentFragment _addRows(List columns, List rows) {
     var fragment = new DocumentFragment();
-    var rowCount = 0;
     rows.forEach((Map row) {
       var tableRow = new TableRowElement();
-      tableRow.classes.add(rowCount % 2 == 0 ? "row-even" : "row-odd");
+      _listener.onTableRow(tableRow, row);
       columns.forEach((TableCellElement column) {
         var tableCell = _makeCell(column, row);
         tableRow.append(tableCell);
       });
       fragment.append(tableRow);
-      rowCount++;
     });
     return fragment;
   }
 
   TableCellElement _makeCell(TableCellElement column, Map row) {
-    var result = new TableCellElement();
-    result.hidden = column.hidden;
+    var tableCell = new TableCellElement();
+    tableCell.hidden = column.hidden;
 
     var href = "";
     if (_linkPrefix != null) {
@@ -77,7 +82,8 @@ class UiTableBinding extends UiBinding {
     var interSect = column.classes.intersection(new Set.from(labels.keys));
     if (interSect.length == 0) {
       var value = Format.display(column.classes, "${row[column.id]}");
-      result.appendHtml(value);
+      _listener.onTableCellValue(tableCell, value);
+      tableCell.appendHtml(value);
     }
     else {
       var elem = interSect.first;
@@ -88,20 +94,23 @@ class UiTableBinding extends UiBinding {
       AnchorElement a = new AnchorElement();
       a.classes.add(elem);
       a.href = href;
-      a.text = (row[column.id] == null ? labels[elem] : row[column.id]);
+      a.text = '${(row[column.id] == null ? labels[elem] : row[column.id])}';
       a.onClick.listen((event) {
         event.preventDefault();
         _view.executeHandler(elem, false, a.href);
       });
-      result.append(a);
+      _listener.onTableCellLink(tableCell, a);
+      tableCell.append(a);
     }
-    return result;
+    return tableCell;
   }
 
   DocumentFragment _noRows(List columns) {
     var tableCell = new TableCellElement();
     tableCell.colSpan = columns.length;
-    tableCell.appendText('Ingen data fundet');
+    var value = 'Ingen data fundet';
+    _listener.onTableCellValue(tableCell, value);
+    tableCell.appendText(value);
     var result = new DocumentFragment();
     result.append(new TableRowElement().append(tableCell));
     return result;

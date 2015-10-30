@@ -1,7 +1,7 @@
 
 part of webui;
 
-class DefaultListView extends View {
+class DefaultListView extends View implements UiTableListener {
   UiTableBinding _table;
   String _name;
   
@@ -10,12 +10,23 @@ class DefaultListView extends View {
   String get viewName  => "${_name}List";
   set name(String name) => _name = name;
 
+  UiTableBinding get table => _table;
+
   void onLoad() {
-    _table = addBinding(new UiTableBinding("#tabledata", _name));
+    _table = addBinding(new UiTableBinding("#tabledata", _name, this));
     addBinding(new UiButtonBinding('button[name="create"]', false));
   }
 
   populate(List rows) {
     _table.write(rows);
   }
+
+  @override
+  onTableCellValue(TableCellElement cell, String value) {}
+
+  @override
+  onTableRow(TableRowElement tableRow, Map row) {}
+
+  @override
+  onTableCellLink(TableCellElement cell, AnchorElement link) {}
 }
