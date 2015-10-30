@@ -115,7 +115,7 @@ class Rest {
   String encodeMap(Map data) {
     StringBuffer sb = new StringBuffer();
     sb.writeAll(data.keys.map((k) {
-      return data[k] != null ? '${Uri.encodeComponent(k)}=${Uri.encodeComponent(data[k])}' : '';
+      return data[k] != null ? '${Uri.encodeComponent(k)}=${Uri.encodeComponent('${data[k]}')}' : '';
     }), '&');
     return sb.toString();
   }
