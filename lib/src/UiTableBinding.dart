@@ -3,8 +3,8 @@ part of webui;
 
 abstract class UiTableListener {
   onTableRow(TableRowElement tableRow, Map row);
-  onTableCellValue(TableCellElement cell, String value);
-  onTableCellLink(TableCellElement cell, AnchorElement link);
+  onTableCellValue(TableCellElement cell, String value, String column, Map row);
+  onTableCellLink(TableCellElement cell, AnchorElement link, String column, Map row);
 }
 
 class UiTableBinding extends UiBinding {
@@ -82,7 +82,7 @@ class UiTableBinding extends UiBinding {
     var interSect = column.classes.intersection(new Set.from(labels.keys));
     if (interSect.length == 0) {
       var value = Format.display(column.classes, "${row[column.id]}");
-      _listener.onTableCellValue(tableCell, value);
+      _listener.onTableCellValue(tableCell, value, column.id, row);
       tableCell.appendHtml(value);
     }
     else {
@@ -99,7 +99,7 @@ class UiTableBinding extends UiBinding {
         event.preventDefault();
         _view.executeHandler(elem, false, a.href);
       });
-      _listener.onTableCellLink(tableCell, a);
+      _listener.onTableCellLink(tableCell, a,column.id, row);
       tableCell.append(a);
     }
     return tableCell;
@@ -109,7 +109,7 @@ class UiTableBinding extends UiBinding {
     var tableCell = new TableCellElement();
     tableCell.colSpan = columns.length;
     var value = 'Ingen data fundet';
-    _listener.onTableCellValue(tableCell, value);
+    _listener.onTableCellValue(tableCell, value, '', null);
     tableCell.appendText(value);
     var result = new DocumentFragment();
     result.append(new TableRowElement().append(tableCell));
