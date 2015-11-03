@@ -13,7 +13,7 @@ class PersonDetailCtrl extends DefaultDetailCtrl {
   PersonDetailCtrl() : super(new PersonDetailView(), "Person");
 
   List<Future> loadTypes(PersonDetailView view) {
-    var parts = Address.instance.getHashUrlElements();
+    var parts = Address.instance.pathParts;
     if (parts.last == 'new') {
       view.formdata = {'uid': 0};
     }

@@ -14,5 +14,5 @@ void main() {
   var bus = EventBus.instance;
   bus.register(new PersonListCtrl());
   bus.register(new PersonDetailCtrl());
-  Address.instance.goto("Person");
+  Address.instance.goto("list/Person");
 }

@@ -26,7 +26,15 @@ class Address {
     }
     return _instance;
   }
-  
+
+  String get current => _current;
+
+  String get fragment => Uri.parse(_current).fragment;
+
+  List<String> get pathParts => Uri.parse(Uri.parse(_current).fragment).pathSegments;
+
+  Map<String, String> get parameters => Uri.parse(Uri.parse(_current).fragment).queryParameters;
+
   void goto(String address) {
     var newUrl = "";
     if (address.startsWith("http")) {
@@ -45,25 +53,7 @@ class Address {
     window.location.href = newUrl;
   }
   
-  String get current => _current;
-
   void back() {
     window.history.back();
-  }
-  
-  String getHashUrl() {
-    if (_current.contains("#")) {
-      var urls = _current.split("#");
-      return urls[1];
-    }
-    return null;
-  }
-  
-  List<String> getHashUrlElements() {
-    var url = getHashUrl();
-    if (url != null) {
-      return url.split("/");
-    }
-    return null;
   }
 }
