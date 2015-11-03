@@ -15,24 +15,23 @@ class DefaultDetailCtrl extends Controller {
   String get name => _name;
   
   void run(String event) {
-    var url = Address.instance.current;
-    var pattern = new RegExp("$_name/new");
-    if (pattern.hasMatch(url)) {
+    var parts = Address.instance.pathParts;
+    if (!(parts.length == 3 && parts[0] == 'detail' && parts[1] == _name)) {
+      return;
+    }
+
+    if (parts.last == 'new') {
       _view.show().then((result) {
         loadTypes(_view);
       });
     }
     else {
-      pattern = new RegExp("$_name/\\w+\$");
-      if (pattern.hasMatch(url)) {
-        _view.show().then((_) {
-          List<Future> futures = loadTypes(_view);
-          assert(futures != null);
-          var elements = url.split("/");
-          var id = elements.last;
-          Future.wait(futures).then((response) => load(id));
-        });
-      }
+      _view.show().then((_) {
+        List<Future> futures = loadTypes(_view);
+        assert(futures != null);
+        var id = parts.last;
+        Future.wait(futures).then((response) => load(id));
+      });
     }
   }
 

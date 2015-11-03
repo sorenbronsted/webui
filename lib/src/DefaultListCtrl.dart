@@ -17,8 +17,8 @@ class DefaultListCtrl extends Controller {
   DefaultListView get view => _view;
 
   run(String event) {
-    var url = Address.instance.current;
-    if (!url.endsWith("$_name")) {
+    var parts = Address.instance.pathParts;
+    if (!(parts[0] == 'list' && parts[1] == _name)) {
       return;
     }
     _view.show().then((_) {
@@ -27,7 +27,7 @@ class DefaultListCtrl extends Controller {
   }
   
   populateView(DefaultListView view, String urlPrefix) {}
-  
+
   _edit(String href) {
     var elements = href.split("#");
     if (elements.length > 1) {
@@ -40,8 +40,8 @@ class DefaultListCtrl extends Controller {
     if (answer) {
       var tmp = href.split("#");
       var parts = tmp[1].split('/');
-      if (parts.length >= 2) {
-        var url = '/rest/${parts[parts.length-2]}/${parts[parts.length-1]}';
+      if (parts.length == 2) {
+        var url = '/rest/${parts[0]}/${parts[1]}';
         Rest.instance.delete(url).then((data) {
           populateView(_view, _name);
         }).catchError((String error) {
@@ -52,10 +52,9 @@ class DefaultListCtrl extends Controller {
   }
   
   _create(String empty) {
-    var url = Address.instance.current;
-    var parts = url.split("#");
-    if (parts.length > 1) {
-      Address.instance.goto("${parts[1]}/new");
+    var parts = Address.instance.pathParts;
+    if (parts.length == 2) {
+      Address.instance.goto("detail/${parts[1]}/new");
     }
   }
   

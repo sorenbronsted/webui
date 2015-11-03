@@ -37,7 +37,7 @@ class Server {
         if (p.uid == 0) {
           p.uid = _persons.length + 1;
         }
-        _persons[p.uid] = p;
+        _persons['${p.uid}'] = p;
         break;
       case 'DELETE':
         if (request.uri.pathSegments.length == 3) { // eg /rest/person/1

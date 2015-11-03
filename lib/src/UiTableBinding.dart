@@ -11,12 +11,12 @@ class UiTableBinding extends UiBinding {
   List _rows;
   TableElement _table;
   String _selector;
-  String _linkPrefix;
+  String _className;
   View _view;
   UiTableListener _listener;
 
-  UiTableBinding(String this._selector, this._linkPrefix, this._listener) {
-    [_selector, _linkPrefix].forEach((elem) {
+  UiTableBinding(String this._selector, this._className, this._listener) {
+    [_selector, _className].forEach((elem) {
       if (elem == null) {
         throw "IllegalArgument: argument must not null";
       }
@@ -73,11 +73,6 @@ class UiTableBinding extends UiBinding {
     var tableCell = new TableCellElement();
     tableCell.hidden = column.hidden;
 
-    var href = "";
-    if (_linkPrefix != null) {
-      href = "/#${_linkPrefix}/${row['uid']}";
-    }
-
     Map labels = {'edit' : 'E', 'delete' : 'X', 'children' : 'se'};
     var interSect = column.classes.intersection(new Set.from(labels.keys));
     if (interSect.length == 0) {
@@ -86,18 +81,27 @@ class UiTableBinding extends UiBinding {
       tableCell.appendHtml(value);
     }
     else {
-      var elem = interSect.first;
-      if (elem == 'children') {
-        href += "/${column.id}";
+      var action = interSect.first;
+      var href = "";
+      switch(action) {
+        case 'edit':
+          href = "/#detail/${_className}/${row['uid']}";
+          break;
+        case 'delete':
+          href = "/#${_className}/${row['uid']}";
+          break;
+        case 'children':
+          href = "/#list/${column.id}?${_className}=${row['uid']}";
+          break;
       }
 
       AnchorElement a = new AnchorElement();
-      a.classes.add(elem);
+      a.classes.add(action);
       a.href = href;
-      a.text = '${(row[column.id] == null ? labels[elem] : row[column.id])}';
+      a.text = '${(row[column.id] == null ? labels[action] : row[column.id])}';
       a.onClick.listen((event) {
         event.preventDefault();
-        _view.executeHandler(elem, false, a.href);
+        _view.executeHandler(action, false, a.href);
       });
       _listener.onTableCellLink(tableCell, a,column.id, row);
       tableCell.append(a);
