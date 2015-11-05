@@ -26,7 +26,7 @@ class DefaultListView extends View implements UiTableListener {
   onTableCellLink(TableCellElement cell, AnchorElement link, String column, Map row) {}
 
   @override
-  onTableCellValue(TableCellElement cell, String value, String column, Map row) {}
+  onTableCellValue(TableCellElement cell, String column, Map row) {}
 
   @override
   onTableRow(TableRowElement tableRow, Map row) {}

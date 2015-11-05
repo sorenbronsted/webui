@@ -3,7 +3,7 @@ part of webui;
 
 abstract class UiTableListener {
   onTableRow(TableRowElement tableRow, Map row);
-  onTableCellValue(TableCellElement cell, String value, String column, Map row);
+  onTableCellValue(TableCellElement cell, String column, Map row);
   onTableCellLink(TableCellElement cell, AnchorElement link, String column, Map row);
 }
 
@@ -77,8 +77,8 @@ class UiTableBinding extends UiBinding {
     var interSect = column.classes.intersection(new Set.from(labels.keys));
     if (interSect.length == 0) {
       var value = Format.display(column.classes, "${row[column.id]}");
-      _listener.onTableCellValue(tableCell, value, column.id, row);
       tableCell.appendHtml(value);
+      _listener.onTableCellValue(tableCell, column.id, row);
     }
     else {
       var action = interSect.first;
@@ -112,9 +112,8 @@ class UiTableBinding extends UiBinding {
   DocumentFragment _noRows(List columns) {
     var tableCell = new TableCellElement();
     tableCell.colSpan = columns.length;
-    var value = 'Ingen data fundet';
-    _listener.onTableCellValue(tableCell, value, '', null);
-    tableCell.appendText(value);
+    tableCell.appendText('Ingen data fundet');
+    _listener.onTableCellValue(tableCell, null, null);
     var result = new DocumentFragment();
     result.append(new TableRowElement().append(tableCell));
     return result;
