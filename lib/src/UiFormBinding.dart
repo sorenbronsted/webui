@@ -45,11 +45,11 @@ class UiFormBinding extends UiBinding {
 
   Map read() {
     _bindings.forEach((name, elem) => _data[name] = elem.read());
-    return _data;
+    return new Map.from(_data);
   }
 
   void write(Map data) {
-    this._data = data;
+    data.forEach((k, v) => this._data[k] = v);
     _data.forEach((name, value) {
       var binding = _bindings[name];
       if (binding != null) {

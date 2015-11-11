@@ -8,6 +8,7 @@ export 'src/Rest.dart';
 
 import 'dart:html';
 import 'dart:async';
+import 'dart:collection';
 import 'src/Rest.dart';
 import 'src/Formatter.dart';
 import 'src/Address.dart';
