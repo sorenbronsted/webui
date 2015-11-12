@@ -19,32 +19,33 @@ class DefaultDetailCtrl extends Controller {
     if (!(parts.length == 3 && parts[0] == 'detail' && parts[1] == _name)) {
       return;
     }
-
-    if (parts.last == 'new') {
-      _view.show().then((result) {
-        loadTypes(_view);
-      });
-    }
-    else {
-      _view.show().then((_) {
-        List<Future> futures = loadTypes(_view);
-        assert(futures != null);
-        var id = parts.last;
-        Future.wait(futures).then((response) => load(id));
-      });
-    }
-  }
-
-  List<Future> loadTypes(DefaultDetailView view) {
-    return new List();
-  }
-  
-  void load(id) {
-    Rest.instance.get("/rest/$_name/$id").then((data) {
-      _view.formdata = data;
+    _view.show().then((_) {
+      List<Future> futures = preLoad();
+      assert(futures != null);
+      Future.wait(futures).then((_) => _load());
     });
   }
-  
+
+  List<Future> preLoad() {
+    return [];
+  }
+
+  void postLoad() {}
+
+  void _load() {
+    var parts = Address.instance.pathParts;
+
+    if (parts.last == 'new') {
+      postLoad();
+    }
+    else {
+      Rest.instance.get("/rest/$_name/${parts.last}").then((data) {
+        _view.formdata = data;
+        postLoad();
+      });
+    }
+  }
+
   void save(String empty) {
     Rest.instance.post("/rest/$_name", _view.formdata).then((Map postResult) {
       _view.isDirty = false;

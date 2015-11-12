@@ -12,13 +12,13 @@ class PersonDetailCtrl extends DefaultDetailCtrl {
 
   PersonDetailCtrl() : super(new PersonDetailView(), "Person");
 
-  List<Future> loadTypes(PersonDetailView view) {
+  List<Future> preLoad() {
     var parts = Address.instance.pathParts;
     if (parts.last == 'new') {
-      view.formdata = {'uid': 0};
+      view.formdata = {'class':'Person', 'uid':0};
     }
-    view.zipCodes = zipcodes;
-    return new List();
+    (view as PersonDetailView).zipCodes = zipcodes;
+    return [];
   }
 
 }

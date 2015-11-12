@@ -8,12 +8,14 @@ class DefaultListView extends View implements UiTableListener {
   DefaultListView([String bindId = '#content']) : super(bindId);
 
   String get viewName  => "${_name}List";
+
+  String get name => _name;
   set name(String name) => _name = name;
 
   UiTableBinding get table => _table;
 
   void onLoad() {
-    _table = addBinding(new UiTableBinding("#tabledata", _name, this));
+    _table = addBinding(new UiTableBinding("#tabledata", this));
     addBinding(new UiButtonBinding('button[name="create"]', false));
   }
 

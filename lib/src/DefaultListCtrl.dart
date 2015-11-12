@@ -21,12 +21,24 @@ class DefaultListCtrl extends Controller {
     if (!(parts[0] == 'list' && parts[1] == _name)) {
       return;
     }
+
     _view.show().then((_) {
-      populateView(_view, _name);
+      List<Future> futures = preLoad();
+      assert(futures != null);
+      Future.wait(futures).then((_) => _load());
     });
   }
-  
-  populateView(DefaultListView view, String urlPrefix) {}
+
+  List<Future> preLoad() => [];
+
+  void postLoad() {}
+
+  void _load() {
+    Rest.instance.get('/rest/${_name}').then((data) {
+      view.populate(data);
+      postLoad();
+    });
+  }
 
   _edit(String href) {
     var elements = href.split("#");
@@ -43,7 +55,7 @@ class DefaultListCtrl extends Controller {
       if (parts.length == 2) {
         var url = '/rest/${parts[0]}/${parts[1]}';
         Rest.instance.delete(url).then((data) {
-          populateView(_view, _name);
+          postLoad();
         }).catchError((String error) {
           window.alert(error);
         });

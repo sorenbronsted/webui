@@ -49,7 +49,11 @@ class UiFormBinding extends UiBinding {
   }
 
   void write(Map data) {
-    data.forEach((k, v) => this._data[k] = v);
+    if (data['class'] == null) {
+      throw "Must have key: class";
+    }
+    var clz = data['class'];
+    data.forEach((k, v) => this._data['${clz}-${k}'] = v);
     _data.forEach((name, value) {
       var binding = _bindings[name];
       if (binding != null) {

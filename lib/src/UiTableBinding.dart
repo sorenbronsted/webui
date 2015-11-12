@@ -11,12 +11,11 @@ class UiTableBinding extends UiBinding {
   List _rows;
   TableElement _table;
   String _selector;
-  String _className;
   View _view;
   UiTableListener _listener;
 
-  UiTableBinding(String this._selector, this._className, this._listener) {
-    [_selector, _className].forEach((elem) {
+  UiTableBinding(String this._selector, this._listener) {
+    [_selector].forEach((elem) {
       if (elem == null) {
         throw "IllegalArgument: argument must not null";
       }
@@ -57,12 +56,27 @@ class UiTableBinding extends UiBinding {
 
   DocumentFragment _addRows(List columns, List rows) {
     var fragment = new DocumentFragment();
-    rows.forEach((Map row) {
+    rows.forEach((data) {
+      // Rows can consist of a single Map or a list of Maps
+      List maps = [];
+      if (data is Map) {
+        maps.add(data);
+      }
+      if (data is List) {
+        maps = data;
+      }
+
+      // Make the table row
       var tableRow = new TableRowElement();
-      _listener.onTableRow(tableRow, row);
-      columns.forEach((TableCellElement column) {
-        var tableCell = _makeCell(column, row);
-        tableRow.append(tableCell);
+      maps.forEach((Map row) {
+        if (row['class'] == null) {
+          throw "Must have key: class";
+        }
+        _listener.onTableRow(tableRow, row);
+        columns.forEach((TableCellElement column) {
+          var tableCell = _makeCell(column, row);
+          tableRow.append(tableCell);
+        });
       });
       fragment.append(tableRow);
     });
@@ -76,7 +90,7 @@ class UiTableBinding extends UiBinding {
     Map labels = {'edit' : 'E', 'delete' : 'X', 'children' : 'se'};
     var interSect = column.classes.intersection(new Set.from(labels.keys));
     if (interSect.length == 0) {
-      var value = Format.display(column.classes, "${row[column.id]}");
+      var value = Format.display(column.classes, "${row[_property(column.id)]}");
       tableCell.appendHtml(value);
       _listener.onTableCellValue(tableCell, column.id, row);
     }
@@ -85,20 +99,20 @@ class UiTableBinding extends UiBinding {
       var href = "";
       switch(action) {
         case 'edit':
-          href = "/#detail/${_className}/${row['uid']}";
+          href = "/#detail/${_clazz(column.id)}/${row['uid']}";
           break;
         case 'delete':
-          href = "/#${_className}/${row['uid']}";
+          href = "/#${_clazz(column.id)}/${row['uid']}";
           break;
         case 'children':
-          href = "/#list/${column.id}?${_className}=${row['uid']}";
+          href = "/#list/${_clazz(column.id)}?${_clazz(column.id)}=${row['uid']}";
           break;
       }
 
       AnchorElement a = new AnchorElement();
       a.classes.add(action);
       a.href = href;
-      a.text = '${(row[column.id] == null ? labels[action] : row[column.id])}';
+      a.text = '${_property(column.id) == 'uid' ? labels[action] : row[_property(column.id)]}';
       a.onClick.listen((event) {
         event.preventDefault();
         _view.executeHandler(action, false, a.href);
@@ -109,10 +123,19 @@ class UiTableBinding extends UiBinding {
     return tableCell;
   }
 
+  String _clazz(String id) {
+    return id.split('-')[0];
+  }
+
+  String _property(String id) {
+    return id.split('-')[1];
+  }
+
   DocumentFragment _noRows(List columns) {
     var tableCell = new TableCellElement();
     tableCell.colSpan = columns.length;
     tableCell.appendText('Ingen data fundet');
+    tableCell.classes.add('center');
     _listener.onTableCellValue(tableCell, null, null);
     var result = new DocumentFragment();
     result.append(new TableRowElement().append(tableCell));

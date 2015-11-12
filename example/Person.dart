@@ -14,6 +14,7 @@ class Person {
   
   toJson() {
     return {
+      'class' : 'Person',
       'uid':uid,
       'name':name,
       'address':address,
@@ -35,31 +36,33 @@ class Person {
     person.uid = 0;
     data.forEach((String name, String value) {
       switch(name) {
-        case 'uid':
+        case 'Person-class':
+          break;
+        case 'Person-uid':
           person.uid = int.parse(value.length == 0 ? "0" : value);
           break;
-        case 'name':
+        case 'Person-name':
           person.name = value;
           break;
-        case 'address':
+        case 'Person-address':
           person.address = value;
           break;
-        case 'zipcode':
+        case 'Person-zipcode':
           person.zipcode = int.parse(value);
           break;
-        case 'town':
+        case 'Person-town':
           person.town = value;
           break;
-        case 'created':
+        case 'Person-created':
           person.created = DateTime.parse(value);
           break;
-        case 'born':
+        case 'Person-born':
           person.born = DateTime.parse(value);
           break;
-        case 'time':
+        case 'Person-time':
           person.time = int.parse(value.replaceAll(':',''));
           break;
-        case 'height':
+        case 'Person-height':
           person.height = double.parse(value);
           break;
         default:
