@@ -38,14 +38,15 @@ class Format {
       _loadFormatters();
     }
     var i = classes.iterator;
+    value = value.trim();
     while (i.moveNext()) {
       var classId = i.current;
       var formatter = _formatters[classId];
       if (formatter != null) {
-        return callback(formatter, "$value");
+        return callback(formatter, value);
       }
     }
-    return "$value";
+    return value;
   }
   
   static _loadFormatters() {
@@ -95,7 +96,7 @@ class TimeFmt implements Formatter {
     assert(input != null);
     var value = input.replaceAll(":", "");
     if (value.length < 6) {
-      return input;
+      value = value.padLeft(6, '0');
     }
     var hh = value.substring(0,2);
     var mm = value.substring(2,4);
@@ -170,6 +171,10 @@ class NumberFmt implements Formatter {
     }
     
     StringBuffer str = new StringBuffer();
+    if (number[0] == '-') {
+      str.write(number[0]);
+      number = number.substring(1);
+    }
     for (var i = 0; i < number.length; i++) {
       if (i > 0 && (number.length - i) % 3 == 0) {
         str.write('.');

@@ -26,11 +26,11 @@ abstract class View {
   }
 
   Future show() {
-    //TODO view should not loaded when it has been ones
+    //TODO view should only load ones
     _bindings.clear();
     return Rest.instance.load('view/${viewName}.html').then((html) {
       querySelector(_bindId).setInnerHtml(html.toString());
-      onLoad();
+      registerBindings();
       _bindings.forEach((UiBinding binding) {
         try {
           binding.bind(this);
@@ -42,7 +42,7 @@ abstract class View {
     });
   }
 
-  void onLoad() {}
+  void registerBindings() {}
 
   UiBinding addBinding(UiBinding binding) {
     _bindings.add(binding);
