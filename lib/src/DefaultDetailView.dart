@@ -15,7 +15,7 @@ class DefaultDetailView extends View {
 
   UiFormBinding get form => _form;
 
-  void onLoad() {
+  void registerBindings() {
     _form = addBinding(new UiFormBinding('form[name="formdata"]'));
     addBinding(new UiButtonBinding('button[name="save"]', true));
     addBinding(new UiButtonBinding('button[name="cancel"]', false));

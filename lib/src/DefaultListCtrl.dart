@@ -2,43 +2,30 @@
 part of webui;
 
 class DefaultListCtrl extends Controller {
-
-  DefaultListView _view;
   String _name;
-  
-  DefaultListCtrl(DefaultListView this._view, String this._name) {
-    _view.name = _name;
+
+  DefaultListCtrl(View view, String this._name) : super(view) {
+    (_view as DefaultListView).name = _name;
     _view.addHandler("create", _create);
     _view.addHandler("edit", _edit);
     _view.addHandler("delete", _delete);
     _view.addHandler("children", _children);
   }
 
-  DefaultListView get view => _view;
-
-  run(String event) {
+  @override
+  bool canRun() {
     var parts = Address.instance.pathParts;
-    if (!(parts[0] == 'list' && parts[1] == _name)) {
-      return;
-    }
-
-    _view.show().then((_) {
-      List<Future> futures = preLoad();
-      assert(futures != null);
-      Future.wait(futures).then((_) => _load());
-    });
+    return (parts[0] == 'list' && parts[1] == _name);
   }
 
-  List<Future> preLoad() => [];
-
-  void postLoad() {}
-
-  void _load() {
+  void load() {
     Rest.instance.get('/rest/${_name}').then((data) {
-      view.populate(data);
+      (view as DefaultListView).populate(data);
       postLoad();
     });
   }
+
+  void postLoad() {}
 
   _edit(String href) {
     var elements = href.split("#");
@@ -55,7 +42,7 @@ class DefaultListCtrl extends Controller {
       if (parts.length == 2) {
         var url = '/rest/${parts[0]}/${parts[1]}';
         Rest.instance.delete(url).then((data) {
-          postLoad();
+          load();
         }).catchError((String error) {
           window.alert(error);
         });

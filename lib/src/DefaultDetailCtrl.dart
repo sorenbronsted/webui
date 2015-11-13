@@ -2,37 +2,24 @@
 part of webui;
 
 class DefaultDetailCtrl extends Controller {
-  DefaultDetailView _view;
   String _name;
-  
-  DefaultDetailCtrl(DefaultDetailView this._view, String this._name) {
-    _view.name = _name;
-    _view.addHandler("save", save);
-    _view.addHandler("cancel", cancel);
+
+  DefaultDetailCtrl(View view, String this._name) : super(view) {
+    (_view as DefaultDetailView).name = _name;
+    _view.addHandler("save", _save);
+    _view.addHandler("cancel", _cancel);
   }
 
-  DefaultDetailView get view => _view;
   String get name => _name;
-  
-  void run(String event) {
+
+  @override
+  bool canRun() {
     var parts = Address.instance.pathParts;
-    if (!(parts.length == 3 && parts[0] == 'detail' && parts[1] == _name)) {
-      return;
-    }
-    _view.show().then((_) {
-      List<Future> futures = preLoad();
-      assert(futures != null);
-      Future.wait(futures).then((_) => _load());
-    });
+    return (parts.length == 3 && parts[0] == 'detail' && parts[1] == _name);
   }
 
-  List<Future> preLoad() {
-    return [];
-  }
-
-  void postLoad() {}
-
-  void _load() {
+  @override
+  void load() {
     var parts = Address.instance.pathParts;
 
     if (parts.last == 'new') {
@@ -40,14 +27,17 @@ class DefaultDetailCtrl extends Controller {
     }
     else {
       Rest.instance.get("/rest/$_name/${parts.last}").then((data) {
-        _view.formdata = data;
+        (_view as DefaultDetailView).formdata = data;
         postLoad();
       });
     }
   }
 
-  void save(String empty) {
-    Rest.instance.post("/rest/$_name", _view.formdata).then((Map postResult) {
+  // On data load completion
+  void postLoad() {}
+
+  void _save(String empty) {
+    Rest.instance.post("/rest/$_name", (_view as DefaultDetailView).formdata).then((Map postResult) {
       _view.isDirty = false;
       Address.instance.back();
     }).catchError((error) {
@@ -63,7 +53,7 @@ class DefaultDetailCtrl extends Controller {
     });
   }
   
-  void cancel(String empty) {
+  void _cancel(String empty) {
     var proceed = true;
     if (_view.isDirty) {
       proceed = _view.confirm("Siden er blevet ændret. Dine ændringer kan blive tabt. Ønsker du at fortsætte?");

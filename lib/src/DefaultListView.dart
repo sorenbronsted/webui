@@ -14,7 +14,7 @@ class DefaultListView extends View implements UiTableListener {
 
   UiTableBinding get table => _table;
 
-  void onLoad() {
+  void registerBindings() {
     _table = addBinding(new UiTableBinding("#tabledata", this));
     addBinding(new UiButtonBinding('button[name="create"]', false));
   }
@@ -22,7 +22,6 @@ class DefaultListView extends View implements UiTableListener {
   populate(List rows) {
     _table.write(rows);
   }
-
 
   @override
   onTableCellLink(TableCellElement cell, AnchorElement link, String column, Map row) {}
