@@ -8,29 +8,6 @@ class UiValidationException {
   String toString() => _msg;
 }
 
-class UiInputValidatorCss {
-  static String _cssError = "error";
-  static String _cssValid = "valid";
-
-  // Remove all Css validation
-  void clear(HtmlElement input) {
-    input.classes.remove(_cssValid);
-    input.classes.remove(_cssError);
-    input.title = "";
-  }
-
-  // set css error validation
-  void error(HtmlElement input, String msg) {
-    input.title = msg;
-    input.classes.add(_cssError);
-  }
-
-  // set css valid validation
-  void valid(HtmlElement input) {
-    input.classes.add(_cssValid);
-  }
-}
-
 class UiInputValidator {
   static Map _methods = {
     "required" : _required,
@@ -45,9 +22,9 @@ class UiInputValidator {
     "email" : _email
   };
 
-  static UiInputValidatorCss _css = new UiInputValidatorCss();
+  static UiInputValidatorListener _css = new UiInputValidatorListener();
 
-  static set css(UiInputValidatorCss css) => _css = css;
+  static set css(UiInputValidatorListener css) => _css = css;
 
   static void reset(HtmlElement input) {
     _css.clear(input);
