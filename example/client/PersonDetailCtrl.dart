@@ -15,7 +15,7 @@ class PersonDetailCtrl extends DefaultDetailCtrl {
   List<Future> preLoad() {
     var parts = Address.instance.pathParts;
     if (parts.last == 'new') {
-      view.formdata = {'class':'Person', 'uid':0};
+      (view as PersonDetailView).formdata = {'class':'Person', 'uid':0};
     }
     (view as PersonDetailView).zipCodes = zipcodes;
     return [];
