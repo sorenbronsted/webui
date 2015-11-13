@@ -96,23 +96,27 @@ class UiTableBinding extends UiBinding {
     }
     else {
       var action = interSect.first;
-      var href = "";
+      var href = '';
+      var text = '';
       switch(action) {
         case 'edit':
           href = "/#detail/${_clazz(column.id)}/${row['uid']}";
+          text = _property(column.id) == 'uid' ? labels[action] : row[_property(column.id)];
           break;
         case 'delete':
           href = "/#${_clazz(column.id)}/${row['uid']}";
+          text = _property(column.id) == 'uid' ? labels[action] : row[_property(column.id)];
           break;
         case 'children':
           href = "/#list/${_clazz(column.id)}?${_clazz(column.id)}=${row['uid']}";
+          text = _property(column.id);
           break;
       }
 
       AnchorElement a = new AnchorElement();
       a.classes.add(action);
       a.href = href;
-      a.text = '${_property(column.id) == 'uid' ? labels[action] : row[_property(column.id)]}';
+      a.text = text;
       a.onClick.listen((event) {
         event.preventDefault();
         _view.executeHandler(action, false, a.href);
