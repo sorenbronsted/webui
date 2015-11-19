@@ -53,7 +53,13 @@ class DefaultListCtrl extends Controller {
   _create(String empty) {
     var parts = Address.instance.pathParts;
     if (parts.length == 2) {
-      Address.instance.goto("detail/${parts[1]}/new");
+      var url = new StringBuffer("detail/${parts[1]}/new");
+      var params = Address.instance.current.split('?');
+      if (params.length == 2) {
+        url.write('?');
+        url.write(params[1]);
+      }
+      Address.instance.goto(url.toString());
     }
   }
   

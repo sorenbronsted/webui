@@ -26,6 +26,9 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   }
 
   HtmlElement getFormGroup(HtmlElement start) {
+    if (start == null) {
+      return null;
+    }
     if (start.classes.contains("form-group")) {
       return start;
     }

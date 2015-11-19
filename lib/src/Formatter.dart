@@ -20,6 +20,9 @@ class Format {
     if (value == null || value == 'null') {
       return "";
     }
+    if (value is! String) {
+      value = '${value}';
+    }
     return _execute(classes, value, (Formatter fmt, String value) => fmt.display(value));
   }
 
@@ -29,7 +32,7 @@ class Format {
     return _execute(classes, value, (Formatter fmt, String value) => fmt.internal(value));
   }
 
-  static String _execute(Iterable classes, String value, callback) {
+  static String _execute(Iterable classes, String value, Function callback) {
     assert(classes != null);
     assert(callback != null);
 

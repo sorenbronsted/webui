@@ -30,11 +30,12 @@ class UiInputValidator {
     _css.clear(input);
   }
 
-  static void validate(InputElement input) {
+  static bool validate(InputElement input) {
+    var isValid = true;
 
     if (input.attributes.containsKey("readonly") ||
         input.attributes.containsKey("disabled")) {
-      return;
+      return isValid;
     }
 
     input.classes.forEach((elem) {
@@ -48,8 +49,10 @@ class UiInputValidator {
       }
       on UiValidationException catch(e) {
         _css.error(input, e.toString());
+        isValid = false;
       }
     });
+    return isValid;
   }
 
   static String _required(String input) {

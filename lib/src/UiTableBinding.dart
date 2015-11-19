@@ -74,6 +74,9 @@ class UiTableBinding extends UiBinding {
         }
         _listener.onTableRow(tableRow, row);
         columns.forEach((TableCellElement column) {
+          if (_clazz(column.id) != row['class']) {
+            return;
+          }
           var tableCell = _makeCell(column, row);
           tableRow.append(tableCell);
         });
@@ -108,15 +111,15 @@ class UiTableBinding extends UiBinding {
           text = _property(column.id) == 'uid' ? labels[action] : row[_property(column.id)];
           break;
         case 'children':
-          href = "/#list/${_clazz(column.id)}?${_clazz(column.id)}=${row['uid']}";
-          text = _property(column.id);
+          href = "/#list/${_property(column.id)}?${_clazz(column.id)}=${row['uid']}";
+          text = labels[action];
           break;
       }
 
       AnchorElement a = new AnchorElement();
       a.classes.add(action);
       a.href = href;
-      a.text = text;
+      a.text = '${text}';
       a.onClick.listen((event) {
         event.preventDefault();
         _view.executeHandler(action, false, a.href);
@@ -128,11 +131,19 @@ class UiTableBinding extends UiBinding {
   }
 
   String _clazz(String id) {
-    return id.split('-')[0];
+    try {
+      return id.split('-')[0];
+    } on RangeError {
+      return id;
+    }
   }
 
   String _property(String id) {
-    return id.split('-')[1];
+    try {
+      return id.split('-')[1];
+    } on RangeError {
+      return id;
+    }
   }
 
   DocumentFragment _noRows(List columns) {
@@ -140,7 +151,7 @@ class UiTableBinding extends UiBinding {
     tableCell.colSpan = columns.length;
     tableCell.appendText('Ingen data fundet');
     tableCell.classes.add('center');
-    _listener.onTableCellValue(tableCell, null, null);
+    _listener.onTableCellValue(tableCell, null, {});
     var result = new DocumentFragment();
     result.append(new TableRowElement().append(tableCell));
     return result;
