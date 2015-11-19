@@ -8,7 +8,7 @@ class UiInputBinding extends UiBinding {
   UiInputBinding(String this._selector);
 
   UiInputBinding.byElement(InputElement this._input) {
-    _selector = '[name="${_input.name}"]';
+    _selector = '#${_input.id}';
   }
 
   void bind(View view) {
@@ -25,8 +25,7 @@ class UiInputBinding extends UiBinding {
     });
 
     _input.onBlur.listen((event) {
-      UiInputValidator.validate(_input);
-      view.isValid = _input.classes.contains('valid');
+      view.isValid = UiInputValidator.validate(_input);
     });
 
     _input.onKeyUp.listen((event) => view.isDirty = true);

@@ -36,33 +36,33 @@ class Person {
     person.uid = 0;
     data.forEach((String name, String value) {
       switch(name) {
-        case 'Person-class':
+        case 'class':
           break;
-        case 'Person-uid':
+        case 'uid':
           person.uid = int.parse(value.length == 0 ? "0" : value);
           break;
-        case 'Person-name':
+        case 'name':
           person.name = value;
           break;
-        case 'Person-address':
+        case 'address':
           person.address = value;
           break;
-        case 'Person-zipcode':
+        case 'zipcode':
           person.zipcode = int.parse(value);
           break;
-        case 'Person-town':
+        case 'town':
           person.town = value;
           break;
-        case 'Person-created':
+        case 'created':
           person.created = DateTime.parse(value);
           break;
-        case 'Person-born':
+        case 'born':
           person.born = DateTime.parse(value);
           break;
-        case 'Person-time':
+        case 'time':
           person.time = int.parse(value.replaceAll(':',''));
           break;
-        case 'Person-height':
+        case 'height':
           person.height = double.parse(value);
           break;
         default:

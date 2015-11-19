@@ -38,7 +38,7 @@ class UiSelectBinding extends UiBinding {
   UiSelectBinding(String this._selector);
 
   UiSelectBinding.byElement(SelectElement select) {
-    _selector = 'select[name="${select.name}"]';
+    _selector = '#${select.id}';
   }
 
   void bind(View view) {
