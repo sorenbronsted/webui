@@ -16,7 +16,7 @@ class DefaultListView extends View implements UiTableListener {
 
   void registerBindings() {
     _table = addBinding(new UiTableBinding("#tabledata", this));
-    addBinding(new UiButtonBinding('button[name="create"]', false));
+    addBinding(new UiButtonBinding('#create', false));
   }
 
   populate(List rows) {

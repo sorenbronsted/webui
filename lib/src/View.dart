@@ -72,12 +72,18 @@ abstract class View {
     if (fieldsWithError == null) {
       return;
     }
+    var cls = fieldsWithError['class'];
     fieldsWithError.forEach((String field, String message) {
-      var elem = querySelector("input[name=$field]");
+      var elem = null;
+      if (cls != null) {
+        elem = querySelector("#${cls}-${field}");
+      }
+      if (elem == null) {
+        elem = querySelector("#${field}");
+      }
       if (elem != null) {
-        elem.title = message;
-        elem.classes.remove("valid");
-        elem.classes.add("error");
+        UiInputValidator._css.clear(elem);
+        UiInputValidator._css.error(elem, message);
       }
     });
   }
