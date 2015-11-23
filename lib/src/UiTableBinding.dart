@@ -58,36 +58,42 @@ class UiTableBinding extends UiBinding {
     var fragment = new DocumentFragment();
     rows.forEach((data) {
       // Rows can consist of a single Map or a list of Maps
-      List maps = [];
+      Map maps = {};
       if (data is Map) {
-        maps.add(data);
+        maps['_default_'] = data;
       }
-      if (data is List) {
-        maps = data;
+      else if (data is List) {
+        data.forEach((Map object) {
+          var cls = object['class'];
+          if (cls == null) {
+            throw "Multi map rows must have key class attribute pr row";
+          }
+          maps[cls] = object;
+        });
       }
 
       // Make the table row
       var tableRow = new TableRowElement();
-      maps.forEach((Map row) {
-        if (row['class'] == null) {
-          throw "Must have key: class";
-        }
-        _listener.onTableRow(tableRow, row);
-        columns.forEach((TableCellElement column) {
-          if (_clazz(column.id) != row['class']) {
-            return;
-          }
-          var tableCell = _makeCell(column, row);
-          tableRow.append(tableCell);
-        });
-      });
       fragment.append(tableRow);
+      columns.forEach((TableCellElement column) {
+        var cell = new TableCellElement();
+        tableRow.append(cell);
+
+        var cls = '_default_';
+        if (maps.keys.first != cls) {
+          cls = _clazz(column.id);
+        }
+        Map row = maps[cls];
+        if (row == null) {
+          throw "No row for class ${cls}";
+        }
+        _populateCell(column, cell, row);
+      });
     });
     return fragment;
   }
 
-  TableCellElement _makeCell(TableCellElement column, Map row) {
-    var tableCell = new TableCellElement();
+  void _populateCell(TableCellElement column, TableCellElement tableCell, Map row) {
     tableCell.hidden = column.hidden;
 
     Map labels = {'edit' : 'E', 'delete' : 'X', 'children' : 'se'};
@@ -127,7 +133,6 @@ class UiTableBinding extends UiBinding {
       _listener.onTableCellLink(tableCell, a,column.id, row);
       tableCell.append(a);
     }
-    return tableCell;
   }
 
   String _clazz(String id) {
