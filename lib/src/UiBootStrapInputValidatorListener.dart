@@ -8,21 +8,27 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   @override
   void clear(HtmlElement input) {
     var fg = getFormGroup(input);
-    fg.classes.remove(_cssError);
-    fg.classes.remove(_cssValid);
+    if (fg != null) {
+      fg.classes.remove(_cssError);
+      fg.classes.remove(_cssValid);
+    }
   }
 
   @override
   void error(HtmlElement input, String msg) {
     var fg = getFormGroup(input);
-    fg.classes.add(_cssError);
+    if (fg != null) {
+      fg.classes.add(_cssError);
+    }
     input.title = msg;
   }
 
   @override
   void valid(HtmlElement input) {
     var fg = getFormGroup(input);
-    fg.classes.add(_cssValid);
+    if (fg != null) {
+      fg.classes.add(_cssValid);
+    }
   }
 
   HtmlElement getFormGroup(HtmlElement start) {
