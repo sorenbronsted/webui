@@ -3,30 +3,20 @@ part of webui;
 
 class UiFormModel {
   static const String defaultClass = '_empty_';
-  Map<String, Map> _data = {defaultClass : {}};
+  Map<String, Map> _data;
 
   Map get data => _data;
+  operator[]=(String name, Map data) => _data[name] = data;
+  Map operator[](String name) => _data[name];
 
-  bool get hasClasses => !(_data.keys.length == 1 && _data.keys.first == defaultClass);
+  UiFormModel() {
+    _data = {defaultClass : {}};
+  }
+
+  bool get hasClasses => (_data.keys.length != 1 || _data.keys.first != defaultClass);
 
   void clear() {
     _data.keys.forEach((String key) => _data[key].clear());
-  }
-
-  void add(String name) {
-    _data[name] = {};
-  }
-
-  void set(String name, Map data) {
-    _data[name] = data;
-  }
-
-  Map get(String name) {
-    return _data[name];
-  }
-
-  Map getDefault() {
-    return _data[defaultClass];
   }
 }
 
@@ -35,7 +25,6 @@ class UiFormBinding extends UiBinding {
   FormElement _form;
   Map<String, UiBinding> _bindings;
   String _selector;
-  Set _classes;
 
   UiFormBinding(String this._selector) {
     _model = new UiFormModel();
@@ -72,8 +61,8 @@ class UiFormBinding extends UiBinding {
     // Collect classes used in form
     _bindings.keys.forEach((name) {
       var parts = name.split('-');
-      if (parts.isNotEmpty) {
-        _model.add(parts[0]);
+      if (parts.length == 2) {
+        _model[parts[0]] = {};
       }
     });
   }
@@ -83,26 +72,29 @@ class UiFormBinding extends UiBinding {
   Map read() {
     _bindings.forEach((name, elem) {
       var parts = name.split('-');
-      if (parts.isNotEmpty) {
-        _model.get(parts[0])[parts[1]] = elem.read();
+      if (parts.length == 2) {
+        _model[parts[0]][parts[1]] = elem.read();
       }
       else {
-        _model.get(UiFormModel.defaultClass)[name] = elem.read();
+        _model[UiFormModel.defaultClass][name] = elem.read();
       }
     });
-    if (_model.hasClasses) {
+    if (_model.hasClasses == true) {
       return _model.data;
     }
-    return _model.getDefault();
+    return _model[UiFormModel.defaultClass];
   }
 
   void write(Map data) {
-    var clz = data['class'];
-    if (clz == null) {
-      clz = UiFormModel.defaultClass;
+    var clz = UiFormModel.defaultClass;
+    if (_model.hasClasses) {
+      clz = data['class'];
+      if (clz == null) {
+        throw "Form uses class in id's, but data has no class name";
+      }
     }
-    _model.set(clz, data);
-    _model.get(clz).forEach((name, value) {
+    _model[clz] = data;
+    _model[clz].forEach((name, value) {
       var binding = null;
       if (clz != null) {
         binding = _bindings["${clz}-${name}"];

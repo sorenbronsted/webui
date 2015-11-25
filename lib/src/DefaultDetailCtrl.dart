@@ -37,7 +37,7 @@ class DefaultDetailCtrl extends Controller {
   void postLoad() {}
 
   void _save(String empty) {
-    Rest.instance.post("/rest/$_name", (_view as DefaultDetailView).formdata[_name]).then((Map postResult) {
+    Rest.instance.post("/rest/$_name", (_view as DefaultDetailView).formdata).then((Map postResult) {
       _view.isDirty = false;
       Address.instance.back();
     }).catchError((error) {
