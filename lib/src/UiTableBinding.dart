@@ -156,7 +156,6 @@ class UiTableBinding extends UiBinding {
     tableCell.colSpan = columns.length;
     tableCell.appendText('Ingen data fundet');
     tableCell.classes.add('center');
-    _listener.onTableCellValue(tableCell, null, {});
     var result = new DocumentFragment();
     result.append(new TableRowElement().append(tableCell));
     return result;
