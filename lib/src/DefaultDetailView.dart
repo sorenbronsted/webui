@@ -10,7 +10,7 @@ class DefaultDetailView extends View {
   set name(String name) => _name = name;
   String get viewName => "${_name}Detail";
 
-  Map get formdata => _form.read();
+  Map get formdata => _form.read(_name);
   set formdata(Map data) => _form.write(data);
 
   UiFormBinding get form => _form;

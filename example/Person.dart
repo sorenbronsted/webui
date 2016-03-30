@@ -66,7 +66,7 @@ class Person {
           person.height = double.parse(value);
           break;
         default:
-          throw "Unknown property ${name}";
+          print("Unknown property ${name}");
       }
     });
     return person;

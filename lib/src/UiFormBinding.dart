@@ -69,7 +69,7 @@ class UiFormBinding extends UiBinding {
 
   UiBinding operator [](String name) => _bindings[name];
 
-  Map read() {
+  Map read([String className]) {
     _bindings.forEach((name, elem) {
       var parts = name.split('-');
       if (parts.length == 2) {
@@ -79,8 +79,8 @@ class UiFormBinding extends UiBinding {
         _model[UiFormModel.defaultClass][name] = elem.read();
       }
     });
-    if (_model.hasClasses == true) {
-      return _model.data;
+    if (_model.hasClasses == true && className != null) {
+      return _model.data[className];
     }
     return _model[UiFormModel.defaultClass];
   }
