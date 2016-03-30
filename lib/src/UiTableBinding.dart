@@ -57,10 +57,13 @@ class UiTableBinding extends UiBinding {
   DocumentFragment _addRows(List columns, List rows) {
     var fragment = new DocumentFragment();
     rows.forEach((data) {
+      var tableRow = new TableRowElement();
+
       // Rows can consist of a single Map or a list of Maps
       Map maps = {};
       if (data is Map) {
         maps['_default_'] = data;
+        _listener.onTableRow(tableRow, data);
       }
       else if (data is List) {
         data.forEach((Map object) {
@@ -69,11 +72,11 @@ class UiTableBinding extends UiBinding {
             throw "Multi map rows must have key class attribute pr row";
           }
           maps[cls] = object;
+          _listener.onTableRow(tableRow, object);
         });
       }
 
       // Make the table row
-      var tableRow = new TableRowElement();
       fragment.append(tableRow);
       columns.forEach((TableCellElement column) {
         var cell = new TableCellElement();
