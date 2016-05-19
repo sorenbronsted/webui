@@ -7,12 +7,37 @@ abstract class UiTableListener {
   onTableCellLink(TableCellElement cell, AnchorElement link, String column, Map row);
 }
 
+abstract class UiTableBindingCss {
+  onSortColumn(TableCellElement th, int direction);
+  void clearSortColumn(TableCellElement orderBy);
+}
+
+class UiDefaultTableBindingCss implements UiTableBindingCss {
+  @override
+  onSortColumn(TableCellElement th, int direction) {
+    // Do nothing
+  }
+
+  @override
+  void clearSortColumn(TableCellElement orderBy) {
+    // Do nothing
+  }
+}
+
 class UiTableBinding extends UiBinding {
   List _rows;
   TableElement _table;
   String _selector;
   View _view;
   UiTableListener _listener;
+  TableCellElement _orderBy;
+  static const none = 0;
+  static const asc = 1;
+  static const dsc = 2;
+  int _direction = none;
+  static UiTableBindingCss _css = new UiDefaultTableBindingCss();
+
+  static set css(UiTableBindingCss css) => _css = css;
 
   UiTableBinding(String this._selector, this._listener) {
     [_selector].forEach((elem) {
@@ -25,9 +50,58 @@ class UiTableBinding extends UiBinding {
   void bind(View view) {
     _table = querySelector(_selector);
     if (_table == null) {
-      throw new SelectException("Table not found (selector: $_selector)");
+      throw new SelectorException("Table not found (selector: $_selector)");
     }
     _view = view;
+    _table.querySelectorAll('th.sortable').onClick.listen((event) {
+      event.preventDefault();
+      _setSortingUi(event.target);
+      _doSort();
+    });
+  }
+
+  void _doSort() {
+    if (_table.tBodies.length > 1) {
+      throw "Multiple bodies not supported";
+    }
+    var body = _table.tBodies.first;
+    if (body == null) { // nothing to sort
+      return;
+    }
+    var idx = _table.tHead.rows.first.cells.indexOf(_orderBy);
+    var tmp = new List.from(body.children);
+    tmp.sort((TableRowElement a, TableRowElement b) {
+      String aVal = Format.internal(_orderBy.classes, a.cells.elementAt(idx).text);
+      String bVal = Format.internal(_orderBy.classes, b.cells.elementAt(idx).text);
+      var result = 0;
+      switch (_direction) {
+        case asc:
+          result = aVal.compareTo(bVal);
+          break;
+        case dsc:
+          result = bVal.compareTo(aVal);
+          break;
+      }
+      return result;
+    });
+    body.children = tmp;
+  }
+
+  void _setSortingUi(TableCellElement target) {
+    if (_orderBy != null && _orderBy.id == target.id) {
+      _direction++;
+      if (_direction > 2) {
+        _direction = none;
+      }
+    }
+    else {
+      if (_orderBy != null) {
+        _css.clearSortColumn(_orderBy);
+      }
+      _orderBy = target;
+      _direction = asc;
+    }
+    _css.onSortColumn(_orderBy, _direction);
   }
 
   List read() => _rows;
