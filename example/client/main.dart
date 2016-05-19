@@ -16,6 +16,7 @@ void main() {
   bus.register(new PersonDetailCtrl());
 
   UiInputValidator.css = new UiBootStrapInputValidatorListener();
+  UiTableBinding.css = new UiBootStrapTableBindingCss();
 
   Address.instance.goto("list/Person");
 }

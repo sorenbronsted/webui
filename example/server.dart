@@ -97,7 +97,10 @@ class Server {
     final File file = new File('${_basePath}${stringPath}');
     file.exists().then((bool found) {
       if (found) {
-        res.headers.contentType = ContentType.parse(mime.mime(file.path)); 
+        var mimeType = mime.mime(file.path);
+        if (mimeType != null) {
+          res.headers.contentType = ContentType.parse(mimeType);
+        }
         file.openRead().pipe(request.response).catchError((e) { 
           res.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
           res.close();
