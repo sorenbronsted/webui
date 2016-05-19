@@ -11,25 +11,27 @@ class UiSelectBinding extends UiBinding {
       return;
     }
 
-    var row = data[0];
-    var idxUid = row.keys.toList().indexOf('uid');
-    if (idxUid < 0) {
-      throw "Must have an uid in rows";
+    Map row = data[0];
+    if (!row.containsKey('uid')) {
+      throw "Must have an uid key in rows";
     }
 
-    var idxValue = row.keys.toList().indexOf('name');
-    if (idxValue < 0) {
-      idxValue = row.keys.toList().indexOf('text');
+    var key = null;
+    if (row.containsKey('name')) {
+      key = 'name';
     }
-    if (idxValue < 0) {
-      throw "Most have a name or text in row";
+    else if (row.containsKey('text')) {
+      key = 'text';
+    }
+    if (key == null) {
+      throw "Most have a name or text key in rows";
     }
 
     var options = new DocumentFragment();
     data.forEach((Map elem) {
       var option = new OptionElement();
-      option.value = "${elem[elem.keys.elementAt(idxUid)]}";
-      option.appendText(elem[elem.keys.elementAt(idxValue)]);
+      option.value = "${elem['uid']}";
+      option.appendText(elem[key]);
       options.append(option);
     });
     _select.append(options);
@@ -44,7 +46,7 @@ class UiSelectBinding extends UiBinding {
   void bind(View view) {
     _select = querySelector(_selector);
     if (_select == null) {
-      throw new SelectException("Select not found (selector $_selector)");
+      throw new SelectorException("Select not found (selector $_selector)");
     }
     _select.onChange.listen((event) => view.isDirty = true);
   }

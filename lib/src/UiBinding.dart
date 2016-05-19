@@ -14,9 +14,9 @@ abstract class UiBinding {
   void write(Object);
 }
 
-class SelectException {
+class SelectorException {
   String _msg;
 
-  SelectException(String this._msg);
+  SelectorException(String this._msg);
   String toString() => _msg;
 }

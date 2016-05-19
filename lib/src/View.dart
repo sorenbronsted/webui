@@ -35,7 +35,7 @@ abstract class View {
         try {
           binding.bind(this);
         }
-        on SelectException catch(e) {
+        on SelectorException catch(e) {
           print("Warning: ${e}");
         }
       });

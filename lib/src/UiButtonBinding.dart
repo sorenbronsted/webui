@@ -15,7 +15,7 @@ class UiButtonBinding extends UiBinding {
   void bind(View view) {
     _button = querySelector(_selector);
     if (_button == null) {
-      throw new SelectException("Button not found (selector $_selector)");
+      throw new SelectorException("Button not found (selector $_selector)");
     }
     _button.onClick.listen((event) {
       event.preventDefault();

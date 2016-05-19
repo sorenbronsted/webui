@@ -34,7 +34,7 @@ class UiFormBinding extends UiBinding {
   void bind(View view) {
     _form = querySelector(_selector);
     if (_form == null) {
-      throw new SelectException("Form not found (selector $_selector)");
+      throw new SelectorException("Form not found (selector $_selector)");
     }
     _form.onSubmit.listen((event) {
       event.preventDefault();
@@ -80,7 +80,7 @@ class UiFormBinding extends UiBinding {
       }
     });
     if (_model.hasClasses == true && className != null) {
-      return _model.data[className];
+      return _model[className];
     }
     return _model[UiFormModel.defaultClass];
   }
