@@ -61,18 +61,20 @@ class Rest {
   
   Future post(String url, Map data) {
     var encodedData = encodeMap(data);
-    return _execute('POST', url, encodedData);
+    return _execute('POST', url, encodedData, 'application/x-www-form-urlencoded');
   }
   
-  Future postFile(String url, dynamic data) {
-    return _execute('POST', url, data);
+  Future postFile(String url, File file) {
+    var formData = new FormData();
+    formData.appendBlob('file', file, file.name);
+    return _execute('POST', url, formData);
   }
   
   Future delete(String url) {
     return _execute('DELETE', url);
   }
 
-  Future _execute(String method, String url, [dynamic data]) {
+  Future _execute(String method, String url, [dynamic data, String encoding]) {
     Completer c = new Completer();
     var req = new HttpRequest();
     req.onReadyStateChange.listen((Event e) {
@@ -105,8 +107,8 @@ class Rest {
       }
     });
     req.open(method, url);
-    if (method == 'POST') {
-      req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    if (encoding != null) {
+      req.setRequestHeader('Content-type', encoding);
     }
     req.send(data);
     return c.future;
