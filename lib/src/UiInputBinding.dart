@@ -32,10 +32,18 @@ class UiInputBinding extends UiBinding {
   }
 
   String read() {
-    return Format.internal(_input.classes, _input.value);
+    if (_input.type.toLowerCase() == 'text') {
+      return Format.internal(_input.classes, _input.value);
+    }
+    return _input.checked ? '1' : '0';
   }
 
   void write(String value) {
-    _input.value = Format.display(_input.classes, value);
+    if (_input.type.toLowerCase() == 'text') {
+      _input.value = Format.display(_input.classes, value);
+    }
+    else {
+      _input.checked = (value == '1' || value.toLowerCase() == 'true' ? true : false);
+    }
   }
 }

@@ -11,6 +11,7 @@ class Person {
   DateTime born;
   int time;
   double height;
+  bool lovely;
   
   toJson() {
     return {
@@ -24,6 +25,7 @@ class Person {
       'born' : born.toString(),
       'time' : time.toString(),
       'height' : height.toString(),
+      'lovely' : lovely.toString(),
     };
   }
 
@@ -64,6 +66,9 @@ class Person {
           break;
         case 'height':
           person.height = double.parse(value);
+          break;
+        case 'lovely':
+          person.lovely = (value == '1');
           break;
         default:
           print("Unknown property ${name}");
