@@ -33,3 +33,10 @@ part 'src/UiInputValidator.dart';
 part 'src/UiInputValidatorListener.dart';
 part 'src/UiBootStrapInputValidatorListener.dart';
 part 'src/UiBootStrapTableBindingCss.dart';
+
+part 'src/ObjectStore.dart';
+part 'src/UiInput.dart';
+
+initWebUi() {
+  document.registerElement(UiInput.uiTagName, UiInput, extendsTag: 'input');
+}
