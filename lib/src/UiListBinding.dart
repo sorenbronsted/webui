@@ -73,7 +73,7 @@ class UiListBinding implements UiBinding {
       _listener.onListText(a, row);
       a.onClick.listen((event) {
         event.preventDefault();
-        _view.executeHandler('removeListItem', false, a.href);
+        _view.executeHandler(_list.id, false, a.href);
       });
       _list.append(a);
     });

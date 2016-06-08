@@ -48,7 +48,11 @@ class UiSelectBinding extends UiBinding {
     if (_select == null) {
       throw new SelectorException("Select not found (selector $_selector)");
     }
-    _select.onChange.listen((event) => view.isDirty = true);
+    _select.onChange.listen((event) {
+      view.isDirty = true;
+      event.preventDefault();
+      view.executeHandler(_select.id, false);
+    });
   }
 
   String read() {
