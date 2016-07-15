@@ -32,14 +32,14 @@ class UiInputBinding extends UiBinding {
   }
 
   String read() {
-    if (_input.type.toLowerCase() == 'text') {
+    if (['text', 'textarea'].contains(_input.type.toLowerCase())) {
       return Format.internal(_input.classes, _input.value);
     }
     return _input.checked ? '1' : '0';
   }
 
   void write(String value) {
-    if (_input.type.toLowerCase() == 'text') {
+    if (['text', 'textarea'].contains(_input.type.toLowerCase())) {
       _input.value = Format.display(_input.classes, value);
     }
     else {
