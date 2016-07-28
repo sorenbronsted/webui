@@ -37,7 +37,7 @@ class UiTable extends TableElement implements ObjectStoreListener {
 
   set listener(UiTableListener listener) => _listener = listener;
 
-  set css(UiTableCss css) => _css = css;
+  static set css(UiTableCss css) => _css = css;
 
   UiTable.created() : super.created() {
     this.querySelectorAll('th.sortable').onClick.listen((event) {
