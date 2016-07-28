@@ -6,67 +6,74 @@
     </form>
   </div>
   <div id="detail">
-  <form id="formdata" class="form-horizontal form-group-sm col-sm-9">
+  <form id="PersonForm" is="x-form" class="form-horizontal form-group-sm col-sm-9">
     <div class="form-group">
-      <label for="Person-name" class="col-sm-2 control-label">Name</label>
+      <label class="col-sm-2 control-label">Name</label>
       <div class="col-sm-10">
-        <input type="text" class="required form-control" id="Person-name">
+        <input is="x-input" type="text" name="Person.name" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-address" class="col-sm-2 control-label">Address</label>
+      <label class="col-sm-2 control-label">Address</label>
       <div class="col-sm-10">
-        <input type="text" class="required form-control" id="Person-address">
+        <input is="x-input"  type="text" name="Person.address" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-zipcode" class="col-sm-2 control-label">Zipcode</label>
+      <label class="col-sm-2 control-label">Zipcode</label>
       <div class="col-sm-10">
-        <select class="required integer form-control" id="Person-zipcode"></select>
+        <select is="x-select" class="form-control" name="Person.zipcode" optionname="name"></select>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-town" class="col-sm-2 control-label">Town</label>
+      <label class="col-sm-2 control-label">Town</label>
       <div class="col-sm-10">
-        <input type="text" class="required form-control" id="Person-town">
+        <input is="x-input" type="text" name="Person.town" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-created" class="col-sm-2 control-label">Created</label>
+      <label class="col-sm-2 control-label">Created</label>
       <div class="col-sm-10">
-        <input type="text" class="required datetime form-control" id="Person-created">
+        <input is="x-input" x-type="datetime" name="Person.created" class="form-control">
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-born" class="col-sm-2 control-label">Born</label>
+      <label class="col-sm-2 control-label">Born</label>
       <div class="col-sm-10">
-        <input type="text" class="required date form-control" id="Person-born">
+        <input is="x-input" x-type="date" name="Person.born" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-time" class="col-sm-2 control-label">Time</label>
+      <label class="col-sm-2 control-label">Time</label>
       <div class="col-sm-10">
-        <input type="text" class="required time form-control" id="Person-time">
+        <input is="x-input" x-type="time" name="Person.time" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-height" class="col-sm-2 control-label">Height</label>
+      <label class="col-sm-2 control-label">Height</label>
       <div class="col-sm-10">
-        <input type="text" class="required amount form-control" id="Person-height">
+        <input is="x-input" x-type="decimal" decimals="2" name="Person.height" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="Person-lovely" class="col-sm-2 control-label">Er dejlig</label>
+      <label class="col-sm-2 control-label">Age</label>
       <div class="col-sm-10">
-        <input type="checkbox" class="required form-control" id="Person-lovely">
+        <input  is="x-input" x-type="integer" name="Person.age" class="form-control" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Er dejlig</label>
+      <div class="col-sm-10">
+        <input  is="x-input" type="checkbox" name="Person.lovely" class="form-control">
       </div>
     </div>
   </form>

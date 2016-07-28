@@ -12,20 +12,25 @@ class Person {
   int time;
   double height;
   bool lovely;
+  int age;
+  String sex;
   
   toJson() {
     return {
-      'class' : 'Person',
-      'uid':uid,
-      'name':name,
-      'address':address,
-      'zipcode': zipcode.toString(),
-      'town':town,
-      'created' : created.toString(),
-      'born' : born.toString(),
-      'time' : time.toString(),
-      'height' : height.toString(),
-      'lovely' : lovely.toString(),
+      'Person': {
+        'uid':uid,
+        'name':name,
+        'address':address,
+        'zipcode': zipcode.toString(),
+        'town':town,
+        'created' : created.toString(),
+        'born' : born.toString(),
+        'time' : time.toString(),
+        'height' : height.toString(),
+        'lovely' : lovely.toString(),
+        'sex' : sex,
+        'age' : age.toString(),
+      }
     };
   }
 
@@ -37,9 +42,8 @@ class Person {
     var person = new Person();
     person.uid = 0;
     data.forEach((String name, String value) {
+
       switch(name) {
-        case 'class':
-          break;
         case 'uid':
           person.uid = int.parse(value.length == 0 ? "0" : value);
           break;
@@ -50,25 +54,31 @@ class Person {
           person.address = value;
           break;
         case 'zipcode':
-          person.zipcode = int.parse(value);
+          person.zipcode = (value == 'null' ? null : int.parse(value));
           break;
         case 'town':
           person.town = value;
           break;
         case 'created':
-          person.created = DateTime.parse(value);
+          person.created = (value == 'null' ? null : DateTime.parse(value));
           break;
         case 'born':
-          person.born = DateTime.parse(value);
+          person.born = (value == 'null' ? null : DateTime.parse(value));
           break;
         case 'time':
-          person.time = int.parse(value.replaceAll(':',''));
+          person.time = (value == 'null' ? null : int.parse(value.replaceAll(':','')));
           break;
         case 'height':
-          person.height = double.parse(value);
+          person.height = (value == 'null' ? null : double.parse(value));
+          break;
+        case 'age':
+          person.age = (value == 'null' ? null : int.parse(value));
           break;
         case 'lovely':
-          person.lovely = (value == '1');
+          person.lovely = (value == 'null' ? null : (value == '1'));
+          break;
+        case 'sex':
+          person.sex = (value == 'null' ? null : value);
           break;
         default:
           print("Unknown property ${name}");

@@ -2,22 +2,38 @@
 part of webui;
 
 class DefaultDetailView extends View {
-  UiFormBinding _form;
   String _name;
 
-  DefaultDetailView([String bindId = '#content']) : super(bindId);
+  String get name => _name;
+
+  DefaultDetailView(String name, [String bindId = '#content']) : super(bindId, '${name}Detail') {
+    _name = name;
+  }
   
-  set name(String name) => _name = name;
-  String get viewName => "${_name}Detail";
+  void bind(ObjectStore store) {
+    UiForm form = document.querySelector('#${_name}Form');
+    form.bind(store, this);
 
-  Map get formdata => _form.read(_name);
-  set formdata(Map data) => _form.write(data);
+    ButtonElement save = document.querySelector('#save');
+    if (save != null) {
+      save.onClick.listen((event) {
+        event.preventDefault();
+        executeHandler('save', true);
+      });
+    }
+    else {
+      print("Default save button not found");
+    }
 
-  UiFormBinding get form => _form;
-
-  void registerBindings() {
-    _form = addBinding(new UiFormBinding('#formdata'));
-    addBinding(new UiButtonBinding('#save', true));
-    addBinding(new UiButtonBinding('#cancel', false));
-}
+    ButtonElement cancel = document.querySelector('#cancel');
+    if (cancel != null) {
+      cancel.onClick.listen((event) {
+        event.preventDefault();
+        executeHandler('cancel', false);
+      });
+    }
+    else {
+      print("Default cancel button not found");
+    }
+  }
 }

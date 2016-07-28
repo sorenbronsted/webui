@@ -15,39 +15,35 @@ class Format {
     _formatters[classId] = formatter;
   }
   
-  static String display(Iterable classes, String value) {
-    assert(classes != null);
+  static String display(String type, String value) {
+    assert(type != null);
     if (value == null || value == 'null') {
       return "";
     }
     if (value is! String) {
       value = '${value}';
     }
-    return _execute(classes, value, (Formatter fmt, String value) => fmt.display(value));
+    return _execute(type, value, (Formatter fmt, String value) => fmt.display(value));
   }
 
-  static String internal(Iterable classes, String value) {
-    assert(classes != null);
+  static String internal(String type, String value) {
+    assert(type != null);
     assert(value != null);
-    return _execute(classes, value, (Formatter fmt, String value) => fmt.internal(value));
+    return _execute(type, value, (Formatter fmt, String value) => fmt.internal(value));
   }
 
-  static String _execute(Iterable classes, String value, Function callback) {
-    assert(classes != null);
+  static String _execute(String type, String value, Function callback) {
+    assert(type != null);
     assert(callback != null);
 
     if (_formatters == null) {
       _formatters = new Map();
       _loadFormatters();
     }
-    var i = classes.iterator;
     value = value.trim();
-    while (i.moveNext()) {
-      var classId = i.current;
-      var formatter = _formatters[classId];
-      if (formatter != null) {
-        return callback(formatter, value);
-      }
+    var formatter = _formatters[type];
+    if (formatter != null) {
+      return callback(formatter, value);
     }
     return value;
   }

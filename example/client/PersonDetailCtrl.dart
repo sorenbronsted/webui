@@ -10,14 +10,14 @@ class PersonDetailCtrl extends DefaultDetailCtrl {
     {'uid':'2500', 'name':'Valby'},
   ];
 
-  PersonDetailCtrl() : super(new PersonDetailView(), "Person");
+  PersonDetailCtrl() : super(new PersonDetailView("Person"));
 
   List<Future> preLoad() {
     var parts = Address.instance.pathParts;
     if (parts.last == 'new') {
-      (view as PersonDetailView).formdata = {'class':'Person', 'uid':0};
+      store.set('Person.uid', 0);
     }
-    (view as PersonDetailView).zipCodes = zipcodes;
+    store.set('Person.zipcode.list', zipcodes);
     return [];
   }
 

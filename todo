@@ -1,81 +1,14 @@
 WebComponents
 =============
 
-Make use of webcomponents by extending existing tag and at the same have an minimal impact.
-I imagin these extends:
+Checkout the <input type='list' ...> which integretes datalist
 
-<table>
-  <tr>
-    <!-- This format all value to 9.999,999 -->
-  	<x-th name="amount" type="decimal" decimals="3" sortable>Amount</x-th>
-
-    <!-- This format all value to 9.999 -->
-  	<x-th name="quanty" type="integer" sortable>Qty</x-th>
-
-    <!--  -->
-  	<x-th name="address" type="text" sortable>Address</x-th>
-
-    <!-- This make a link to editable object -->
-  	<x-th name="" type="link" action="edit" sortable>Address</x-th>
-
-    <!-- This make a link to remove this object -->
-  	<x-th name="" type="link" action="remove" sortable>Address</x-th>
-
-    <!-- This make a link to remove this object -->
-  	<x-th name="" type="link" action="children" sortable>Address</x-th>
-  </tr>
-</table>
-
-<!-- This format input onBlur to 9.999,99 -->
-<input is="x-decimal" decimals="2" .../>
-
-<!-- This format input onBlur to 9.999 -->
-<input is="x-integer"  .../>
-
-<!-- When multiple it transforms into an ordinary select with '+'
-     to add a value and every value has a '-' to remove the value-->
-<x-select name="" multiple>
-  <option value="">text</option>
-</x-select>
-
-<!-- On click this will validate the form which it is part of -->
-<x-button validate>label</x-button>
+A list component which uses the aboe input type list displays selected element in a div under neither.
+Each selected element has button for deletion. This should make use of shadom dom.
 
 
-Imports
--------
-Instead of loading views by ajax I will change this to use link imports. This make the html views
-available when the code is ready.
-So to get the view I only need to query it and append it some div.
 
-In index.html
-<head>
-  ...
-  <link id="PersonViewImport" rel="import" href="views/PersonView.html">
-  ...
-</head>
+Test
+====
 
-In PersonView.html
-<div id="PersonView">
-  ...
-</div>
-
-
-In view.dart
-...
-currentView.hide(); // hide the current view
-
-var currentView = document.querySelector('#PersonView');
-if (currentView == null) { // test if request view is loaded
-  // Bring fragment into content area and make it the current view
-	var htmlFragment = document.querySelector('#PersonViewImport');
-	var content = document.querySelector('#content');
-	currentView = htmlFragment.import;
-	content.append(currentView);
-}
-currentView.show(); // show the view
-...
-
-Objectstore
------------
-
+Make automated test for this framework.

@@ -1,43 +1,45 @@
 part of webui;
 
 class UiInput extends InputElement implements ObjectStoreListener {
-
-  ObjectStore _model;
+  static const String uiTagName = 'x-input';
+  String _uiType;
   View _view;
-  String _type;
-  bool _isDirty;
-
-  static const String uiTagName = 'ui-input';
-
-  set view(View view) => _view = view;
-
-  set model(ObjectStore model) {
-    model.addListener(name, this);
-    _model = model;
-    valueChanged(name);
-  }
 
   UiInput.created() : super.created() {
-    _type = attributes['is'];
-
-    onBlur.listen((Event e) {
-      if (_isDirty) {
-        _view.isValid = UiInputValidator.validate(this);
-        _view.isDirty = true;
-        _model.set(name, Format.internal(_type, value));
-        _isDirty = false;
-      }
-    });
-
-    onFocus.listen((event) {
-      UiInputValidator.reset(this);
-      _view.isValid = true;
-    });
-
-    onKeyUp.listen((event) => _isDirty = true);
+    _uiType = attributes['x-type'];
   }
 
-  void valueChanged(String name) {
-    value = Format.display(_type, _model.get(name));
+  String get uiType => _uiType;
+
+  void bind(ObjectStore store, View view) {
+    _view = view;
+    if (type == 'file') {
+      onChange.listen((event) {
+        event.preventDefault();
+        store.set(name, files);
+        view.isDirty = true;
+      });
+    }
+    else {
+      onBlur.listen((Event e) {
+        if (view.isDirty) {
+          view.isValid = UiInputValidator.validate(this);
+          store.setMapProperty(name, Format.internal(_uiType, value));
+        }
+      });
+
+      onFocus.listen((event) {
+        UiInputValidator.reset(this);
+        view.isValid = true;
+      });
+      onKeyUp.listen((event) => view.isDirty = true);
+    }
+    store.addListener(name, this);
+  }
+
+  void valueChanged(String name, String changedValue) {
+    _view.isValid = true;
+    _view.isDirty = false;
+    value = Format.display(_uiType, changedValue);
   }
 }
