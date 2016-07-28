@@ -23,7 +23,7 @@ part 'src/DefaultDetailCtrl.dart';
 part 'src/UiInputValidator.dart';
 part 'src/UiInputValidatorListener.dart';
 part 'src/UiBootStrapInputValidatorListener.dart';
-part 'src/UiBootStrapTableBindingCss.dart';
+part 'src/UiBootStrapTableCss.dart';
 
 part 'src/ObjectStore.dart';
 part 'src/UiTh.dart';

@@ -6,12 +6,12 @@ abstract class UiTableListener {
   onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, Map row);
 }
 
-abstract class UiTableBindingCss {
+abstract class UiTableCss {
   onSortColumn(TableCellElement th, int direction);
   void clearSortColumn(TableCellElement orderBy);
 }
 
-class UiDefaultTableBindingCss implements UiTableBindingCss {
+class UiDefaultTableCss implements UiTableCss {
   @override
   onSortColumn(TableCellElement th, int direction) {
     // Do nothing
@@ -29,7 +29,7 @@ class UiTable extends TableElement implements ObjectStoreListener {
   static const asc = 1;
   static const dsc = 2;
 
-  static UiTableBindingCss _css = new UiDefaultTableBindingCss();
+  static UiTableCss _css = new UiDefaultTableCss();
 
   UiTableListener _listener;
   TableCellElement _orderBy;
@@ -37,12 +37,18 @@ class UiTable extends TableElement implements ObjectStoreListener {
 
   set listener(UiTableListener listener) => _listener = listener;
 
+  set css(UiTableCss css) => _css = css;
+
   UiTable.created() : super.created() {
-    querySelectorAll('th.sortable').onClick.listen((event) {
+    this.querySelectorAll('th.sortable').onClick.listen((event) {
       event.preventDefault();
       _setSortingUi(event.target);
       _doSort();
     });
+  }
+
+  void bind(ObjectStore store) {
+    store.addListener(id, this);
   }
 
   void valueChanged(String name, List rows) {
@@ -118,7 +124,7 @@ class UiTable extends TableElement implements ObjectStoreListener {
   }
 
   void _setSortingUi(TableCellElement target) {
-    if (_orderBy != null && _orderBy.id == target.id) {
+    if (_orderBy != null && _orderBy.attributes['name'] == target.attributes['name']) {
       _direction++;
       if (_direction > 2) {
         _direction = none;

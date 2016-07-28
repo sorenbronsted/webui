@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiBootStrapTableBindingCss implements UiTableBindingCss {
+class UiBootStrapTableCss implements UiTableCss {
   @override
   onSortColumn(TableCellElement th, int direction) {
     var span;

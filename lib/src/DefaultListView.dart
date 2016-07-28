@@ -12,7 +12,10 @@ class DefaultListView extends View implements UiTableListener {
 
   void bind(ObjectStore store) {
     UiTable table = document.querySelector('#${_name}Table');
-    store.addListener('${_name}Table', table);
+    if (table == null) {
+      throw '#${_name}Table not found';
+    }
+    table.bind(store);
     table.listener = this;
 
     ButtonElement create = document.querySelector('#create');

@@ -12,6 +12,9 @@ class DefaultDetailView extends View {
   
   void bind(ObjectStore store) {
     UiForm form = document.querySelector('#${_name}Form');
+    if (form == null) {
+      throw '#${_name}Form not found';
+    }
     form.bind(store, this);
 
     ButtonElement save = document.querySelector('#save');
