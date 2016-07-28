@@ -20,16 +20,24 @@ part 'src/DefaultListCtrl.dart';
 part 'src/DefaultDetailView.dart';
 part 'src/DefaultDetailCtrl.dart';
 
-part 'src/UiBinding.dart';
-part 'src/UiFormBinding.dart';
-part 'src/UiInputBinding.dart';
-part 'src/UiInputFileBinding.dart';
-part 'src/UiButtonBinding.dart';
-part 'src/UiListBinding.dart';
-part 'src/UiSelectBinding.dart';
-part 'src/UiTableBinding.dart';
-
 part 'src/UiInputValidator.dart';
 part 'src/UiInputValidatorListener.dart';
 part 'src/UiBootStrapInputValidatorListener.dart';
 part 'src/UiBootStrapTableBindingCss.dart';
+
+part 'src/ObjectStore.dart';
+part 'src/UiTh.dart';
+part 'src/UiTable.dart';
+part 'src/UiForm.dart';
+part 'src/UiInput.dart';
+part 'src/UiSelect.dart';
+part 'src/UiList.dart';
+
+initWebUi() {
+  document.registerElement(UiTable.uiTagName, UiTable, extendsTag: 'table');
+  document.registerElement(UiTh.uiTagName, UiTh, extendsTag: 'th');
+  document.registerElement(UiForm.uiTagName, UiForm, extendsTag: 'form');
+  document.registerElement(UiInput.uiTagName, UiInput, extendsTag: 'input');
+  document.registerElement(UiSelect.uiTagName, UiSelect, extendsTag: 'select');
+  document.registerElement(UiList.uiTagName, UiList, extendsTag: 'div');
+}

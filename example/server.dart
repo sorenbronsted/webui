@@ -16,6 +16,10 @@ class Server {
   Server(String this._basePath) {
     print("basePath ${_basePath}");
     _persons = {};
+    var p = new Person();
+    p.uid = 1;
+    p.name = 'Kurt Humbuk';
+    _persons[p.uid.toString()] = p;
   }
   
   _sendNotFound(HttpResponse response) {
@@ -30,6 +34,9 @@ class Server {
         var parts = Uri.decodeComponent(content).split('&');
         Map data = {};
         parts.forEach((part) {
+          if (!part.contains('=')) {
+            return;
+          }
           var nv = part.split('=');
           data[nv[0]] = nv[1];
         });
@@ -37,7 +44,7 @@ class Server {
         if (p.uid == 0) {
           p.uid = _persons.length + 1;
         }
-        _persons['${p.uid}'] = p;
+        _persons[p.uid.toString()] = p;
         break;
       case 'DELETE':
         if (request.uri.pathSegments.length == 3) { // eg /rest/person/1

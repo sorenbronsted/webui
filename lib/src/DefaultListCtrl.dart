@@ -4,12 +4,12 @@ part of webui;
 class DefaultListCtrl extends Controller {
   String _name;
 
-  DefaultListCtrl(View view, String this._name) : super(view) {
-    (_view as DefaultListView).name = _name;
-    _view.addHandler("create", _create);
-    _view.addHandler("edit", _edit);
-    _view.addHandler("delete", _delete);
-    _view.addHandler("children", _children);
+  DefaultListCtrl(View view) : super(view) {
+    _name = (view as DefaultListView).name;
+    view.addHandler("create", _create);
+    view.addHandler("edit", _edit);
+    view.addHandler("delete", _delete);
+    view.addHandler("children", _children);
   }
 
   @override
@@ -20,7 +20,7 @@ class DefaultListCtrl extends Controller {
 
   void load() {
     Rest.instance.get('/rest/${_name}').then((data) {
-      (view as DefaultListView).populate(data);
+      _store.set('${_name}Table', data);
       postLoad();
     });
   }

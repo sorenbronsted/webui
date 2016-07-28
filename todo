@@ -1,3 +1,14 @@
- - Optimize loading of pages so that thay displayed on correct url and otherwise hidden. Thier is a problem that
-   show return a Future, so when loaded that future is not needed any more.
- - rename read and write method to get and set value
+WebComponents
+=============
+
+Checkout the <input type='list' ...> which integretes datalist
+
+A list component which uses the aboe input type list displays selected element in a div under neither.
+Each selected element has button for deletion. This should make use of shadom dom.
+
+
+
+Test
+====
+
+Make automated test for this framework.

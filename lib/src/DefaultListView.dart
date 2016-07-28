@@ -2,32 +2,36 @@
 part of webui;
 
 class DefaultListView extends View implements UiTableListener {
-  UiTableBinding _table;
   String _name;
   
-  DefaultListView([String bindId = '#content']) : super(bindId);
-
-  String get viewName  => "${_name}List";
+  DefaultListView(String name, [String bindId = '#content']) : super(bindId, '${name}List') {
+    _name = name;
+  }
 
   String get name => _name;
-  set name(String name) => _name = name;
 
-  UiTableBinding get table => _table;
+  void bind(ObjectStore store) {
+    UiTable table = document.querySelector('#${_name}Table');
+    store.addListener('${_name}Table', table);
+    table.listener = this;
 
-  void registerBindings() {
-    _table = addBinding(new UiTableBinding("#tabledata", this));
-    addBinding(new UiButtonBinding('#create', false));
-  }
-
-  populate(List rows) {
-    _table.write(rows);
+    ButtonElement create = document.querySelector('#create');
+    if (create != null) {
+      create.onClick.listen((event) {
+        event.preventDefault();
+        executeHandler('create', false);
+      });
+    }
+    else {
+      print("Default create button not found");
+    }
   }
 
   @override
-  onTableCellLink(TableCellElement cell, AnchorElement link, String column, Map row) {}
+  onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, Map row) {}
 
   @override
-  onTableCellValue(TableCellElement cell, String column, Map row) {}
+  onTableCellValue(TableCellElement cell, String cls, String property, Map row) {}
 
   @override
   onTableRow(TableRowElement tableRow, Map row) {}

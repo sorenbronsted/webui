@@ -10,14 +10,11 @@ class UiValidationException {
 
 class UiInputValidator {
   static Map _methods = {
-    "required" : _required,
     "date" : _date,
     "time" : _time,
     "datetime" : _datetime,
-    "caseNumber" : _caseNumber,
-    "amountInt" : _integer,
+    "casenumber" : _caseNumber,
     "integer" : _integer,
-    "amount" :  _decimal,
     "decimal" :  _decimal,
     "email" : _email
   };
@@ -38,20 +35,20 @@ class UiInputValidator {
       return isValid;
     }
 
-    input.classes.forEach((elem) {
-      if (!_methods.containsKey(elem)) {
-        return;
+    try {
+      if (input.required) {
+        input.value = _required(input.value);
       }
-
-      try {
-        input.value = _methods[elem](input.value);
-        _css.valid(input);
+      var type = input.attributes['x-type'];
+      if (_methods.containsKey(type)) {
+        input.value = _methods[type](input.value);
       }
-      on UiValidationException catch(e) {
-        _css.error(input, e.toString());
-        isValid = false;
-      }
-    });
+      _css.valid(input);
+    }
+    on UiValidationException catch(e) {
+      _css.error(input, e.toString());
+      isValid = false;
+    }
     return isValid;
   }
 

@@ -11,12 +11,13 @@ part 'PersonDetailView.dart';
 part 'PersonDetailCtrl.dart';
 
 void main() {
+  initWebUi();
+
+  UiInputValidator.css = new UiBootStrapInputValidatorListener();
+
   var bus = EventBus.instance;
   bus.register(new PersonListCtrl());
   bus.register(new PersonDetailCtrl());
-
-  UiInputValidator.css = new UiBootStrapInputValidatorListener();
-  UiTableBinding.css = new UiBootStrapTableBindingCss();
 
   Address.instance.goto("list/Person");
 }

@@ -1,0 +1,24 @@
+[
+  {
+    "Person": {
+      "uid" : 1,
+      "name" : "Kurt Humbuk"
+    },
+    "OtherClass": {
+      "uid": 3,
+      "propertyOne": "with some value",
+      "propertyTwo": "with more data"
+    }
+  },
+  {
+    "Person": {
+      "uid" : 2,
+      "name" : "Yrsa Humbuk"
+    },
+    "OtherClass": {
+      "uid": 5,
+      "propertyOne": "with some value",
+      "propertyTwo": "with more data"
+    }
+  }
+]

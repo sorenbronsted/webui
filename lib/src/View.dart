@@ -5,10 +5,11 @@ typedef void Handler(String data);
 
 abstract class View {
   Map<String, Handler> _handlers;
-  List<UiBinding> _bindings;
   String _bindId;
+  String _viewName;
   bool _isDirty; // if true input has changed
   bool _isValid; // if true input is valid
+  static DivElement _currentView; // current active view
 
   bool get isDirty => _isDirty;
   set isDirty(bool val) => _isDirty = val;
@@ -16,38 +17,32 @@ abstract class View {
   bool get isValid => _isDirty;
   set isValid(bool val) => _isValid = val;
 
-  String get viewName;
-
-  View(String this._bindId) {
+  View(String this._bindId, String this._viewName) {
     _isDirty = false;
     _isValid = true;
     _handlers = {};
-    _bindings = [];
+
+    LinkElement htmlFragment = document.querySelector('#${_viewName}Import');
+    if (htmlFragment == null) {
+      throw "#${_viewName}Import not found";
+    }
+    var view = htmlFragment.import.querySelector('#${_viewName}');
+    if (view == null) {
+      throw "#${_viewName} not found";
+    }
+    view.hidden = true;
+    document.querySelector(_bindId).append(view);
   }
 
-  Future show() {
-    //TODO view should only load ones
-    _bindings.clear();
-    return Rest.instance.load('view/${viewName}.html').then((html) {
-      querySelector(_bindId).setInnerHtml(html.toString());
-      registerBindings();
-      _bindings.forEach((UiBinding binding) {
-        try {
-          binding.bind(this);
-        }
-        on SelectorException catch(e) {
-          print("Warning: ${e}");
-        }
-      });
-    });
+  void show() {
+    if (_currentView != null) {
+      _currentView.hidden = true;
+    }
+    _currentView = document.querySelector('#${_viewName}');
+    _currentView.hidden = false;
   }
 
-  void registerBindings() {}
-
-  UiBinding addBinding(UiBinding binding) {
-    _bindings.add(binding);
-    return binding;
-  }
+  void bind(ObjectStore store);
 
   addHandler(String key, Handler handler) {
     _handlers[key] = handler;      

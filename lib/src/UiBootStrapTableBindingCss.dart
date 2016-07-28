@@ -15,10 +15,10 @@ class UiBootStrapTableBindingCss implements UiTableBindingCss {
 
     span.classes.clear();
     span.classes.add("glyphicon");
-    if (direction == UiTableBinding.asc) {
+    if (direction == UiTable.asc) {
       span.classes.add("glyphicon-triangle-top");
     }
-    else if (direction == UiTableBinding.dsc) {
+    else if (direction == UiTable.dsc) {
       span.classes.add("glyphicon-triangle-bottom");
     }
   }

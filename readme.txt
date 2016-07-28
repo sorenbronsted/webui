@@ -1,17 +1,54 @@
+Head start
+==========
+
 This library contains the framework for web application at UFDS.
-To use it get it with pub from http://dev.ufds.lan/git/webui.git
+To use it get it with pub from http://dev/git/webui.git
 
 The sample directory contains a simple demo of how you make an dart web application with this library.
 To run this:
  1) Create and launch a "Dart commandline launch" where:
-    - Dart script is sample/server.dart
-    - Working directory is <your-instalation>/sample
+    - Dart script is example/server.dart
+    - Working directory is <your-instalation>/example
     
  2) Create and launch a "Dartium launch" where:
     - Launch target url is "http://127.0.0.1:8080/" 
-    - Source location is "/libwebui"
- 
-The sample application expects the sample directory to be top-level for server
+
+The sample application expects the example directory to be top-level for server
+
+
+Using the library
+=================
+This library is a classic MVC framework to make single page apps and it makes use of webcomponents
+especially custom elements and html imports (http://webcomponents.org).
+
+The basic layer is Controller, ObjectStore and View where the view gets updates from the ObjectStore and
+when input changes in the View it is written back to the ObjectStore. Event from the user is sent to the
+Controller, which provide handles that react on these events.
+Beside the MVC components 2 other elements exists namely EventBus, Address and Rest. Controllers har hook the
+EventBus, so controllers can publish events and listen for events from toher controllers. The Address object
+is a singleton which listen to changes in the browsers location object and publishes them on the Eventbus.
+Controllers can also change the location via the Address object and there by control the flow off the
+client.
+
+The library also has standard implementation of List view from where you can delete items on the list, create
+new items and edit an item. DefaultListCtrl, DefaultListView, DefaultDetailCtrl and DefaultDetailView provide
+provide basis for the functionality.
+
+The view part are snippets of html which managed at use user defined hook in the main html file (index.html).
+To make these snippets available for the framework html imports are used. In the head section use:
+   <link id="PersonListImport" rel="import" href="/view/PersonList.html">
+
+To integrate the view with the ObjectStore custom elements is used and they are:
+
+<table is='x-table' ...>
+<th is='x-th' link='' type='date|datetime|time|decimal|integer|boolean' decimals='' sortable ...>
+<input is='x-input' x-type='date|datetime|time|decimal|integer|boolean' decimals='' ...>
+<select is='x-select' optioname='' ...>
+<textarea is='x-textarea' ...>
+<div is='x-list' ...>
+<form is='x-form' ...>
+
+See example on how to use them
 
 Adressing in the client
 =======================
