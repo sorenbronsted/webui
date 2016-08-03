@@ -38,9 +38,12 @@ class DefaultDetailCtrl extends Controller {
   void postLoad() {}
 
   void _save(String empty) {
+    if (_store.isDirty == false) {
+      Address.instance.back();
+      return;
+    }
     Map data = _store.getMap(_name);
     Rest.instance.post("/rest/$_name", data).then((Map postResult) {
-      _view.isDirty = false;
       Address.instance.back();
     }).catchError((error) {
       if (error is Map) {
@@ -57,11 +60,10 @@ class DefaultDetailCtrl extends Controller {
   
   void _cancel(String empty) {
     var proceed = true;
-    if (_view.isDirty) {
+    if (_store.isDirty) {
       proceed = _view.confirm("Siden er blevet ændret. Dine ændringer kan blive tabt. Ønsker du at fortsætte?");
     }
     if (proceed) {
-      _view.isDirty = false;
       Address.instance.back();
     }
   }

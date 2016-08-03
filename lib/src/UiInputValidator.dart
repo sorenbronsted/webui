@@ -10,12 +10,9 @@ class UiValidationException {
 
 class UiInputValidator {
   static Map _methods = {
-    "date" : _date,
-    "time" : _time,
     "datetime" : _datetime,
     "casenumber" : _caseNumber,
-    "integer" : _integer,
-    "decimal" :  _decimal,
+    "number" : _number,
     "email" : _email
   };
 
@@ -40,8 +37,9 @@ class UiInputValidator {
         input.value = _required(input.value);
       }
       var type = input.attributes['x-type'];
+      var format = input.attributes['format'];
       if (_methods.containsKey(type)) {
-        input.value = _methods[type](input.value);
+        input.value = _methods[type](input.value, format);
       }
       _css.valid(input);
     }
@@ -59,18 +57,29 @@ class UiInputValidator {
     return input;
   }
 
-  static String _datetime(String input) {
-    var msg = "Dato og tid er ikke en gyldig, fx 100917 1145";
+  static String _datetime(String input, String format) {
+    var msg = "Dato og tid er ikke en gyldig, da dato og klokkeslet skal være adskilt af en blank, fx 100717 1145";
     var value = input.trim();
     if (value.isEmpty) {
       return input;
     }
     try {
-      var parts = value.split(new RegExp(' +'));
-      if (parts.length != 2) {
+      var parts = value.split(new RegExp(r' +'));
+      if (parts.length < 1 || parts.length > 2) {
         throw new UiValidationException(msg);
       }
-      return "${_date(parts[0])} ${_time(parts[1])}";
+      if (parts.length == 1) {
+        if (format.contains(new RegExp(r'[dMy]'))) {
+          return "${_date(parts[0], format)}";
+        }
+        else {
+          return "${_time(parts[0], format)}";
+        }
+      }
+      else {
+        var formatParts = format.split(new RegExp(r' +'));
+        return "${_date(parts[0], formatParts[0])} ${_time(parts[1], formatParts[1])}";
+      }
     }
     catch(e) {
       throw new UiValidationException(msg);
@@ -85,7 +94,7 @@ class UiInputValidator {
    * 999999 => hour, minute and seconds
    * anything else is an error
    */
-  static String _time(String input) {
+  static String _time(String input, String format) {
     var msg = "Tidspunkt er ikke en gyldig, fx 1045 el 10:45.";
     var value = input.trim();
     if (value.isEmpty) {
@@ -119,10 +128,7 @@ class UiInputValidator {
     on FormatException {
       throw new UiValidationException(msg);
     }
-    var hh = (test.hour < 10 ? "0${test.hour}" : "${test.hour}");
-    var mm = (test.minute < 10 ? "0${test.minute}" : "${test.minute}");
-    var ss = (test.second < 10 ? "0${test.second}" : "${test.second}");
-    return "${hh}:${mm}:${ss}";
+    return new DateFormat(format).format(test);
   }
 
   /* All '-' (delimiters) are removed.
@@ -136,7 +142,7 @@ class UiInputValidator {
    * ddmmyyyy
    * anything else is an error
    */
-  static String _date(String input) {
+  static String _date(String input, format) {
     var msg = "Dato er ikke en gyldig, fx ddmmyy.";
     var value = input.trim();
     if (value.isEmpty) {
@@ -181,13 +187,10 @@ class UiInputValidator {
     on FormatException {
       throw new UiValidationException(msg);
     }
-    var dd = (test.day < 10 ? "0${test.day}" : "${test.day}");
-    var mm = (test.month < 10 ? "0${test.month}" : "${test.month}");
-    var yyyy = "${test.year}";
-    return "$dd-$mm-$yyyy";
+    return new DateFormat(format).format(test);
   }
 
-  static String _caseNumber(String input) {
+  static String _caseNumber(String input, String empty) {
     var msg = "Sagsnr er ikke gyldigt, Fx 10/01 eller 20010001.";
     var value = input.trim();
     try {
@@ -221,28 +224,14 @@ class UiInputValidator {
     return input;
   }
 
-  static String _integer(String input) {
-    var msg = "Beløb er ikke gyldigt, 1.234";
+  static String _number(String input, String format) {
+    var msg = "Tallet er ikke gyldigt, 1.234";
     try {
       var value = input.trim();
       if (!value.isEmpty) {
-        value = value.replaceAll(".", "");
-        int.parse(value);
-      }
-    }
-    on FormatException {
-      throw new UiValidationException(msg);
-    }
-    return input;
-  }
-
-  static String _decimal(String input) {
-    var msg = "Beløb er ikke gyldigt, 1.234,45";
-    try {
-      var value = input.trim();
-      if (!value.isEmpty) {
-        value = value.replaceAll(".","").replaceAll(",", ".");
-        double.parse(value);
+        var f = new NumberFormat(format);
+        var n = f.parse(input);
+        input = f.format(n);
       }
     }
     on FormatException {

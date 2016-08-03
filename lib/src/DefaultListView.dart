@@ -15,7 +15,7 @@ class DefaultListView extends View implements UiTableListener {
     if (table == null) {
       throw '#${_name}Table not found';
     }
-    table.bind(store);
+    table.bind(store, this);
     table.listener = this;
 
     ButtonElement create = document.querySelector('#create');
@@ -38,4 +38,8 @@ class DefaultListView extends View implements UiTableListener {
 
   @override
   onTableRow(TableRowElement tableRow, Map row) {}
+
+  // TODO: implement isValid
+  @override
+  bool get isValid => true;
 }

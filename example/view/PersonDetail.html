@@ -38,35 +38,35 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">Created</label>
       <div class="col-sm-10">
-        <input is="x-input" x-type="datetime" name="Person.created" class="form-control">
+        <input is="x-input" x-type="datetime" format="dd-MM-y hh:mm:ss" name="Person.created" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label">Born</label>
       <div class="col-sm-10">
-        <input is="x-input" x-type="date" name="Person.born" class="form-control" required>
+        <input is="x-input" x-type="datetime" format="dd-MM-y"  name="Person.born" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label">Time</label>
       <div class="col-sm-10">
-        <input is="x-input" x-type="time" name="Person.time" class="form-control" required>
+        <input is="x-input" x-type="datetime" format="hh:mm" name="Person.time" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label">Height</label>
       <div class="col-sm-10">
-        <input is="x-input" x-type="decimal" decimals="2" name="Person.height" class="form-control" required>
+        <input is="x-input" x-type="number" format="#,##0.00" name="Person.height" class="form-control" required>
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label">Age</label>
       <div class="col-sm-10">
-        <input  is="x-input" x-type="integer" name="Person.age" class="form-control" required>
+        <input  is="x-input" x-type="number" format="#,##0" name="Person.age" class="form-control" required>
       </div>
     </div>
 

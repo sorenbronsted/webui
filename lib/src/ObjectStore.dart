@@ -8,13 +8,18 @@ abstract class ObjectStoreListener {
 class ObjectStore {
   Map _values;
   Map<String, ObjectStoreListener> _listeners;
+  bool _isDirty;
+
+  bool get isDirty => _isDirty;
+  set isDirty(bool state) => _isDirty = state;
 
   ObjectStore([Map values]) {
     _values = values ?? {};
     _listeners = {};
+    _isDirty = false;
   }
 
-  void setMapProperty(String name, Object value) {
+  void changeMapProperty(String name, Object value) {
     if (!name.contains('.')) {
       throw "name must be on form name.property";
     }
@@ -25,6 +30,7 @@ class ObjectStore {
     Map map = _values[parts[0]];
     if (map != null) {
       map[parts[1]] = value;
+      _isDirty = true;
     }
   }
 
@@ -43,6 +49,7 @@ class ObjectStore {
 
   void set(String name, Object value) {
     _values[name] = value;
+    _isDirty = false;
     _notifyListener(name);
   }
 

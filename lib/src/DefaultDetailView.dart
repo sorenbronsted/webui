@@ -3,6 +3,7 @@ part of webui;
 
 class DefaultDetailView extends View {
   String _name;
+  UiForm _form;
 
   String get name => _name;
 
@@ -11,11 +12,11 @@ class DefaultDetailView extends View {
   }
   
   void bind(ObjectStore store) {
-    UiForm form = document.querySelector('#${_name}Form');
-    if (form == null) {
+    _form = document.querySelector('#${_name}Form');
+    if (_form == null) {
       throw '#${_name}Form not found';
     }
-    form.bind(store, this);
+    _form.bind(store, this);
 
     ButtonElement save = document.querySelector('#save');
     if (save != null) {
@@ -38,5 +39,11 @@ class DefaultDetailView extends View {
     else {
       print("Default cancel button not found");
     }
+  }
+
+  // TODO: implement isValid
+  @override
+  bool get isValid {
+    return _form.isValid();
   }
 }

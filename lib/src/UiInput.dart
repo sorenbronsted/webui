@@ -1,12 +1,15 @@
 part of webui;
 
-class UiInput extends InputElement implements ObjectStoreListener {
+class UiInput extends InputElement with UiInputState implements ObjectStoreListener {
   static const String uiTagName = 'x-input';
   String _uiType;
+  String _format;
   View _view;
 
   UiInput.created() : super.created() {
     _uiType = attributes['x-type'];
+    _format = attributes['format'];
+    resetUiState();
   }
 
   String get uiType => _uiType;
@@ -17,29 +20,37 @@ class UiInput extends InputElement implements ObjectStoreListener {
       onChange.listen((event) {
         event.preventDefault();
         store.set(name, files);
-        view.isDirty = true;
+        store.isDirty = true;
       });
     }
     else {
       onBlur.listen((Event e) {
-        if (view.isDirty) {
-          view.isValid = UiInputValidator.validate(this);
-          store.setMapProperty(name, Format.internal(_uiType, value));
+        if (isDirty) {
+          _doValidate();
+          if (isValid) {
+            store.changeMapProperty(name, Format.internal(_uiType, value, _format));
+            isDirty = false;
+          }
         }
       });
 
       onFocus.listen((event) {
         UiInputValidator.reset(this);
-        view.isValid = true;
+        isValid = true;
       });
-      onKeyUp.listen((event) => view.isDirty = true);
+
+      onKeyUp.listen((event) => isDirty = true);
     }
     store.addListener(name, this);
   }
 
   void valueChanged(String name, String changedValue) {
-    _view.isValid = true;
-    _view.isDirty = false;
-    value = Format.display(_uiType, changedValue);
+    resetUiState();
+    value = Format.display(_uiType, changedValue, _format);
+    UiInputValidator.reset(this);
+  }
+
+  bool _doValidate() {
+    return UiInputValidator.validate(this);
   }
 }

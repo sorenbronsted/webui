@@ -9,7 +9,7 @@ class Person {
   String town;
   DateTime created;
   DateTime born;
-  int time;
+  DateTime time;
   double height;
   bool lovely;
   int age;
@@ -66,13 +66,13 @@ class Person {
           person.born = (value == 'null' ? null : DateTime.parse(value));
           break;
         case 'time':
-          person.time = (value == 'null' ? null : int.parse(value.replaceAll(':','')));
+          person.time = (value == 'null' ? null : DateTime.parse(value));
           break;
         case 'height':
           person.height = (value == 'null' ? null : double.parse(value));
           break;
         case 'age':
-          person.age = (value == 'null' ? null : int.parse(value));
+          person.age = (value == 'null' ? null : double.parse(value).toInt());
           break;
         case 'lovely':
           person.lovely = (value == 'null' ? null : (value == '1'));

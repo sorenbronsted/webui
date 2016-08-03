@@ -12,8 +12,7 @@ class UiSelect extends SelectElement implements ObjectStoreListener {
 
   void bind(ObjectStore store, View view) {
     onChange.listen((event) {
-      view.isDirty = true;
-      store.setMapProperty(name, value);
+      store.changeMapProperty(name, value);
     });
     store.addListener(name, this);
     store.addListener('${name}.list', this);

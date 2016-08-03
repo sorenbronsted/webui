@@ -7,19 +7,11 @@ abstract class View {
   Map<String, Handler> _handlers;
   String _bindId;
   String _viewName;
-  bool _isDirty; // if true input has changed
-  bool _isValid; // if true input is valid
   static DivElement _currentView; // current active view
 
-  bool get isDirty => _isDirty;
-  set isDirty(bool val) => _isDirty = val;
-
-  bool get isValid => _isDirty;
-  set isValid(bool val) => _isValid = val;
+  bool get isValid;
 
   View(String this._bindId, String this._viewName) {
-    _isDirty = false;
-    _isValid = true;
     _handlers = {};
 
     LinkElement htmlFragment = document.querySelector('#${_viewName}Import');
@@ -49,7 +41,7 @@ abstract class View {
   }
 
   executeHandler(String key, bool validRequired, [String data]) {
-    if (validRequired && !_isValid) {
+    if (validRequired && !isValid) {
       return;
     }
     Handler handle = _handlers[key];

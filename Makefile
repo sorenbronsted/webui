@@ -1,10 +1,9 @@
-.PHONY:	checkout
+.PHONY:	test
 
 SHELL=/bin/bash
 
-all: checkout
+all: test
 	echo "Up-to-date"
 
-checkout:
-	git pull
-
+test:
+	/usr/lib/dart/bin/pub run test test

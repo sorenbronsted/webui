@@ -27,6 +27,7 @@ class UiList extends DivElement implements ObjectStoreListener {
       children.add(a);
       a.onClick.listen((event) {
         event.preventDefault();
+        //TODO modify store instead
         _view.executeHandler(_name, false, a.href);
       });
     });

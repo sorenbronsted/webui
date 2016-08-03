@@ -34,6 +34,7 @@ class UiTable extends TableElement implements ObjectStoreListener {
   UiTableListener _listener;
   TableCellElement _orderBy;
   int _direction = none;
+  View _view;
 
   set listener(UiTableListener listener) => _listener = listener;
 
@@ -47,7 +48,8 @@ class UiTable extends TableElement implements ObjectStoreListener {
     });
   }
 
-  void bind(ObjectStore store) {
+  void bind(ObjectStore store, View view) {
+    _view = view;
     store.addListener(id, this);
   }
 
@@ -75,12 +77,12 @@ class UiTable extends TableElement implements ObjectStoreListener {
     var fragment = new DocumentFragment();
     rows.forEach((row) {
       var tableRow = new TableRowElement();
-      _listener.onTableRow(tableRow, row);
+      _listener?.onTableRow(tableRow, row);
 
       // Make the table row
       fragment.append(tableRow);
       var columns = tHead.querySelectorAll('th');
-      columns.forEach((UiTh column) => column.addCell(_listener, tableRow, row));
+      columns.forEach((UiTh column) => column.addCell(_view, _listener, tableRow, row));
     });
     return fragment;
   }
@@ -107,8 +109,8 @@ class UiTable extends TableElement implements ObjectStoreListener {
     var idx = tHead.rows.first.cells.indexOf(_orderBy);
     var tmp = new List.from(body.children);
     tmp.sort((TableRowElement a, TableRowElement b) {
-      String aVal = Format.internal(_orderBy.attributes['type'], a.cells.elementAt(idx).text);
-      String bVal = Format.internal(_orderBy.attributes['type'], b.cells.elementAt(idx).text);
+      String aVal = Format.internal(_orderBy.attributes['type'], a.cells.elementAt(idx).text, _orderBy.attributes['format']);
+      String bVal = Format.internal(_orderBy.attributes['type'], b.cells.elementAt(idx).text, _orderBy.attributes['format']);
       var result = 0;
       switch (_direction) {
         case asc:
