@@ -6,8 +6,8 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   static String _cssValid = "has-success";
 
   @override
-  void clear(HtmlElement input) {
-    var fg = getFormGroup(input);
+  void clear(UiInputType input) {
+    var fg = _getFormGroup(input as HtmlElement);
     if (fg != null) {
       fg.classes.remove(_cssError);
       fg.classes.remove(_cssValid);
@@ -15,8 +15,8 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   }
 
   @override
-  void error(HtmlElement input, String msg) {
-    var fg = getFormGroup(input);
+  void error(UiInputType input, String msg) {
+    var fg = _getFormGroup(input as HtmlElement);
     if (fg != null) {
       fg.classes.add(_cssError);
     }
@@ -24,21 +24,21 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   }
 
   @override
-  void valid(HtmlElement input) {
-    var fg = getFormGroup(input);
+  void valid(UiInputType input) {
+    var fg = _getFormGroup(input as HtmlElement);
     if (fg != null) {
       fg.classes.add(_cssValid);
     }
   }
 
-  HtmlElement getFormGroup(HtmlElement start) {
+  HtmlElement _getFormGroup(HtmlElement start) {
     if (start == null) {
       return null;
     }
     if (start.classes.contains("form-group")) {
       return start;
     }
-    return getFormGroup(start.parent);
+    return _getFormGroup(start.parent);
   }
 }
 

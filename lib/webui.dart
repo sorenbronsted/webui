@@ -31,16 +31,19 @@ part 'src/ObjectStore.dart';
 part 'src/UiTh.dart';
 part 'src/UiTable.dart';
 part 'src/UiForm.dart';
-part 'src/UiInput.dart';
+part 'src/UiTextArea.dart';
 part 'src/UiSelect.dart';
 part 'src/UiList.dart';
 part 'src/UiInputState.dart';
+part 'src/UiInput.dart';
+part 'src/UiInputType.dart';
 
 initWebUi() {
   document.registerElement(UiTable.uiTagName, UiTable, extendsTag: 'table');
   document.registerElement(UiTh.uiTagName, UiTh, extendsTag: 'th');
   document.registerElement(UiForm.uiTagName, UiForm, extendsTag: 'form');
   document.registerElement(UiInput.uiTagName, UiInput, extendsTag: 'input');
+  document.registerElement(UiTextArea.uiTagName, UiTextArea, extendsTag: 'textarea');
   document.registerElement(UiSelect.uiTagName, UiSelect, extendsTag: 'select');
   document.registerElement(UiList.uiTagName, UiList, extendsTag: 'div');
 

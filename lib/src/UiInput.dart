@@ -1,6 +1,6 @@
 part of webui;
 
-class UiInput extends InputElement with UiInputState implements ObjectStoreListener {
+class UiInput extends InputElement with UiInputState implements ObjectStoreListener, UiInputType {
   static const String uiTagName = 'x-input';
   String _uiType;
   String _format;

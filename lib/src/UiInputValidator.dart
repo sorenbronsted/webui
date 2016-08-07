@@ -20,11 +20,11 @@ class UiInputValidator {
 
   static set css(UiInputValidatorListener css) => _css = css;
 
-  static void reset(HtmlElement input) {
+  static void reset(UiInputType input) {
     _css.clear(input);
   }
 
-  static bool validate(InputElement input) {
+  static bool validate(UiInputType input) {
     var isValid = true;
 
     if (input.attributes.containsKey("readonly") ||

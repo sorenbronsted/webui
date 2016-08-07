@@ -14,7 +14,7 @@ class UiTh extends TableCellElement {
     _format = attributes['format'];
 
     var parts = attributes['name'].split('.');
-    if (parts.length != 2 && _link == null) {
+    if (parts.length != 2 && _link != null) {
       throw "Wrong format for name for type link. Must be class.property";
     }
     if (parts.length == 2) {
