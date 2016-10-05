@@ -240,7 +240,7 @@ class UiInputValidator {
     return input;
   }
 
-  static String _email(String input) {
+  static String _email(String input, String format) {
     var msg ="Email er ikke gyldig";
     var reg = new RegExp("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}\$");
     var value = input.trim().toLowerCase();

@@ -1,5 +1,5 @@
 name: webui
-version: 3.0.2
+version: 3.0.3
 author: Søren Brønsted
 description: GUI framework for single page applications
 dependencies:
