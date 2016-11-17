@@ -1,11 +1,12 @@
 part of webui;
 
-class UiTextArea extends TextAreaElement with UiInputState implements ObjectStoreListener, UiInputType {
+class UiTextArea extends TextAreaElement with UiInputState, UiBind implements ObjectStoreListener, UiInputType {
   static const String uiTagName = 'x-textarea';
   String _uiType;
   View _view;
 
   UiTextArea.created() : super.created() {
+    setBind(getAttribute('bind'));
     _uiType = attributes['x-type'];
     resetUiState();
   }
@@ -18,7 +19,7 @@ class UiTextArea extends TextAreaElement with UiInputState implements ObjectStor
       if (isDirty) {
         _doValidate();
         if (isValid) {
-          store.changeMapProperty(name, Format.internal(_uiType, value, ""));
+          store.setProperty(_cls, _property, Format.internal(_uiType, value, ""));
           isDirty = false;
         }
       }
@@ -30,12 +31,12 @@ class UiTextArea extends TextAreaElement with UiInputState implements ObjectStor
     });
 
     onKeyUp.listen((event) => isDirty = true);
-    store.addListener(name, this);
+    store.addListener(this, _cls, _property);
   }
 
-  void valueChanged(String name, String changedValue) {
+  void valueChanged(String cls, String property) {
     resetUiState();
-    value = Format.display(_uiType, changedValue, "");
+    value = Format.display(_uiType, _view.store.getProperty(cls, property), "");
     UiInputValidator.reset(this);
   }
 

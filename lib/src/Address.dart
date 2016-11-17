@@ -36,6 +36,9 @@ class Address {
   Map<String, String> get parameters => Uri.parse(Uri.parse(_current).fragment).queryParameters;
 
   void goto(String address) {
+    if (address == null || address.isEmpty) {
+      return;
+    }
     var newUrl = "";
     if (address.startsWith("http")) {
       newUrl = address;

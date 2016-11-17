@@ -7,9 +7,13 @@ abstract class View {
   Map<String, Handler> _handlers;
   String _bindId;
   String _viewName;
-  static DivElement _currentView; // current active view
+  ObjectStore _store;
 
   bool get isValid;
+
+  String get viewName => _viewName;
+
+  ObjectStore get store => _store;
 
   View(String this._bindId, String this._viewName) {
     _handlers = {};
@@ -26,15 +30,35 @@ abstract class View {
     document.querySelector(_bindId).append(view);
   }
 
-  void show() {
-    if (_currentView != null) {
-      _currentView.hidden = true;
+  void show() => _hiddenState(false);
+
+  void hide() => _hiddenState(true);
+
+  void _hiddenState(bool state) {
+    DivElement div = document.querySelector('#${_viewName}');
+    if (div != null) {
+      div.hidden = state;
     }
-    _currentView = document.querySelector('#${_viewName}');
-    _currentView.hidden = false;
+  }
+
+  set store(ObjectStore store) {
+    _store = store;
+    bind(_store);
   }
 
   void bind(ObjectStore store);
+
+  void bindButton(String name, bool validate) {
+    ButtonElement button = document.querySelector('#${_viewName} button[name="${name}"]');
+    if (button == null) {
+      throw "Cannot find button with name {$name} in view ${_viewName}";
+    }
+    button.onClick.listen((event) {
+      event.preventDefault();
+      executeHandler(name, validate);
+    });
+  }
+
 
   addHandler(String key, Handler handler) {
     _handlers[key] = handler;      
@@ -63,10 +87,10 @@ abstract class View {
     fieldsWithError.forEach((String field, String message) {
       var elem = null;
       if (cls != null) {
-        elem = querySelector("#${cls}-${field}");
+        elem = querySelector('input[name="${cls}.${field}"]');
       }
       if (elem == null) {
-        elem = querySelector("#${field}");
+        elem = querySelector('input[name="${field}"]');
       }
       if (elem != null) {
         UiInputValidator._css.clear(elem);

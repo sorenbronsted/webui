@@ -5,6 +5,7 @@ export 'src/Address.dart';
 export 'src/EventBus.dart';
 export 'src/Formatter.dart';
 export 'src/Rest.dart';
+export 'src/ObjectStore.dart';
 
 import 'dart:html';
 import 'dart:async';
@@ -14,6 +15,7 @@ import 'src/Rest.dart';
 import 'src/Formatter.dart';
 import 'src/Address.dart';
 import 'src/EventBus.dart';
+import 'src/ObjectStore.dart';
 
 part 'src/View.dart';
 part 'src/Controller.dart';
@@ -22,12 +24,12 @@ part 'src/DefaultListCtrl.dart';
 part 'src/DefaultDetailView.dart';
 part 'src/DefaultDetailCtrl.dart';
 
+part 'src/UiBind.dart';
 part 'src/UiInputValidator.dart';
 part 'src/UiInputValidatorListener.dart';
 part 'src/UiBootStrapInputValidatorListener.dart';
 part 'src/UiBootStrapTableCss.dart';
 
-part 'src/ObjectStore.dart';
 part 'src/UiTh.dart';
 part 'src/UiTable.dart';
 part 'src/UiForm.dart';
@@ -37,6 +39,7 @@ part 'src/UiList.dart';
 part 'src/UiInputState.dart';
 part 'src/UiInput.dart';
 part 'src/UiInputType.dart';
+part 'src/UiTab.dart';
 
 initWebUi() {
   document.registerElement(UiTable.uiTagName, UiTable, extendsTag: 'table');
@@ -46,6 +49,7 @@ initWebUi() {
   document.registerElement(UiTextArea.uiTagName, UiTextArea, extendsTag: 'textarea');
   document.registerElement(UiSelect.uiTagName, UiSelect, extendsTag: 'select');
   document.registerElement(UiList.uiTagName, UiList, extendsTag: 'div');
+  document.registerElement(UiTab.uiTagName, UiTab, extendsTag: 'a');
 
   initializeDateFormatting("da_DK", null);
   Intl.defaultLocale = 'da_DK';

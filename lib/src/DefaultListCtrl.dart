@@ -19,8 +19,9 @@ class DefaultListCtrl extends Controller {
   }
 
   void load() {
-    Rest.instance.get('/rest/${_name}').then((data) {
-      _store.set('${_name}Table', data);
+    Rest.instance.get('/rest/${_name}').then((List<Map> data) {
+      _store.remove(_name);
+      _store.add(data);
       postLoad();
     });
   }
@@ -35,7 +36,7 @@ class DefaultListCtrl extends Controller {
   }
   
   _delete(String href) {
-    var answer = _view.confirm("Vil slette denne?");
+    var answer = view.confirm("Vil slette denne?");
     if (answer) {
       var tmp = href.split("#");
       var parts = tmp[1].split('/');

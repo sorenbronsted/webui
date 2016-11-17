@@ -18,14 +18,10 @@ class DefaultListView extends View implements UiTableListener {
     table.bind(store, this);
     table.listener = this;
 
-    ButtonElement create = document.querySelector('#create');
-    if (create != null) {
-      create.onClick.listen((event) {
-        event.preventDefault();
-        executeHandler('create', false);
-      });
+    try {
+      bindButton('create', false);
     }
-    else {
+    catch(e) {
       print("Default create button not found");
     }
   }

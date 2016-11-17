@@ -1,56 +1,73 @@
 
 part of webui;
 
-class UiSelect extends SelectElement implements ObjectStoreListener {
+class UiSelect extends SelectElement with UiBind implements ObjectStoreListener {
   static const String uiTagName = 'x-select';
 
-  String _class;
-  String _property;
+  String _optionProperty;
   String _options;
+  String _myvalue; //This shadows the value property, so that value can be set before any options are available
+  ObjectStore _store;
+
+  set bindOptions(String options) => _options = options;
+  set bindOptionDisplay(String optionDisplay) => _optionProperty = optionDisplay;
+
+  factory UiSelect([bind, String optionDisplay, String options]) {
+    UiSelect select = document.createElement('select', UiSelect.uiTagName);
+    if (bind != null) {
+      select.setBind(bind);
+    }
+    if (options != null && options.isNotEmpty && optionDisplay != null && optionDisplay.isEmpty) {
+      throw "options is used so option-display is needed";
+    }
+    select._options = options;
+    select._optionProperty = optionDisplay;
+    return select;
+  }
 
   UiSelect.created() : super.created() {
-    var display = attributes['option-display'];
+    setBind(getAttribute('bind'));
     _options = attributes['options'];
-    var parts = display.split('.');
-    if (parts.length < 1 || parts.length > 2) {
-      throw "UiSelect: wrong format. Must be class.property or property";
-    }
-    if (parts.length == 2) {
-      _class = parts[0];
-      _property = parts[1];
-    }
-    else {
-      _property = parts[0];
+    _optionProperty = attributes['option-display'];
+    if (options != null && options.isNotEmpty && _optionProperty != null && _optionProperty.isEmpty) {
+      throw "options is used so option-display is needed";
     }
   }
 
   void bind(ObjectStore store, View view) {
+    _store = store;
     onChange.listen((event) {
-      store.changeMapProperty(name, value);
+      store.setProperty(_cls, _property, value);
     });
-    store.addListener(name, this);
-    store.addListener(_options, this);
+    store.addListener(this, _cls, _property);
+    if (_options != null) {
+      store.addListener(this, _options);
+      valueChanged(_options, null);
+      valueChanged(_cls, _property);
+    }
   }
 
-  void valueChanged(String nameValue, Object changedValue) {
-    if (name == nameValue) {
+  void valueChanged(String cls, Object property) {
+    if (_cls == cls && _property == property) {
+      String changedValue = _store.getProperty(_cls, _property, _uid);
       value = changedValue;
+      _myvalue = changedValue;
     }
-    else if (_options == nameValue) {
+    else if (_options != null && _options == cls) {
       children.clear();
-      var list = (changedValue as List);
-      if (list.isEmpty) {
+      Iterable<Map> list = _store.getObjects(cls);
+      if (list == null || list.isEmpty) {
         return;
       }
       var options = new DocumentFragment();
-      (changedValue as List).forEach((Map elem) {
-        var row = (_class != null ? elem[_class] : elem);
+      list.forEach((Map row) {
         var option = new OptionElement();
-        option.value = "${row['uid']}";
-        option.appendText(row[_property]);
+        option.value = row['uid'].toString();
+        option.appendText(row[_optionProperty]);
         options.append(option);
       });
       append(options);
+      value = _myvalue;
     }
   }
 }

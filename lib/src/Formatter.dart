@@ -87,7 +87,11 @@ class NumberFmt implements Formatter {
     if (input == null || input.trim().isEmpty || format == null) {
       return input;
     }
-    return new NumberFormat(format).parse(input).toString();
+    num value = new NumberFormat(format).parse(input); //This allways returns a decimal
+    if (!format.contains('.')) {
+      value = value.toInt();
+    }
+    return value.toString();
   }
 }
 

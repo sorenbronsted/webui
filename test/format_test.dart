@@ -1,5 +1,4 @@
 
-import 'dart:math';
 import "package:test/test.dart";
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -18,7 +17,7 @@ void main() {
       var test = Format.display('number', source, '#,##0');
       expect(test, result);
       test = Format.internal('number', test, '#,##0');
-      expect(num.parse(test), num.parse(source));
+      expect(test, source);
     });
   });
 
@@ -31,7 +30,7 @@ void main() {
       var test = Format.display('number', source, '#,##0.00');
       expect(test, result);
       test = Format.internal('number', test, '#,##0.00');
-      expect(num.parse(test), num.parse(source));
+      expect(test, source);
     });
   });
 

@@ -23,7 +23,7 @@ class UiDefaultTableCss implements UiTableCss {
   }
 }
 
-class UiTable extends TableElement implements ObjectStoreListener {
+class UiTable extends TableElement with UiBind implements ObjectStoreListener {
   static const String uiTagName = 'x-table';
   static const none = 0;
   static const asc = 1;
@@ -41,6 +41,7 @@ class UiTable extends TableElement implements ObjectStoreListener {
   static set css(UiTableCss css) => _css = css;
 
   UiTable.created() : super.created() {
+    setBind(getAttribute('bind'));
     this.querySelectorAll('th.sortable').onClick.listen((event) {
       event.preventDefault();
       _setSortingUi(event.target);
@@ -50,10 +51,10 @@ class UiTable extends TableElement implements ObjectStoreListener {
 
   void bind(ObjectStore store, View view) {
     _view = view;
-    store.addListener(id, this);
+    store.addListener(this, _cls);
   }
 
-  void valueChanged(String name, List rows) {
+  void valueChanged(String cls, String property) {
     if (tHead == null || tHead.children.length != 1) {
       throw new Exception("Must have a thead element");
     }
@@ -63,17 +64,18 @@ class UiTable extends TableElement implements ObjectStoreListener {
     var body = tBodies.first;
     body.children.clear();
 
+    var objects = _view.store.getObjects(cls);
     var fragment;
-    if (rows.isEmpty) {
+    if (objects.isEmpty) {
       fragment = _noRows();
     }
     else {
-      fragment = _addRows(rows);
+      fragment = _addRows(objects);
     }
     body.append(fragment);
   }
 
-  DocumentFragment _addRows(List rows) {
+  DocumentFragment _addRows(List<Map> rows) {
     var fragment = new DocumentFragment();
     rows.forEach((row) {
       var tableRow = new TableRowElement();

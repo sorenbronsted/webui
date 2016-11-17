@@ -1,34 +1,33 @@
 
 part of webui;
 
-class UiList extends DivElement implements ObjectStoreListener {
+class UiList extends DivElement with UiBind implements ObjectStoreListener {
   static const String uiTagName = 'x-list';
 
-  String _name;
   View _view;
 
   UiList.created() : super.created() {
-    _name = attributes['name'];
+    setBind(getAttribute('bind'));
   }
 
   void bind(ObjectStore store, View view) {
-    store.addListener(_name, this);
+    store.addListener(this, _cls);
     _view = view;
   }
 
-  void valueChanged(String nameValue, List<Map> values) {
+  void valueChanged(String name, String property) {
     children.clear();
+    List<Map> values = _view.store.getObjects(name);
     if (values.isEmpty) {
       return;
     }
     values.forEach((Map value) {
-      var a = new AnchorElement(href : '${_name}/${value['uid']}');
-      a.appendText('${value['text']}');
+      var a = new AnchorElement();
+      a.appendText('${value['text']}'); //TODO must read from html tag
       children.add(a);
       a.onClick.listen((event) {
         event.preventDefault();
-        //TODO modify store instead
-        _view.executeHandler(_name, false, a.href);
+        _view.store.remove(_cls, value['uid']);
       });
     });
   }

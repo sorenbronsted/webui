@@ -1,12 +1,25 @@
 part of webui;
 
-class UiInput extends InputElement with UiInputState implements ObjectStoreListener, UiInputType {
+class UiInput extends InputElement with UiInputState, UiBind implements ObjectStoreListener, UiInputType {
   static const String uiTagName = 'x-input';
   String _uiType;
   String _format;
-  View _view;
+  ObjectStore _store;
+
+  set uiType(String uiType) => _uiType = uiType;
+  set format(String format) => _format = format;
+
+  factory UiInput([String bind, String xType, String format]) {
+    UiInput input = document.createElement('input', UiInput.uiTagName);
+    input.setBind(bind);
+    input._uiType = xType;
+    input._format = format;
+    input.resetUiState();
+    return input;
+  }
 
   UiInput.created() : super.created() {
+    setBind(getAttribute('bind'));
     _uiType = attributes['x-type'];
     _format = attributes['format'];
     resetUiState();
@@ -15,12 +28,32 @@ class UiInput extends InputElement with UiInputState implements ObjectStoreListe
   String get uiType => _uiType;
 
   void bind(ObjectStore store, View view) {
-    _view = view;
+    _store = store;
     if (type == 'file') {
       onChange.listen((event) {
         event.preventDefault();
-        store.set(name, files);
-        store.isDirty = true;
+        store.setProperty(_cls, _property, files);
+      });
+    }
+    else if (type == 'checkbox') {
+      onChange.listen((Event e) {
+        if (_uiType == 'selection') {
+          if (checked == true) {
+            _store.addCollectionProperty(_cls, _property, value, _uid);
+          }
+          else {
+            _store.removeCollectionProperty(_cls, _property, value, _uid);
+          }
+        }
+        else {
+          var value = (checked == true ? 1 : 0);
+          _store.setProperty(_cls, _property, value, _uid);
+        }
+      });
+    }
+    else if (type == 'radio') {
+      onChange.listen((Event e) {
+        _store.setProperty(_cls, _property, value, _uid);
       });
     }
     else {
@@ -28,7 +61,7 @@ class UiInput extends InputElement with UiInputState implements ObjectStoreListe
         if (isDirty) {
           _doValidate();
           if (isValid) {
-            store.changeMapProperty(name, Format.internal(_uiType, value, _format));
+            _store.setProperty(_cls, _property, Format.internal(_uiType, value, _format), _uid);
             isDirty = false;
           }
         }
@@ -41,12 +74,12 @@ class UiInput extends InputElement with UiInputState implements ObjectStoreListe
 
       onKeyUp.listen((event) => isDirty = true);
     }
-    store.addListener(name, this);
+    _store.addListener(this, _cls, _property);
   }
 
-  void valueChanged(String name, String changedValue) {
+  void valueChanged(String cls, String property) {
     resetUiState();
-    value = Format.display(_uiType, changedValue, _format);
+    value = Format.display(_uiType, _store.getProperty(cls, property), _format);
     UiInputValidator.reset(this);
   }
 
