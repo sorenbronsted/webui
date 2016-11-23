@@ -1,5 +1,7 @@
 library store;
 
+import 'package:logging/logging.dart';
+
 abstract class ObjectStoreListener {
   void valueChanged(String cls, String property);
 }
@@ -19,6 +21,7 @@ class ObjectStore {
    * The last lavel is a map of properties and values for the stored uid (object)
    * Another way to se it is class->uid->properties (name,value)
    */
+  final Logger log = new Logger('ObjectStore');
   Map<String, Map<String, Map>> _store;
   Map<String, List<ObjectStoreListener>> _listeners;
   bool _isDirty;
@@ -110,8 +113,9 @@ class ObjectStore {
       if (rows.isEmpty) {
         return;
       }
-      rows.forEach((Map row) => _addMap(row, name));
       String cls = (name != null ? name : (rows.first as Map).keys.first);
+      log.fine('addMap: ${cls}');
+      rows.forEach((Map row) => _addMap(row, name));
       _notifyListener(cls);
     }
     else {
@@ -119,8 +123,9 @@ class ObjectStore {
       if (row.isEmpty) {
         return;
       }
-      _addMap(row, name);
       String cls = (name != null ? name : row.keys.first);
+      log.fine('addMap: ${cls}');
+      _addMap(row, name);
       _notifyListener(cls);
       String uid = _store[cls].keys.first;
       _store[cls][uid].keys.forEach((String property) {
@@ -138,10 +143,12 @@ class ObjectStore {
     if (!_listeners.containsKey(name)) {
       _listeners[name] = [];
     }
+    log.fine('addListener: ${name}');
     _listeners[name].add(listener);
   }
 
   void remove(String cls, [String uid]) {
+    log.fine('remove: ${cls}.${uid}');
     if (_store.containsKey(cls) == true) {
       if (uid != null) {
         uid = _uid2String(uid);
@@ -165,6 +172,7 @@ class ObjectStore {
 
   void _notifyListener(String cls, [String property]) {
     var name = property != null ? "${cls}.${property}" : cls;
+    log.fine('notifyListener: ${name}');
     _listeners[name]?.forEach((elem) => elem.valueChanged(cls, property));
   }
 

@@ -3,7 +3,8 @@ part of webui;
 
 class DefaultListView extends View implements UiTableListener {
   String _name;
-  
+  final Logger log = new Logger('DefaultListView');
+
   DefaultListView(String name, [String bindId = '#content']) : super(bindId, '${name}List') {
     _name = name;
   }
@@ -22,7 +23,7 @@ class DefaultListView extends View implements UiTableListener {
       bindButton('create', false);
     }
     catch(e) {
-      print("Default create button not found");
+      log.info("Default create button not found");
     }
   }
 

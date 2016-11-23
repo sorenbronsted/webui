@@ -1,5 +1,6 @@
 
 import "package:test/test.dart";
+import "package:logging/logging.dart";
 import "../lib/src/ObjectStore.dart";
 
 //TODO make this work with dartium. Se https://pub.dartlang.org/packages/test
@@ -19,6 +20,11 @@ class ListenerMock implements ObjectStoreListener {
 
 void main() {
   ObjectStore store;
+
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((LogRecord rec) {
+    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+  });
 
   setUp(() {
     store = new ObjectStore();

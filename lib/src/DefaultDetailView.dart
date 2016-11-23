@@ -4,6 +4,7 @@ part of webui;
 class DefaultDetailView extends View {
   String _name;
   UiForm _form;
+  final Logger log = new Logger('DefaultDetailView');
 
   String get name => _name;
 
@@ -23,7 +24,7 @@ class DefaultDetailView extends View {
       bindButton('cancel', false);
     }
     catch(e) {
-      print("Default save or cancel button not found");
+      log.info("Default save or cancel button not found");
     }
   }
 

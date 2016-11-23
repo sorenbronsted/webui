@@ -4,6 +4,7 @@ library rest;
 import 'dart:html';
 import 'dart:async';
 import 'dart:convert';
+import 'package:logging/logging.dart';
 import 'EventBus.dart';
 
 typedef void RestError(String text);
@@ -11,14 +12,15 @@ typedef void RestError(String text);
 class Rest {
   static const eventRequestStart = "eventRequestStart";
   static const eventRequestDone = "eventRequestDone";
-  
+  final Logger log = new Logger('Rest');
+
   static Rest _instance;
   RestError _errorHandler;
 
   Rest._internal() {
     // Default error handler
     _errorHandler = (text) {
-      print(text);
+      log.shout(text);
     };
   }
   

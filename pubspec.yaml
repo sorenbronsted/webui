@@ -4,5 +4,6 @@ author: Søren Brønsted
 description: GUI framework for single page applications
 dependencies:
   intl: any
+  logging: any
 dev_dependencies:
   test: any
