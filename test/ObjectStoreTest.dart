@@ -1,5 +1,4 @@
 
-import 'dart:convert';
 import "package:test/test.dart";
 import "../lib/src/ObjectStore.dart";
 
@@ -103,7 +102,8 @@ void main() {
     expect(store.getProperty('Dog', 'uid'), '1');
     expect(store.getProperty('Dog', 'name'), 'Fido');
 
-    store.replace({"Dog":{"uid":'2',"name":"Egon"}});
+    store.remove('Dog');
+    store.add({"Dog":{"uid":'2',"name":"Egon"}});
     expect(store.getProperty('Dog', 'uid'), '2');
     expect(store.getProperty('Dog', 'name'), 'Egon');
   });
@@ -112,7 +112,8 @@ void main() {
     store.add([{"Dog":{"uid":'1',"name":"Fido"}},{"Dog":{"uid":'2',"name":"Egon"}}]);
     expect(store.getObjects('Dog').length, 2);
 
-    store.replace([{"Dog":{"uid":'1',"name":"Fido"}}]);
+    store.remove('Dog');
+    store.add([{"Dog":{"uid":'1',"name":"Fido"}}]);
     expect(store.getObjects('Dog').length, 1);
   });
 

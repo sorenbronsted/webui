@@ -12,6 +12,7 @@ class UiTextArea extends TextAreaElement with UiInputState, UiBind implements Ob
   }
 
   String get uiType => _uiType;
+  String get format => '';
 
   void bind(ObjectStore store, View view) {
     _view = view;

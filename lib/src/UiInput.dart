@@ -7,7 +7,10 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
   ObjectStore _store;
 
   set uiType(String uiType) => _uiType = uiType;
+  String get uiType => _uiType;
+
   set format(String format) => _format = format;
+  String get format => _format;
 
   factory UiInput([String bind, String xType, String format]) {
     UiInput input = document.createElement('input', UiInput.uiTagName);
@@ -24,8 +27,6 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
     _format = attributes['format'];
     resetUiState();
   }
-
-  String get uiType => _uiType;
 
   void bind(ObjectStore store, View view) {
     _store = store;
@@ -75,11 +76,12 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
       onKeyUp.listen((event) => isDirty = true);
     }
     _store.addListener(this, _cls, _property);
+    valueChanged(_cls, _property);
   }
 
   void valueChanged(String cls, String property) {
     resetUiState();
-    value = Format.display(_uiType, _store.getProperty(cls, property), _format);
+    value = Format.display(_uiType, _store.getProperty(cls, property, _uid), _format);
     UiInputValidator.reset(this);
   }
 

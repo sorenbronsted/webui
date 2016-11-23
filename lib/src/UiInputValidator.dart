@@ -27,8 +27,7 @@ class UiInputValidator {
   static bool validate(UiInputType input) {
     var isValid = true;
 
-    if (input.attributes.containsKey("readonly") ||
-        input.attributes.containsKey("disabled")) {
+    if (input.readOnly == true || input.disabled == true) {
       return isValid;
     }
 
@@ -36,8 +35,8 @@ class UiInputValidator {
       if (input.required) {
         input.value = _required(input.value);
       }
-      var type = input.attributes['x-type'];
-      var format = input.attributes['format'];
+      var type = input.uiType;
+      var format = input.format;
       if (_methods.containsKey(type)) {
         input.value = _methods[type](input.value, format);
       }
