@@ -60,7 +60,7 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
     else {
       onBlur.listen((Event e) {
         if (isDirty) {
-          _doValidate();
+          validate();
           if (isValid) {
             _store.setProperty(_cls, _property, Format.internal(_uiType, value, _format), _uid);
             isDirty = false;
