@@ -192,6 +192,9 @@ class UiInputValidator {
   static String _caseNumber(String input, String empty) {
     var msg = "Sagsnr er ikke gyldigt, Fx 10/01 eller 20010001.";
     var value = input.trim();
+    if (value.isEmpty) {
+      return input;
+    }
     try {
       var number = 0;
       if (value.indexOf("/") >= 0) {
