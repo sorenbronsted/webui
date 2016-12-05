@@ -54,6 +54,7 @@ class ObjectStore {
     if (object[property] == null) {
       object[property] = [];
     }
+    log.fine('addCollectionProperty: ${cls}.${property} value ${value}');
     (object[property] as List).add(value);
     _isDirty = true;
   }
@@ -63,6 +64,7 @@ class ObjectStore {
     if (object[property] == null) {
       return;
     }
+    log.fine('removeCollectionProperty: ${cls}.${property} value ${value}');
     (object[property] as List).remove(value);
     _isDirty = true;
   }

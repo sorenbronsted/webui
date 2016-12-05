@@ -18,11 +18,17 @@ abstract class View {
   View(String this._bindId, String this._viewName) {
     _handlers = {};
 
+    // Check if allready loaded
+    var view = document.querySelector('#${_viewName}');
+    if (view != null) {
+      return;
+    }
+
     LinkElement htmlFragment = document.querySelector('#${_viewName}Import');
     if (htmlFragment == null) {
       throw "#${_viewName}Import not found";
     }
-    var view = htmlFragment.import.querySelector('#${_viewName}');
+    view = htmlFragment.import.querySelector('#${_viewName}');
     if (view == null) {
       throw "#${_viewName} not found";
     }
@@ -65,7 +71,7 @@ abstract class View {
   }
 
   executeHandler(String key, bool validRequired, [String data]) {
-    if (validRequired && !isValid) {
+    if (validRequired == true && isValid == false) {
       return;
     }
     Handler handle = _handlers[key];
