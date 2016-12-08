@@ -41,6 +41,7 @@ part 'src/UiInputState.dart';
 part 'src/UiInput.dart';
 part 'src/UiInputType.dart';
 part 'src/UiTab.dart';
+part 'src/UiSpan.dart';
 
 initWebUi() {
   document.registerElement(UiTable.uiTagName, UiTable, extendsTag: 'table');
@@ -51,6 +52,7 @@ initWebUi() {
   document.registerElement(UiSelect.uiTagName, UiSelect, extendsTag: 'select');
   document.registerElement(UiList.uiTagName, UiList, extendsTag: 'div');
   document.registerElement(UiTab.uiTagName, UiTab, extendsTag: 'a');
+  document.registerElement(UiSpan.uiTagName, UiSpan, extendsTag: 'span');
 
   initializeDateFormatting("da_DK", null);
   Intl.defaultLocale = 'da_DK';

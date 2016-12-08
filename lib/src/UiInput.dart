@@ -59,13 +59,7 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
     }
     else {
       onBlur.listen((Event e) {
-        if (isDirty) {
-          validate();
-          if (isValid) {
-            _store.setProperty(_cls, _property, Format.internal(_uiType, value, _format), _uid);
-            isDirty = false;
-          }
-        }
+        _writeStore();
       });
 
       onFocus.listen((event) {
@@ -74,6 +68,12 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
       });
 
       onKeyUp.listen((event) => isDirty = true);
+
+      onKeyDown.listen((event) {
+        if (event.keyCode == 13) {
+          _writeStore();
+        }
+      });
     }
     _store.addListener(this, _cls, _property);
     valueChanged(_cls, _property);
@@ -87,5 +87,15 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
 
   bool _doValidate() {
     return UiInputValidator.validate(this);
+  }
+
+  void _writeStore() {
+    if (isDirty) {
+      validate();
+      if (isValid) {
+        _store.setProperty(_cls, _property, Format.internal(_uiType, value, _format), _uid);
+        isDirty = false;
+      }
+    }
   }
 }
