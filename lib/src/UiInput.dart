@@ -12,7 +12,7 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
   set format(String format) => _format = format;
   String get format => _format;
 
-  factory UiInput([String bind, String xType, String format]) {
+  factory UiInput(String bind, [String xType, String format]) {
     UiInput input = document.createElement('input', UiInput.uiTagName);
     input.setBind(bind);
     input._uiType = xType;
@@ -53,6 +53,7 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
       });
     }
     else if (type == 'radio') {
+      name = '${cls}.${property}'; // name must set for radio button to work
       onChange.listen((Event e) {
         _store.setProperty(_cls, _property, value, _uid);
       });
