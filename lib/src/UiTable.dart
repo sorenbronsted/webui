@@ -42,16 +42,16 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
 
   UiTable.created() : super.created() {
     setBind(getAttribute('bind'));
-    this.querySelectorAll('th.sortable').onClick.listen((event) {
-      event.preventDefault();
-      _setSortingUi(event.target);
-      _doSort();
-    });
   }
 
   void bind(ObjectStore store, View view) {
     _view = view;
     store.addListener(this, _cls);
+    querySelectorAll('#${id} th.sortable').onClick.listen((event) {
+      event.preventDefault();
+      _setSortingUi(event.target);
+      _doSort();
+    });
   }
 
   void valueChanged(String cls, String property) {
@@ -83,7 +83,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
 
       // Make the table row
       fragment.append(tableRow);
-      var columns = tHead.querySelectorAll('th');
+      var columns = querySelectorAll('#${id} th');
       columns.forEach((UiTh column) => column.addCell(_view, _listener, tableRow, row));
     });
     return fragment;
@@ -128,7 +128,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
   }
 
   void _setSortingUi(TableCellElement target) {
-    if (_orderBy != null && _orderBy.attributes['name'] == target.attributes['name']) {
+    if (_orderBy != null && _orderBy.attributes['bind'] == target.attributes['bind']) {
       _direction++;
       if (_direction > 2) {
         _direction = none;
