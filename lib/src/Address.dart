@@ -1,21 +1,19 @@
 
-library address;
-
-import 'dart:html';
-import 'EventBus.dart';
+part of webui;
 
 class Address {
-  
   static const eventAddressChanged = "AddressChanged";
-  
+  final Logger log = new Logger('Address');
+
   String _current = "";
   static Address _instance = null;
   
   Address._internal() {
     window.onHashChange.listen((event) {
+      log.fine('onHashChange: _current ${_current} location.href ${window.location.href}');
       if (_current != window.location.href) {
         _current = window.location.href;
-        EventBus.instance.fire(eventAddressChanged);
+        EventBus.instance.fire(this, new BusEvent(eventAddressChanged));
       }
     });
   }
@@ -36,6 +34,7 @@ class Address {
   Map<String, String> get parameters => Uri.parse(Uri.parse(_current).fragment).queryParameters;
 
   void goto(String address) {
+    log.fine('goto: address ${address}');
     if (address == null || address.isEmpty) {
       return;
     }

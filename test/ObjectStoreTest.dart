@@ -1,11 +1,13 @@
 
+import 'dart:core';
 import "package:test/test.dart";
 import "package:logging/logging.dart";
 import "../lib/src/ObjectStore.dart";
+import 'package:webui/src/EventBus.dart';
 
 //TODO make this work with dartium. Se https://pub.dartlang.org/packages/test
 
-class ListenerMock implements ObjectStoreListener {
+class ObjectStoreListenerMock implements ObjectStoreListener {
   int called = 0;
   String cls;
   Object property;
@@ -21,7 +23,7 @@ class ListenerMock implements ObjectStoreListener {
 void main() {
   ObjectStore store;
 
-  Logger.root.level = Level.ALL;
+  Logger.root.level = Level.SEVERE;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
@@ -31,10 +33,13 @@ void main() {
   });
 
   test('Test add one object', () {
-    ListenerMock listenerClass = new ListenerMock();
+    int stateChangedCalled = 0;
+    store.addStateListener(() => stateChangedCalled++);
+
+    ObjectStoreListenerMock listenerClass = new ObjectStoreListenerMock();
     store.addListener(listenerClass, 'Dog');
 
-    ListenerMock listenerProperty = new ListenerMock();
+    ObjectStoreListenerMock listenerProperty = new ObjectStoreListenerMock();
     store.addListener(listenerProperty, 'Dog', 'uid');
 
     store.add({"Dog":{"uid":1,"name":"Fido"}});
@@ -48,13 +53,16 @@ void main() {
     expect(listenerProperty.cls, 'Dog');
     expect(listenerProperty.property, 'uid', );
     expect(listenerProperty.called, 1);
+
+    expect(stateChangedCalled, 0);
+    expect(store.isDirty, false);
   });
 
   test('Test add 2 objects', () {
-    ListenerMock listenerClass = new ListenerMock();
+    ObjectStoreListenerMock listenerClass = new ObjectStoreListenerMock();
     store.addListener(listenerClass, 'Dog');
 
-    ListenerMock listenerProperty = new ListenerMock();
+    ObjectStoreListenerMock listenerProperty = new ObjectStoreListenerMock();
     store.addListener(listenerProperty, 'Dog', 'name');
 
     store.add([{"Dog":{"uid":1,"name":"Fido"}},{"Dog":{"uid":2,"name":"Egon"}}]);
@@ -76,14 +84,22 @@ void main() {
   });
 
   test('Test setProperty', () {
-    ListenerMock listenerClass = new ListenerMock();
+    int stateChangedCalled = 0;
+    store.addStateListener(() => stateChangedCalled++);
+
+    ObjectStoreListenerMock listenerClass = new ObjectStoreListenerMock();
     store.addListener(listenerClass, 'Dog');
+
+    expect(stateChangedCalled, 0);
+
     store.setProperty('Dog', 'name', 'Hund');
 
     expect(store.getProperty('Dog', 'name'), 'Hund');
+    expect(stateChangedCalled, 1);
     expect(store.isDirty, true);
     expect(store.getProperty('Dog', 'uid'), '0');
     expect(listenerClass.called, 0);
+    expect(stateChangedCalled, 1);
   });
 
   test('Test class not found', () {

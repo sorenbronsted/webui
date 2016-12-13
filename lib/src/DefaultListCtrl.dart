@@ -18,6 +18,11 @@ class DefaultListCtrl extends Controller {
     return (parts[0] == 'list' && parts[1] == _name);
   }
 
+  @override
+  void _stateChanged() {
+    // Default behavior in list controllers is not to react to object store changes
+  }
+
   void load() {
     Rest.instance.get('/rest/${_name}').then((List<Map> data) {
       _store.remove(_name);

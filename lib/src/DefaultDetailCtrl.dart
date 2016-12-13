@@ -45,6 +45,7 @@ class DefaultDetailCtrl extends Controller {
     }
     Map data = _store.getObject(_name);
     Rest.instance.post("/rest/$_name", data).then((Map postResult) {
+      store.isDirty = false;
       Address.instance.back();
     }).catchError((error) {
       if (error is Map) {

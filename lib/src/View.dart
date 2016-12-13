@@ -4,6 +4,7 @@ part of webui;
 typedef void Handler(String data);
 
 abstract class View {
+  final Logger log = new Logger('View');
   Map<String, Handler> _handlers;
   String _bindId;
   String _viewName;
@@ -71,6 +72,7 @@ abstract class View {
   }
 
   executeHandler(String key, bool validRequired, [String data]) {
+    log.fine('executeHandler: validRequired ${validRequired} isValid ${isValid}');
     if (validRequired == true && isValid == false) {
       return;
     }

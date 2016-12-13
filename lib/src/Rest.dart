@@ -10,8 +10,8 @@ import 'EventBus.dart';
 typedef void RestError(String text);
 
 class Rest {
-  static const eventRequestStart = "eventRequestStart";
-  static const eventRequestDone = "eventRequestDone";
+  static String eventRequestStart = 'RequestStart';
+  static String eventRequestDone = 'RequestDone';
   final Logger log = new Logger('Rest');
 
   static Rest _instance;
@@ -39,10 +39,10 @@ class Rest {
     req.open('GET', url);
     req.onReadyStateChange.listen((Event e) {
       if (req.readyState == HttpRequest.HEADERS_RECEIVED) {
-        EventBus.instance.fire(eventRequestStart);
+        EventBus.instance.fire(this, new BusEvent(eventRequestStart));
       }
       else if (req.readyState == HttpRequest.DONE) {
-        EventBus.instance.fire(eventRequestDone);
+        EventBus.instance.fire(this, new BusEvent(eventRequestDone));
         switch (req.status) {
           case 0:
           case 200:
@@ -81,10 +81,10 @@ class Rest {
     var req = new HttpRequest();
     req.onReadyStateChange.listen((Event e) {
       if (req.readyState == HttpRequest.OPENED) {
-        EventBus.instance.fire(eventRequestStart);
+        EventBus.instance.fire(this, new BusEvent(eventRequestStart));
       }
       else if (req.readyState == HttpRequest.DONE) {
-        EventBus.instance.fire(eventRequestDone);
+        EventBus.instance.fire(this, new BusEvent(eventRequestDone));
         switch (req.status) {
           case 0:
           case 200:

@@ -3,15 +3,26 @@ library eventbus;
 
 import 'package:logging/logging.dart';
 
-typedef void EventBusAction(String event);
+class BusEvent {
+  String _name;
+  Object _value;
 
-class EventBusListener {
-  void register(EventBus eventBus) {}
+  String get name => _name;
+  Object get value => _value;
+
+  BusEvent(this._name, [this._value]);
+
+  String toString() => name;
+}
+
+abstract class EventBusListener {
+  void register(EventBus bus);
+  void run(BusEvent event);
 }
 
 class EventBus {
   final Logger log = new Logger('EventBus');
-  Map eventListenerMap = new Map<String, List<EventBusAction> >();
+  List<EventBusListener> listeners = [];
 
   static EventBus _instance;
 
@@ -29,41 +40,24 @@ class EventBus {
     listener.register(this);
   }
   
-  void listenOn(String event, EventBusAction listener) {
-    assert(event != null);
+  void listenOn(EventBusListener listener) {
     assert(listener != null);
-    log.fine("listenOn ${event}");
-
-    var listeners = eventListenerMap[event];
-    if (listeners == null) {
-      listeners = new List<EventBusAction>();
-      eventListenerMap[event] = listeners;
-    }
+    log.fine("listenOn ${listener}");
     listeners.add(listener);
   }
   
-  void listenOff(String event, EventBusAction listener) {
-    assert(event != null);
+  void listenOff(EventBusListener listener) {
     assert(listener != null);
-    log.fine("listenOff ${event}");
-
-    var listeners = eventListenerMap[event];
-    if (listeners != null) {
-      var idx = listeners.indexOf(listener);
-      if (idx >= 0) {
-        listeners.removeAt(idx);
-      }
-    }
+    log.fine("listenOff ${listener}");
+    listeners.remove(listener);
   }
   
-  void fire(String event) {
+  void fire(Object sender, BusEvent event) {
     assert(event != null);
     log.fine("fire $event");
-    eventListenerMap.forEach((eventName, listeners) {
-      if (event == eventName) {
-        listeners.forEach((listener) {
-          listener(event);
-        });
+    listeners.forEach((EventBusListener listener) {
+      if (sender != listener) {
+        listener.run(event);
       }
     });
   }

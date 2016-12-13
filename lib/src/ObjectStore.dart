@@ -3,194 +3,221 @@ library store;
 import 'package:logging/logging.dart';
 
 abstract class ObjectStoreListener {
-  void valueChanged(String cls, String property);
+	void valueChanged(String cls, String property);
 }
 
 class NotFound {
-  String msg;
-  NotFound(this.msg);
-  String toString() => msg;
+	String msg;
+
+	NotFound(this.msg);
+
+	String toString() => msg;
 }
 
 /**
  * Objectstore manages object which the ui elements binds to.
  */
 class ObjectStore {
-  /* The store is organized as a map where the the first key is the class name.
+	/* The store is organized as a map where the the first key is the class name.
    * The next level is also a a map indexed by the uid
    * The last lavel is a map of properties and values for the stored uid (object)
    * Another way to se it is class->uid->properties (name,value)
    */
-  final Logger log = new Logger('ObjectStore');
-  Map<String, Map<String, Map>> _store;
-  Map<String, List<ObjectStoreListener>> _listeners;
-  bool _isDirty;
+	final Logger log = new Logger('ObjectStore');
+	Map<String, Map<String, Map>> _store;
+	Map<String, List<ObjectStoreListener>> _listeners;
+	List<Function> _stateListeners;
+	bool _isDirty;
 
-  bool get isDirty => _isDirty;
-  set isDirty(bool state) => _isDirty = state;
+	bool get isDirty => _isDirty;
 
-  ObjectStore() {
-    _store = {};
-    _listeners = {};
-    _isDirty = false;
-  }
+	set isDirty(bool state) {
+		if (_isDirty == state) {
+			return;
+		}
+		log.fine('isDirty changed from ${isDirty} to ${state}');
+		_isDirty = state;
+		_stateListeners.forEach((listener) => listener());
+	}
 
-  Object getProperty(String cls, String property, [String uid]) {
-    Map object = getObject(cls, uid);
-    if (object.containsKey(property) == false) {
-      return null;
-    }
-    return object[property];
-  }
+	ObjectStore() {
+		_store = {};
+		_listeners = {};
+		_stateListeners = [];
+		_isDirty = false;
+	}
 
-  void setProperty(String cls, String property, Object value, [String uid]) {
-    Map object = _getObject(cls, uid);
-    object[property] = value;
-    _isDirty = true;
-  }
+	Object getProperty(String cls, String property, [String uid]) {
+		Map object = getObject(cls, uid);
+		if (object.containsKey(property) == false) {
+			return null;
+		}
+		return object[property];
+	}
 
-  void addCollectionProperty(String cls, String property, Object value, [String uid]) {
-    Map object = _getObject(cls, uid);
-    if (object[property] == null) {
-      object[property] = [];
-    }
-    log.fine('addCollectionProperty: ${cls}.${property} value ${value}');
-    (object[property] as List).add(value);
-    _isDirty = true;
-  }
+	void setProperty(String cls, String property, Object value, [String uid]) {
+		Map object = _getObject(cls, uid);
+		object[property] = value;
+		isDirty = true;
+	}
 
-  void removeCollectionProperty(String cls, String property, Object value, [String uid]) {
-    Map object = _getObject(cls, uid);
-    if (object[property] == null) {
-      return;
-    }
-    log.fine('removeCollectionProperty: ${cls}.${property} value ${value}');
-    (object[property] as List).remove(value);
-    _isDirty = true;
-  }
+	void addCollectionProperty(String cls, String property, Object value,
+		[String uid]) {
+		Map object = _getObject(cls, uid);
+		if (object[property] == null) {
+			object[property] = [];
+		}
+		log.fine('addCollectionProperty: ${cls}.${property} value ${value}');
+		(object[property] as List).add(value);
+		isDirty = true;
+	}
 
-  Map _getObject(String cls, String uid) {
-    if (_store[cls] == null) {
-      _store[cls] = {};
-      _store[cls]['0'] = {'uid':'0'};
-    }
-    if (uid == null) {
-      uid = _store[cls].keys.first;
-    }
-    else {
-      uid = _uid2String(uid);
-    }
-    return _store[cls][uid];
-  }
+	void removeCollectionProperty(String cls, String property, Object value,
+		[String uid]) {
+		Map object = _getObject(cls, uid);
+		if (object[property] == null) {
+			return;
+		}
+		log.fine('removeCollectionProperty: ${cls}.${property} value ${value}');
+		(object[property] as List).remove(value);
+		isDirty = true;
+	}
 
-  void setPropertyWithNofication(String cls, String property, Object value, [String uid]) {
-    setProperty(cls, property, value, uid);
-    _notifyListener(cls, property);
-  }
+	Map _getObject(String cls, String uid) {
+		if (_store[cls] == null) {
+			_store[cls] = {};
+			_store[cls]['0'] = {'uid':'0'};
+		}
+		if (uid == null) {
+			uid = _store[cls].keys.first;
+		}
+		else {
+			uid = _uid2String(uid);
+		}
+		return _store[cls][uid];
+	}
 
-  Map getObject(String cls, [String uid]) {
-    if (cls == null) {
-      return {};
-    }
-    uid = _uid2String(uid);
-    if (_store.containsKey(cls) == false || (uid != null && _store[cls][uid] == null)) {
-      return {};
-    }
-    if (uid == null) {
-      uid = _store[cls].keys.first;
-    }
-    return _store[cls][uid];
-  }
+	void setPropertyWithNofication(String cls, String property, Object value,
+		[String uid]) {
+		setProperty(cls, property, value, uid);
+		_notifyListener(cls, property);
+	}
 
-  Iterable<Map> getObjects(String cls) {
-    if (_store.containsKey(cls) == true) {
-      return _store[cls].values;
-    }
-    return [];
-  }
+	Map getObject(String cls, [String uid]) {
+		if (cls == null) {
+			return {};
+		}
+		uid = _uid2String(uid);
+		if (_store.containsKey(cls) == false ||
+			(uid != null && _store[cls][uid] == null)) {
+			return {};
+		}
+		if (uid == null) {
+			uid = _store[cls].keys.first;
+		}
+		return _store[cls][uid];
+	}
 
-  void add(Object data, [String name]) {
-    if (data is List) {
-      List rows = data;
-      if (rows.isEmpty) {
-        return;
-      }
-      String cls = (name != null ? name : (rows.first as Map).keys.first);
-      log.fine('addMap: ${cls}');
-      rows.forEach((Map row) => _addMap(row, name));
-      _notifyListener(cls);
-    }
-    else {
-      Map row = data;
-      if (row.isEmpty) {
-        return;
-      }
-      String cls = (name != null ? name : row.keys.first);
-      log.fine('addMap: ${cls}');
-      _addMap(row, name);
-      _notifyListener(cls);
-      String uid = _store[cls].keys.first;
-      _store[cls][uid].keys.forEach((String property) {
-        _notifyListener(cls, property);
-      });
-    }
-    _isDirty = false;
-  }
+	Iterable<Map> getObjects(String cls) {
+		if (_store.containsKey(cls) == true) {
+			return _store[cls].values;
+		}
+		return [];
+	}
 
-  void addListener(ObjectStoreListener listener, String cls, [String property]) {
-    var name = property != null ? "${cls}.${property}" : cls;
-    if (name == null || name.isEmpty) {
-      return;
-    }
-    if (!_listeners.containsKey(name)) {
-      _listeners[name] = [];
-    }
-    log.fine('addListener: ${name}');
-    _listeners[name].add(listener);
-  }
+	void add(Object data, [String name]) {
+		if (data is List) {
+			List rows = data;
+			if (rows.isEmpty) {
+				return;
+			}
+			String cls = (name != null ? name : (rows.first as Map).keys.first);
+			log.fine('addMap: ${cls}');
+			rows.forEach((Map row) => _addMap(row, name));
+			_notifyListener(cls);
+		}
+		else {
+			Map row = data;
+			if (row.isEmpty) {
+				return;
+			}
+			String cls = (name != null ? name : row.keys.first);
+			log.fine('addMap: ${cls}');
+			_addMap(row, name);
+			_notifyListener(cls);
+			String uid = _store[cls].keys.first;
+			_store[cls][uid].keys.forEach((String property) {
+				_notifyListener(cls, property);
+			});
+		}
+		isDirty = false;
+	}
 
-  void remove(String cls, [String uid]) {
-    log.fine('remove: ${cls}.${uid}');
-    if (_store.containsKey(cls) == true) {
-      if (uid != null) {
-        uid = _uid2String(uid);
-        if (_store[cls].containsKey(uid) == false) {
-          return;
-        }
-        _store[cls].remove(uid);
-      }
-      else {
-        _store.remove(cls);
-      }
-    }
-    _notifyListener(cls);
-    _listeners.keys.forEach((String key) { //TODO This is not optimal. Need to rethink notification model
-      var parts = key.split('.');
-      if (parts.length == 2 && cls == parts[0]) {
-        _notifyListener(cls, parts[1]);
-      }
-    });
-  }
+	void addListener(ObjectStoreListener listener, String cls, [String property]) {
+		var name = property != null ? "${cls}.${property}" : cls;
+		if (name == null || name.isEmpty) {
+			return;
+		}
+		if (!_listeners.containsKey(name)) {
+			_listeners[name] = [];
+		}
+		log.fine('addListener: ${name}');
+		_listeners[name].add(listener);
+	}
 
-  void _notifyListener(String cls, [String property]) {
-    var name = property != null ? "${cls}.${property}" : cls;
-    log.fine('notifyListener: ${name}');
-    _listeners[name]?.forEach((elem) => elem.valueChanged(cls, property));
-  }
+	void addStateListener(Function listener) {
+		if (_stateListeners.contains(listener)) {
+			return;
+		}
+		log.fine('addStateListener: ${listener}');
+		_stateListeners.add(listener);
+	}
 
-  void _addMap(Map object, [String name]) {
-    var cls = object.keys.first;
-    Map properties = object[cls];
-    String uid = _uid2String(properties['uid']);
+	void remove(String cls, [String uid]) {
+		log.fine('remove: ${cls}.${uid}');
+		if (_store.containsKey(cls) == true) {
+			if (uid != null) {
+				uid = _uid2String(uid);
+				if (_store[cls].containsKey(uid) == false) {
+					return;
+				}
+				_store[cls].remove(uid);
+			}
+			else {
+				_store.remove(cls);
+			}
+		}
+		_notifyListener(cls);
+		_listeners.keys.forEach((
+			String key) { //TODO This is not optimal. Need to rethink notification model
+			var parts = key.split('.');
+			if (parts.length == 2 && cls == parts[0]) {
+				_notifyListener(cls, parts[1]);
+			}
+		});
+		isDirty = false;
+	}
 
-    var storeName = (name != null ? name : cls);
-    if (_store[storeName] == null) {
-      _store[storeName] = {};
-      _store[storeName][uid] = {};
-    }
+	void _notifyListener(String cls, [String property]) {
+		var name = property != null ? "${cls}.${property}" : cls;
+		log.fine('notifyListener: ${name}');
+		_listeners[name]?.forEach((elem) => elem.valueChanged(cls, property));
+	}
 
-    _store[storeName][uid] = properties;
-  }
+	void _addMap(Map object, [String name]) {
+		var cls = object.keys.first;
+		Map properties = object[cls];
+		String uid = _uid2String(properties['uid']);
 
-  String _uid2String(Object uid) => uid == null ? null : uid.toString();
- }
+		var storeName = (name != null ? name : cls);
+		if (_store[storeName] == null) {
+			_store[storeName] = {};
+			_store[storeName][uid] = {};
+		}
+
+		_store[storeName][uid] = properties;
+	}
+
+	String _uid2String(Object uid) => uid == null ? null : uid.toString();
+}
+

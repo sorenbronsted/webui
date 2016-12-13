@@ -1,7 +1,6 @@
 
 library webui;
 
-export 'src/Address.dart';
 export 'src/EventBus.dart';
 export 'src/Formatter.dart';
 export 'src/Rest.dart';
@@ -14,10 +13,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:logging/logging.dart';
 import 'src/Rest.dart';
 import 'src/Formatter.dart';
-import 'src/Address.dart';
 import 'src/EventBus.dart';
 import 'src/ObjectStore.dart';
 
+part 'src/Address.dart';
 part 'src/View.dart';
 part 'src/Controller.dart';
 part 'src/DefaultListView.dart';

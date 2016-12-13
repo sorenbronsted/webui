@@ -2,9 +2,13 @@
 part of webui;
 
 abstract class Controller implements EventBusListener {
+  static const eventDirtyChanged = 'dirtyChanged';
+  final Logger log = new Logger('Controller');
+
   List<View> _views;
   ObjectStore _store;
   List<Future> _preloaded;
+  EventBus _eventBus;
 
   View get view => _views[0];
 
@@ -14,6 +18,7 @@ abstract class Controller implements EventBusListener {
 
   Controller([View view]) {
     _store = new ObjectStore();
+    _store.addStateListener(stateChanged);
     _views = [];
     if (view != null) {
       addView(view);
@@ -28,20 +33,29 @@ abstract class Controller implements EventBusListener {
   // Register which methods to call when on which events
   @override
   void register(EventBus eventBus) {
-    eventBus.listenOn(Address.eventAddressChanged, run);
+    _eventBus = eventBus;
+    _eventBus.listenOn(this);
   }
 
-  void run(String event) {
-    if (!canRun()) {
-      hideViews();
-      return;
-    }
-    showViews();
+  @override
+  void run(BusEvent event) {
+    switch (event.name) {
+      case Address.eventAddressChanged:
+        if (!canRun()) {
+          hideViews();
+          return;
+        }
+        showViews();
 
-    if (_preloaded == null) {
-      _preloaded = preLoad();
+        if (_preloaded == null) {
+          _preloaded = preLoad();
+        }
+        Future.wait(_preloaded).then((_) => load());
+        break;
+      case eventDirtyChanged:
+        dirtyChanged(event);
+        break;
     }
-    Future.wait(_preloaded).then((_) => load());
   }
 
   // Hide all views
@@ -62,4 +76,15 @@ abstract class Controller implements EventBusListener {
 
   // Load data
   void load();
+
+  // Some other controller is now dirty;
+  void dirtyChanged(BusEvent event) {
+    // Default do nothing
+  }
+
+  // Called from ObjectStore when local store is dirty
+  void stateChanged() {
+    log.fine('stateChanged: ${this}');
+    _eventBus?.fire(this, new BusEvent(eventDirtyChanged, store.isDirty));
+  }
 }

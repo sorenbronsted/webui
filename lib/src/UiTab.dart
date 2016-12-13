@@ -18,9 +18,9 @@ class UiTab extends AnchorElement with UiBind implements ObjectStoreListener {
     onClick.listen((event) {
       event.preventDefault();
       Uri uri = Uri.parse(href);
-      if (uri.pathSegments.isNotEmpty) {
+      if (uri.pathSegments.isNotEmpty && view.isValid) {
         _store.setPropertyWithNofication('Selected', 'tab', _property);
-        view.executeHandler('selected', false);
+        view.executeHandler('selected', true);
       }
     });
   }
