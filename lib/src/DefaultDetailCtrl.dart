@@ -45,7 +45,6 @@ class DefaultDetailCtrl extends Controller {
     }
     Map data = _store.getObject(_name);
     Rest.instance.post("/rest/$_name", data).then((Map postResult) {
-      store.isDirty = false;
       Address.instance.back();
     }).catchError((error) {
       if (error is Map) {
@@ -58,6 +57,7 @@ class DefaultDetailCtrl extends Controller {
         window.alert("Unknown error type");
       }
     });
+    store.isDirty = false;
   }
   
   void cancel(String empty) {
@@ -66,6 +66,7 @@ class DefaultDetailCtrl extends Controller {
       proceed = view.confirm("Siden er blevet ændret. Dine ændringer kan blive tabt. Ønsker du at fortsætte?");
     }
     if (proceed) {
+      store.isDirty = false;
       Address.instance.back();
     }
   }

@@ -53,6 +53,5 @@ initWebUi() {
   document.registerElement(UiTab.uiTagName, UiTab, extendsTag: 'a');
   document.registerElement(UiSpan.uiTagName, UiSpan, extendsTag: 'span');
 
-  initializeDateFormatting("da_DK", null);
-  Intl.defaultLocale = 'da_DK';
+  initializeDateFormatting(Intl.defaultLocale, null);
 }
