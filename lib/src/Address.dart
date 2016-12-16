@@ -34,7 +34,7 @@ class Address {
   Map<String, String> get parameters => Uri.parse(Uri.parse(_current).fragment).queryParameters;
 
   void goto(String address) {
-    log.fine('goto: address ${address}');
+    log.fine('goto: address ${address} href ${window.location.href}');
     if (address == null || address.isEmpty) {
       return;
     }
@@ -43,14 +43,7 @@ class Address {
       newUrl = address;
     }
     else {
-      var urls = window.location.href.split("#");
-      if (urls.length >= 1) {
-        newUrl = "${urls[0]}#${address}";
-      }
-    }
-    // if they match no change is detected => no event
-    if (window.location.href == newUrl) {
-      window.location.href = "";
+      newUrl = "${window.location.origin}#${address}";
     }
     window.location.href = newUrl;
   }
