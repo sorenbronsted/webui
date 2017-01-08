@@ -59,7 +59,14 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
       });
     }
     else {
-      onBlur.listen((Event e) {
+      //TODO this to satisfy datepicker event (it is not nice!)
+      $(this).on('change.bs.datepicker', (QueryEvent e) {
+        isDirty = true;
+        _writeStore();
+      });
+
+      onChange.listen((Event e) {
+        isDirty = true;
         _writeStore();
       });
 
@@ -80,7 +87,7 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
     valueChanged(_cls, _property);
   }
 
-  void valueChanged(String cls, String property) {
+  void valueChanged(String cls, [String property, String uid]) {
     resetUiState();
     value = Format.display(_uiType, _store.getProperty(cls, property, _uid), _format);
     UiInputValidator.reset(this);

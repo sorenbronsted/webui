@@ -13,7 +13,7 @@ class ObjectStoreListenerMock implements ObjectStoreListener {
   Object property;
 
   @override
-  void valueChanged(String cls, Object property) {
+  void valueChanged(String cls, [String property, String uid]) {
     called++;
     this.cls = cls;
     this.property = property;
@@ -44,7 +44,7 @@ void main() {
 
     store.add({"Dog":{"uid":1,"name":"Fido"}});
 
-    expect(store.getProperty('Dog','uid'), 1);
+    expect(store.getProperty('Dog','uid'), '1');
 
     expect(listenerClass.cls, 'Dog');
     expect(listenerClass.property, null);

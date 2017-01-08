@@ -15,7 +15,7 @@ class UiList extends DivElement with UiBind implements ObjectStoreListener {
     _view = view;
   }
 
-  void valueChanged(String name, String property) {
+  void valueChanged(String name, [String property, String uid]) {
     children.clear();
     List<Map> values = _view.store.getObjects(name);
     if (values.isEmpty) {

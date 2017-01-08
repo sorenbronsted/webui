@@ -1,9 +1,10 @@
 library store;
 
+import 'dart:math';
 import 'package:logging/logging.dart';
 
 abstract class ObjectStoreListener {
-	void valueChanged(String cls, String property);
+	void valueChanged(String cls, [String property, String uid]);
 }
 
 class NotFound {
@@ -28,6 +29,7 @@ class ObjectStore {
 	Map<String, List<ObjectStoreListener>> _listeners;
 	List<Function> _stateListeners;
 	bool _isDirty;
+	Random rand = new Random();
 
 	bool get isDirty => _isDirty;
 
@@ -97,10 +99,9 @@ class ObjectStore {
 		return _store[cls][uid];
 	}
 
-	void setPropertyWithNofication(String cls, String property, Object value,
-		[String uid]) {
+	void setPropertyWithNofication(String cls, String property, Object value, [String uid]) {
 		setProperty(cls, property, value, uid);
-		_notifyListener(cls, property);
+		_notifyListener(cls, property, uid);
 	}
 
 	Map getObject(String cls, [String uid]) {
@@ -133,7 +134,9 @@ class ObjectStore {
 			}
 			String cls = (name != null ? name : (rows.first as Map).keys.first);
 			log.fine('addMap: ${cls}');
-			rows.forEach((Map row) => _addMap(row, name));
+			rows.forEach((Map row) {
+				_addMap(row, name);
+			});
 			_notifyListener(cls);
 		}
 		else {
@@ -143,11 +146,11 @@ class ObjectStore {
 			}
 			String cls = (name != null ? name : row.keys.first);
 			log.fine('addMap: ${cls}');
-			_addMap(row, name);
-			_notifyListener(cls);
-			String uid = _store[cls].keys.first;
+			_addMap(row, cls);
+			_notifyListener(cls, null, row['uid']);
+			String uid = row[row.keys.first]['uid'];
 			_store[cls][uid].keys.forEach((String property) {
-				_notifyListener(cls, property);
+				_notifyListener(cls, property, uid);
 			});
 		}
 		isDirty = false;
@@ -188,8 +191,7 @@ class ObjectStore {
 			}
 		}
 		_notifyListener(cls);
-		_listeners.keys.forEach((
-			String key) { //TODO This is not optimal. Need to rethink notification model
+		_listeners.keys.forEach((String key) { //TODO This is not optimal. Need to rethink notification model
 			var parts = key.split('.');
 			if (parts.length == 2 && cls == parts[0]) {
 				_notifyListener(cls, parts[1]);
@@ -198,24 +200,27 @@ class ObjectStore {
 		isDirty = false;
 	}
 
-	void _notifyListener(String cls, [String property]) {
+	void _notifyListener(String cls, [String property, String uid]) {
 		var name = property != null ? "${cls}.${property}" : cls;
 		log.fine('notifyListener: ${name}');
-		_listeners[name]?.forEach((elem) => elem.valueChanged(cls, property));
+		_listeners[name]?.forEach((elem) => elem.valueChanged(cls, property, uid));
 	}
 
 	void _addMap(Map object, [String name]) {
-		var cls = object.keys.first;
+		String cls = object.keys.first;
 		Map properties = object[cls];
-		String uid = _uid2String(properties['uid']);
+		if (!properties.containsKey('uid')) {
+			properties['uid'] = rand.nextInt(1<<32);
+		}
+		properties['uid'] = properties['uid'].toString();
 
 		var storeName = (name != null ? name : cls);
 		if (_store[storeName] == null) {
 			_store[storeName] = {};
-			_store[storeName][uid] = {};
+			_store[storeName][properties['uid']] = {};
 		}
 
-		_store[storeName][uid] = properties;
+		_store[storeName][properties['uid']] = properties;
 	}
 
 	String _uid2String(Object uid) => uid == null ? null : uid.toString();

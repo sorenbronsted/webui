@@ -11,6 +11,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:logging/logging.dart';
+import 'package:dquery/dquery.dart';
 import 'src/Rest.dart';
 import 'src/Formatter.dart';
 import 'src/EventBus.dart';

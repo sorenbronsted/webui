@@ -19,8 +19,8 @@ class UiSpan extends SpanElement with UiBind implements ObjectStoreListener {
 	}
 
 	@override
-	void valueChanged(String cls, String property) {
+	void valueChanged(String cls, [String property, String uid]) {
 		children.clear();
-		appendText(Format.display(_uiType, _store.getProperty(cls, property, _uid), _format));
+		appendText(Format.display(_uiType, _store.getProperty(cls, property, uid), _format));
 	}
 }

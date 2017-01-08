@@ -11,4 +11,5 @@ abstract class UiInputType {
   String get format;
   bool get disabled;
   bool get readOnly;
+  Element get parent;
 }

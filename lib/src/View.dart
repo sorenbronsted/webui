@@ -95,10 +95,10 @@ abstract class View {
     fieldsWithError.forEach((String field, String message) {
       var elem = null;
       if (cls != null) {
-        elem = querySelector('input[name="${cls}.${field}"]');
+        elem = querySelector('input[bind="${cls}.${field}"]');
       }
       if (elem == null) {
-        elem = querySelector('input[name="${field}"]');
+        elem = querySelector('input[bind="${field}"]');
       }
       if (elem != null) {
         UiInputValidator._css.clear(elem);

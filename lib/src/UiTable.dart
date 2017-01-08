@@ -54,7 +54,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
     });
   }
 
-  void valueChanged(String cls, String property) {
+  void valueChanged(String cls, [String property, String uid]) {
     if (tHead == null || tHead.children.length != 1) {
       throw new Exception("Must have a thead element");
     }
@@ -64,7 +64,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
     var body = tBodies.first;
     body.children.clear();
 
-    var objects = _view.store.getObjects(cls);
+    Iterable<Map> objects = _view.store.getObjects(cls);
     var fragment;
     if (objects.isEmpty) {
       fragment = _noRows();
@@ -75,7 +75,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
     body.append(fragment);
   }
 
-  DocumentFragment _addRows(List<Map> rows) {
+  DocumentFragment _addRows(Iterable<Map> rows) {
     var fragment = new DocumentFragment();
     rows.forEach((row) {
       var tableRow = new TableRowElement();
@@ -83,8 +83,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
 
       // Make the table row
       fragment.append(tableRow);
-      var columns = querySelectorAll('#${id} th');
-      columns.forEach((UiTh column) => column.addCell(_view, _listener, tableRow, row));
+      tHead.rows.first.children.forEach((UiTh column) => column.addCell(_view, _listener, tableRow, row));
     });
     return fragment;
   }

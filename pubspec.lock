@@ -61,6 +61,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.2"
+  dquery:
+    description:
+      name: dquery
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.5"
   glob:
     description:
       name: glob

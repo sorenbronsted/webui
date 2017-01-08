@@ -12,41 +12,55 @@ class UiTab extends AnchorElement with UiBind implements ObjectStoreListener {
   void bind(ObjectStore store, View view) {
     _store = store;
     _store.addListener(this, _cls, _property);
-    _store.addListener(this, 'Selected', 'group');
     _store.addListener(this, 'Selected', 'tab');
 
     onClick.listen((event) {
       event.preventDefault();
       Uri uri = Uri.parse(href);
       if (uri.pathSegments.isNotEmpty && view.isValid) {
-        _store.setPropertyWithNofication('Selected', 'tab', _property);
+        _store.setProperty('Selected', 'tab', _uid);
         view.executeHandler('selected', true);
       }
     });
   }
 
   @override
-  void valueChanged(String cls, String property) {
-    var selected = _store.getProperty(cls, property);
-    switch(property) {
-      case 'tab':
-        if (selected == _property) {
-          parent.classes.add('active'); //TODO this is depends on bootstrap
+  void valueChanged(String cls, [String property, String uid]) {
+    //TODO this is depends on bootstrap
+    if (cls == 'Selected' && property == 'tab') {
+      var selectedUid = _store.getProperty(cls, property);
+      var selected = _store.getObject('Tab', selectedUid);
+      // Determined active tab
+      if (selectedUid == _uid || selected['group'] == _uid) {
+        parent.classes.add('active');
+      }
+      else {
+        parent.classes.remove('active');
+      }
+
+      if (selectedUid == _uid) {
+        parent.classes.remove('hidden'); // ensure visible
+      }
+      else {
+        var self = _store.getObject('Tab', _uid);
+        if (selected['group'] == _uid || selected['group'] == self['group']) { // Is selected and self in same group?
+          parent.classes.remove('hidden');
         }
-        else {
-          parent.classes.remove('active'); //TODO this is depends on bootstrap
+        else { // look at parent relationship
+          var selectedParent = _store.getObject('Tab', selected['group']);
+          if (selectedParent != null &&
+            selectedParent['group'] == self['group']) {
+            parent.classes.remove('hidden');
+          }
+          else {
+            parent.classes.add('hidden');
+          }
         }
-        break;
-      case 'group':
-        if (selected == _cls) {
-          parent.classes.remove('hidden'); //TODO this is depends on bootstrap
-        }
-        else {
-          parent.classes.add('hidden'); //TODO this is depends on bootstrap
-        }
-        break;
-      default:
-        href = selected;
+      }
+    }
+    else if (uid == _uid) {
+      var self = _store.getObject('Tab', _uid);
+      href = self['url'];
     }
   }
 }
