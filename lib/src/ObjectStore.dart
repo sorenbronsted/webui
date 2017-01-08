@@ -210,7 +210,7 @@ class ObjectStore {
 		String cls = object.keys.first;
 		Map properties = object[cls];
 		if (!properties.containsKey('uid')) {
-			properties['uid'] = rand.nextInt(1<<32);
+			properties['uid'] = rand.nextInt(pow(2,32));
 		}
 		properties['uid'] = properties['uid'].toString();
 
