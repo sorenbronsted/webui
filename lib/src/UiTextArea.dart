@@ -20,7 +20,7 @@ class UiTextArea extends TextAreaElement with UiInputState, UiBind implements Ob
       if (isDirty) {
         _doValidate();
         if (isValid) {
-          store.setProperty(_cls, _property, Format.internal(_uiType, value, ""));
+          store.setProperty(_cls, _property, Format.internal(_uiType, value, ""), _uid);
           isDirty = false;
         }
       }
@@ -35,7 +35,7 @@ class UiTextArea extends TextAreaElement with UiInputState, UiBind implements Ob
     store.addListener(this, _cls, _property);
   }
 
-  void valueChanged(String cls, String property) {
+  void valueChanged(String cls, [String property, String uid]) {
     resetUiState();
     value = Format.display(_uiType, _view.store.getProperty(cls, property), "");
     UiInputValidator.reset(this);

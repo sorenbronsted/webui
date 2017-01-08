@@ -37,7 +37,7 @@ class UiSelect extends SelectElement with UiBind implements ObjectStoreListener 
   void bind(ObjectStore store, View view) {
     _store = store;
     onChange.listen((event) {
-      store.setProperty(_cls, _property, value);
+      store.setProperty(_cls, _property, value, _uid);
     });
     store.addListener(this, _cls, _property);
     if (_options != null) {
@@ -47,7 +47,7 @@ class UiSelect extends SelectElement with UiBind implements ObjectStoreListener 
     }
   }
 
-  void valueChanged(String cls, Object property) {
+  void valueChanged(String cls, [String property, String uid]) {
     if (_cls == cls && _property == property) {
       String changedValue = _store.getProperty(_cls, _property, _uid);
       value = changedValue;
