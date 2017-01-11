@@ -24,7 +24,7 @@ class DefaultDetailCtrl extends Controller {
 
     _store.remove(_name);
     if (parts.last == 'new') {
-      _store.add({_name:{}});
+      _store.add({_name:{ 'uid': 0}});
       postLoad();
     }
     else {
