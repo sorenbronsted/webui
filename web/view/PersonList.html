@@ -1,16 +1,16 @@
 <div id="PersonList">
   <div id="functions" class="page-header">
     <form class="form-inline">
-      <button id="create" class="btn btn-primary">Ny</button>
+      <button name="create" class="btn btn-primary">Ny</button>
     </form>
   </div>
   <div id="list">
-      <table is="x-table" id="PersonTable" class="table table-condensed">
+      <table is="x-table" id="PersonTable" bind="Person" class="table table-condensed">
         <thead>
           <tr>
-            <th is="x-th" link="delete" name="Person.uid">&nbsp;</th>
-            <th is="x-th" link="edit" name="Person.name" sortable>Name</th>
-            <th is="x-th" name="Person.address" sortable>Address</th>
+            <th is="x-th" link="delete" bind="Person.uid">&nbsp;</th>
+            <th is="x-th" link="edit" bind="Person.name" sortable>Name</th>
+            <!-- th is="x-th" name="Person.address" sortable>Address</th>
             <th is="x-th" name="Person.zipcode">Zipcode</th>
             <th is="x-th" name="Person.town" sortable>Town</th>
             <th is="x-th" type="datetime" name="Person.created" format="dd-MM-y hh:mm:ss" sortable>Created</th>
@@ -19,7 +19,7 @@
             <th is="x-th" type="number" name="Person.height" format="#,##0.00" sortable>Height</th>
             <th is="x-th" type="number" name="Person.age" format="#,##0" sortable>Age</th>
             <th is="x-th" type="boolean" name="Person.lovely" sortable>Er dejlig?</th>
-            <th is="x-th" name="Person.sex" sortable>Køn</th>
+            <th is="x-th" name="Person.sex" sortable>Køn</th -->
            </tr>
         </thead>
         <tbody>

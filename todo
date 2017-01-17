@@ -12,7 +12,7 @@ will subscribe to map named "Injury" with key "created" and format the display v
 
 Following data attributes is need:
 
-	data-map: name og map
+	data-map: name of map
 	data-map-key: name of map key
 	data-format: display format
 	data-uid: a specific map with a given uid

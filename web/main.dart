@@ -19,5 +19,6 @@ void main() {
   bus.register(new PersonListCtrl());
   bus.register(new PersonDetailCtrl());
 
+  Address.instance.goto("/");
   Address.instance.goto("list/Person");
 }

@@ -7,22 +7,29 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.10.0+2"
-  mime_type:
+  dquery:
     description:
-      name: mime_type
+      name: dquery
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.7"
-  path:
+    version: "0.8.5"
+  intl:
     description:
-      name: path
+      name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.9"
+    version: "0.14.0"
+  logging:
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.3+1"
   webui:
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.0.0"
-sdk: ">=1.3.0-dev.4.1 <2.0.0"
+    version: "3.6.0"
+sdks:
+  dart: ">=1.12.0 <2.0.0"

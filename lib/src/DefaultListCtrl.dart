@@ -19,7 +19,7 @@ class DefaultListCtrl extends Controller {
   }
 
   @override
-  void _stateChanged() {
+  void stateChanged() {
     // Default behavior in list controllers is not to react to object store changes
   }
 
