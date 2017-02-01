@@ -61,9 +61,11 @@ class UiInput extends InputElement with UiInputState, UiBind implements ObjectSt
     else {
       //TODO this to satisfy datepicker event (it is not nice!)
       $(this).on('change.bs.datepicker', (QueryEvent e) {
-        isDirty = true;
-        (e.target as InputElement).focus(); // capture the focus back to this input
-        _writeStore();
+        if (_uiType == 'datetime') {
+          isDirty = true;
+          this.focus(); // capture the focus back to this input
+          _writeStore();
+        }
       });
 
       onChange.listen((Event e) {
