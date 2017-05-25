@@ -1,43 +1,31 @@
 part of webui;
 
-class UiTextArea extends TextAreaElement with UiInputState, UiBind implements ObjectStoreListener, UiInputType {
-  static const String uiTagName = 'x-textarea';
-  String _uiType;
-  View _view;
+class UiTextArea extends UiInputState {
 
-  UiTextArea.created() : super.created() {
-    setBind(getAttribute('bind'));
-    _uiType = attributes['x-type'];
-    resetUiState();
-  }
-
-  String get uiType => _uiType;
-  String get format => '';
-
-  void bind(ObjectStore store, View view) {
-    _view = view;
-    onBlur.listen((Event e) {
+  UiTextArea(TextAreaElement input, [String inheritCls]) : super(input, inheritCls) {
+    htmlElement.onBlur.listen((Event e) {
       if (isDirty) {
         _doValidate();
         if (isValid) {
-          store.setProperty(_cls, _property, Format.internal(_uiType, value, ""), _uid);
+          _store.setProperty(this, cls, property, Format.internal(type, (htmlElement as TextAreaElement).value, ""), uid);
           isDirty = false;
         }
       }
     });
 
-    onFocus.listen((event) {
+    htmlElement.onFocus.listen((event) {
       UiInputValidator.reset(this);
       isValid = true;
     });
 
-    onKeyUp.listen((event) => isDirty = true);
-    store.addListener(this, _cls, _property);
+    htmlElement.onKeyUp.listen((event) => isDirty = true);
+    resetUiState();
   }
 
-  void valueChanged(String cls, [String property, String uid]) {
+  @override
+  void update() {
     resetUiState();
-    value = Format.display(_uiType, _view.store.getProperty(cls, property), "");
+    (htmlElement as TextAreaElement).value = Format.display(type, store.getProperty(cls, property), "");
     UiInputValidator.reset(this);
   }
 

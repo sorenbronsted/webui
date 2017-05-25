@@ -22,14 +22,14 @@ class DefaultDetailCtrl extends Controller {
   void load() {
     var parts = Address.instance.pathParts;
 
-    _store.remove(_name);
+    _store.remove(this, _name);
     if (parts.last == 'new') {
-      _store.add({_name:{ 'uid': 0}});
+      _store.add(this, {_name:{ 'uid': 0}});
       postLoad();
     }
     else {
       Rest.instance.get("/rest/$_name/${parts.last}").then((Map data) {
-        _store.add(data);
+        _store.add(this, data);
         postLoad();
       });
     }

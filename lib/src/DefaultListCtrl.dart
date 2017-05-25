@@ -15,6 +15,9 @@ class DefaultListCtrl extends Controller {
   @override
   bool canRun() {
     var parts = Address.instance.pathParts;
+    if (parts == null || parts.isEmpty) {
+      return false;
+    }
     return (parts[0] == 'list' && parts[1] == _name);
   }
 
@@ -25,8 +28,8 @@ class DefaultListCtrl extends Controller {
 
   void load() {
     Rest.instance.get('/rest/${_name}').then((List<Map> data) {
-      _store.remove(_name);
-      _store.add(data);
+      _store.remove(this, _name);
+      _store.add(this, data);
       postLoad();
     });
   }

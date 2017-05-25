@@ -3,16 +3,55 @@ library store;
 import 'dart:math';
 import 'package:logging/logging.dart';
 
-abstract class ObjectStoreListener {
-	void valueChanged(String cls, [String property, String uid]);
+abstract class Observer {
+	void update();
 }
 
-class NotFound {
-	String msg;
+class Subject {
+	List<Observer> _observers = [];
 
-	NotFound(this.msg);
+	void attach(Observer observer) {
+		_observers.add(observer);
+	}
 
-	String toString() => msg;
+	void detach(Observer observer) {
+		_observers.remove(observer);
+	}
+
+	void notify(Observer sender) {
+		_observers.forEach((Observer o) {
+			if (sender != o) {
+				o.update();
+			}
+		});
+	}
+}
+
+class Topic {
+	String _cls;
+	String _property;
+	String _uid;
+
+	String get cls => _cls;
+	String get property => _property;
+	String get uid => _uid;
+
+	Topic(this._cls, [this._property, this._uid]);
+
+	@override
+	String toString() {
+		StringBuffer result = new StringBuffer(_cls);
+		if (_property != null) {
+			result.write('.');
+			result.write(_property);
+		}
+		if (_uid != null) {
+			result.write('.');
+			result.write(_uid);
+		}
+		return result.toString();
+	}
+
 }
 
 /**
@@ -21,12 +60,12 @@ class NotFound {
 class ObjectStore {
 	/* The store is organized as a map where the the first key is the class name.
    * The next level is also a a map indexed by the uid
-   * The last lavel is a map of properties and values for the stored uid (object)
-   * Another way to se it is class->uid->properties (name,value)
+   * The last level is a map of properties and values for the stored uid (object)
+   * Another way to se it is class->uid->properties {name,value}
    */
 	final Logger log = new Logger('ObjectStore');
+	Map<String, Subject> _observers = {};
 	Map<String, Map<String, Map>> _store;
-	Map<String, List<ObjectStoreListener>> _listeners;
 	List<Function> _stateListeners;
 	bool _isDirty;
 	Random rand = new Random();
@@ -44,7 +83,6 @@ class ObjectStore {
 
 	ObjectStore() {
 		_store = {};
-		_listeners = {};
 		_stateListeners = [];
 		_isDirty = false;
 	}
@@ -57,14 +95,14 @@ class ObjectStore {
 		return object[property];
 	}
 
-	void setProperty(String cls, String property, Object value, [String uid]) {
+	void setProperty(Observer sender, String cls, String property, Object value, [String uid]) {
 		Map object = _getObject(cls, uid);
 		object[property] = value;
 		isDirty = true;
+		_notifyListener(sender, new Topic(cls, property, uid));
 	}
 
-	void addCollectionProperty(String cls, String property, Object value,
-		[String uid]) {
+	void addCollectionProperty(Observer sender, String cls, String property, Object value,	[String uid]) {
 		Map object = _getObject(cls, uid);
 		if (object[property] == null) {
 			object[property] = [];
@@ -72,10 +110,10 @@ class ObjectStore {
 		log.fine('addCollectionProperty: ${cls}.${property} value ${value}');
 		(object[property] as List).add(value);
 		isDirty = true;
+		_notifyListener(sender, new Topic(cls, property, uid));
 	}
 
-	void removeCollectionProperty(String cls, String property, Object value,
-		[String uid]) {
+	void removeCollectionProperty(Observer sender, String cls, String property, Object value, [String uid]) {
 		Map object = _getObject(cls, uid);
 		if (object[property] == null) {
 			return;
@@ -83,25 +121,7 @@ class ObjectStore {
 		log.fine('removeCollectionProperty: ${cls}.${property} value ${value}');
 		(object[property] as List).remove(value);
 		isDirty = true;
-	}
-
-	Map _getObject(String cls, String uid) {
-		if (_store[cls] == null) {
-			_store[cls] = {};
-			_store[cls]['0'] = {'uid':'0'};
-		}
-		if (uid == null) {
-			uid = _store[cls].keys.first;
-		}
-		else {
-			uid = _uid2String(uid);
-		}
-		return _store[cls][uid];
-	}
-
-	void setPropertyWithNofication(String cls, String property, Object value, [String uid]) {
-		setProperty(cls, property, value, uid);
-		_notifyListener(cls, property, uid);
+		_notifyListener(sender, new Topic(cls, property, uid));
 	}
 
 	Map getObject(String cls, [String uid]) {
@@ -126,46 +146,62 @@ class ObjectStore {
 		return [];
 	}
 
-	void add(Object data, [String name]) {
+	void add(Observer sender, Object data, [String name]) {
+		String cls;
+		Iterable properties;
+
 		if (data is List) {
 			List rows = data;
 			if (rows.isEmpty) {
 				return;
 			}
-			String cls = (name != null ? name : (rows.first as Map).keys.first);
+			cls = (name != null ? name : (rows.first as Map).keys.first);
 			log.fine('addMap: ${cls}');
 			rows.forEach((Map row) {
 				_addMap(row, name);
 			});
-			_notifyListener(cls);
+			properties = ((rows.first as Map).values.first as Map).keys;
 		}
 		else {
 			Map row = data;
 			if (row.isEmpty) {
 				return;
 			}
-			String cls = (name != null ? name : row.keys.first);
+			cls = (name != null ? name : row.keys.first);
 			log.fine('addMap: ${cls}');
 			_addMap(row, cls);
-			_notifyListener(cls, null, row['uid']);
-			String uid = row[row.keys.first]['uid'];
-			_store[cls][uid].keys.forEach((String property) {
-				_notifyListener(cls, property, uid);
-			});
+			properties = (row.values.first as Map).keys;
 		}
+
+		_notifyListener(sender, new Topic(cls));
+		properties.forEach((String property) {
+			_notifyListener(sender, new Topic(cls, property));
+		});
 		isDirty = false;
 	}
 
-	void addListener(ObjectStoreListener listener, String cls, [String property]) {
-		var name = property != null ? "${cls}.${property}" : cls;
+	void attach(Observer observer, Topic topic) {
+		var name = topic.toString();
 		if (name == null || name.isEmpty) {
-			return;
+			throw "Observerable id must not be empty";
 		}
-		if (!_listeners.containsKey(name)) {
-			_listeners[name] = [];
+		log.fine('attach: ${name}');
+		if (_observers[name] == null) {
+			_observers[name] = new Subject();
 		}
-		log.fine('addListener: ${name}');
-		_listeners[name].add(listener);
+		_observers[name].attach(observer);
+	}
+
+	void detach(Observer observer, Topic topic) {
+		var name = topic.toString();
+		if (name == null || name.isEmpty) {
+			throw "Observerable id must not be empty";
+		}
+		log.fine('detach: ${name}');
+		if (_observers[name] == null) {
+			_observers[name] = new Subject();
+		}
+		_observers[name].detach(observer);
 	}
 
 	void addStateListener(Function listener) {
@@ -176,7 +212,7 @@ class ObjectStore {
 		_stateListeners.add(listener);
 	}
 
-	void remove(String cls, [String uid]) {
+	void remove(Observer sender, String cls, [String uid]) {
 		log.fine('remove: ${cls}.${uid}');
 		if (_store.containsKey(cls) == true) {
 			if (uid != null) {
@@ -190,20 +226,33 @@ class ObjectStore {
 				_store.remove(cls);
 			}
 		}
-		_notifyListener(cls);
-		_listeners.keys.forEach((String key) { //TODO This is not optimal. Need to rethink notification model
+		_notifyListener(sender, new Topic(cls));
+		_observers.keys.forEach((String key) {
 			var parts = key.split('.');
 			if (parts.length == 2 && cls == parts[0]) {
-				_notifyListener(cls, parts[1]);
+				_notifyListener(sender, new Topic(cls, parts[1]));
 			}
 		});
 		isDirty = false;
 	}
 
-	void _notifyListener(String cls, [String property, String uid]) {
-		var name = property != null ? "${cls}.${property}" : cls;
-		log.fine('notifyListener: ${name}');
-		_listeners[name]?.forEach((elem) => elem.valueChanged(cls, property, uid));
+	Map _getObject(String cls, String uid) {
+		if (_store[cls] == null) {
+			_store[cls] = {};
+			_store[cls]['0'] = {'uid':'0'};
+		}
+		if (uid == null) {
+			uid = _store[cls].keys.first;
+		}
+		else {
+			uid = _uid2String(uid);
+		}
+		return _store[cls][uid];
+	}
+
+	void _notifyListener(Observer sender, Topic topic) {
+		log.fine('notifyListener: ${topic}');
+		_observers[topic.toString()]?.notify(sender);
 	}
 
 	void _addMap(Map object, [String name]) {
@@ -219,7 +268,6 @@ class ObjectStore {
 			_store[storeName] = {};
 			_store[storeName][properties['uid']] = {};
 		}
-
 		_store[storeName][properties['uid']] = properties;
 	}
 

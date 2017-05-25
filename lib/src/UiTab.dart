@@ -1,66 +1,70 @@
 part of webui;
 
-class UiTab extends AnchorElement with UiBind implements ObjectStoreListener {
-  static String uiTagName = 'x-tab';
+class UiTab extends UiElement implements Observer {
 
-  ObjectStore _store;
+  UiTab(View view, AnchorElement anchor) : super(anchor){
 
-  UiTab.created() : super.created() {
-    setBind(getAttribute('bind'));
-  }
-
-  void bind(ObjectStore store, View view) {
-    _store = store;
-    _store.addListener(this, _cls, _property);
-    _store.addListener(this, 'Selected', 'tab');
-
-    onClick.listen((event) {
+    htmlElement.onClick.listen((event) {
       event.preventDefault();
-      Uri uri = Uri.parse(href);
+      Uri uri = Uri.parse((htmlElement as AnchorElement).href);
       if (uri.pathSegments.isNotEmpty && view.isValid) {
-        _store.setProperty('Selected', 'tab', _uid);
+        store.setProperty(this, 'Selected', 'tab', uid);
         view.executeHandler('selected', true);
       }
     });
   }
 
   @override
-  void valueChanged(String cls, [String property, String uid]) {
+  void update() {
     //TODO this is depends on bootstrap
     if (cls == 'Selected' && property == 'tab') {
-      var selectedUid = _store.getProperty(cls, property);
-      var selected = _store.getObject('Tab', selectedUid);
+      var selectedUid = store.getProperty(cls, property);
+      var selected = store.getObject('Tab', selectedUid);
       // Determined active tab
-      if (selectedUid == _uid || selected['group'] == _uid) {
-        parent.classes.add('active');
+      if (selectedUid == uid || selected['group'] == uid) {
+        htmlElement.parent.classes.add('active');
       }
       else {
-        parent.classes.remove('active');
+        htmlElement.parent.classes.remove('active');
       }
 
-      if (selectedUid == _uid) {
-        parent.classes.remove('hidden'); // ensure visible
+      if (selectedUid == uid) {
+        htmlElement.parent.classes.remove('hidden'); // ensure visible
       }
       else {
-        var self = _store.getObject('Tab', _uid);
-        if (selected['group'] == _uid || selected['group'] == self['group']) { // Is selected and self in same group?
-          parent.classes.remove('hidden');
+        var self = store.getObject('Tab', uid);
+        if (selected['group'] == uid || selected['group'] == self['group']) { // Is selected and self in same group?
+          htmlElement.parent.classes.remove('hidden');
         }
         else { // look at parent relationship
-          var selectedParent = _store.getObject('Tab', selected['group']);
+          var selectedParent = store.getObject('Tab', selected['group']);
           if (selectedParent != null &&
             selectedParent['group'] == self['group']) {
-            parent.classes.remove('hidden');
+            htmlElement.parent.classes.remove('hidden');
           }
           else {
-            parent.classes.add('hidden');
+            htmlElement.parent.classes.add('hidden');
           }
         }
       }
     }
-    else if (uid == _uid) {
-      var self = _store.getObject('Tab', _uid);
-      href = self['url'];
+    else {
+      var self = store.getObject('Tab', uid);
+      (htmlElement as AnchorElement).href = self['url'];
     }
   }
+
+  @override
+  attach(ObjectStore store) {
+    super.attach(store);
+    store.attach(this, new Topic('Selected', 'tab'));
+  }
+
+  @override
+  detach(ObjectStore store) {
+    super.detach(store);
+    store.detach(this, new Topic('Selected', 'tab'));
+  }
+
+
 }

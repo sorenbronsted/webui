@@ -11,13 +11,14 @@ class DefaultDetailView extends View {
   DefaultDetailView(String name, [String bindId = '#content']) : super(bindId, '${name}Detail') {
     _name = name;
   }
-  
-  void bind(ObjectStore store) {
-    _form = document.querySelector('#${_name}Form');
-    if (_form == null) {
-      throw '#${_name}Form not found';
+
+  @override
+  void bind(DivElement dom) {
+    FormElement form = dom.querySelector('form[data-class]');
+    if (form == null) {
+      throw 'Form in ${viewName} not found';
     }
-    _form.bind(store, this);
+    _form = new UiForm(this, form);
 
     try {
       bindButton('save', true);

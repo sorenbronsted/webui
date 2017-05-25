@@ -1,24 +1,48 @@
 
 part of webui;
 
-class UiForm extends FormElement with UiBind {
-  static const String uiTagName = 'x-form';
-  String _viewName;
+class UiForm extends UiElement {
+  View _view;
 
-  UiForm.created() : super.created() {
-    setBind(getAttribute('bind'));
-  }
+  UiForm(this._view, FormElement form) : super(form){
+    if (cls == null) {
+      throw new Exception("Form must have a data-class attribute");
+    }
 
-  void bind(ObjectStore store, View view) {
-    _viewName = view.viewName;
-    super.querySelectorAll('#${_viewName} input, #${_viewName} textarea, #${_viewName} select').forEach((elem) {
-      elem.bind(store, view);
+    form.querySelectorAll('input, textarea, select, div.text, div.list, span.text').forEach((HtmlElement elem) {
+      var binding;
+      switch(elem.runtimeType) {
+        case InputElement:
+          binding = new UiInput(elem, cls);
+          break;
+        case TextAreaElement:
+          binding = new UiTextArea(elem, cls);
+          break;
+        case SelectElement:
+          binding = new UiSelect(elem, cls);
+          break;
+        case DivElement:
+        case SpanElement:
+          if (elem.classes.contains('text')) {
+            binding = new UiText(elem, cls);
+          }
+          else if (elem.classes.contains('list')) {
+            binding = new UiList(elem, cls);
+          }
+          break;
+      }
+      if (binding != null) {
+        _view._addBinding(binding);
+      }
     });
   }
 
   bool isValid () {
-    var elements = super.querySelectorAll('#${_viewName} input, #${_viewName} textarea');
-    elements.forEach((HtmlElement element) => (element as UiInputState).validate());
-    return elements.firstWhere((HtmlElement elem) => (elem as UiInputState).isValid == false, orElse: () => null) == null;
+    return _view.bindings.firstWhere((UiInputState input) => isValid == false, orElse: () => null) == null;
+  }
+
+  @override
+  void update() {
+    // Do nothing
   }
 }

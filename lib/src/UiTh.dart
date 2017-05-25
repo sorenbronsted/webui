@@ -1,35 +1,28 @@
 part of webui;
 
-class UiTh extends TableCellElement with UiBind {
-  static const String uiTagName = 'x-th';
-  String _type;
-  String _link;
-  String _format;
+class UiTh extends UiElement {
 
-  UiTh.created() : super.created() {
-    setBind(getAttribute('bind'));
-    _type = attributes['type'];
-    _link = attributes['link'];
-    _format = attributes['format'];
-  }
+  String get link => htmlElement.attributes['data-link'];
+
+  UiTh(TableCellElement th, [String cls]) : super(th, cls);
 
   void addCell(View view, UiTableListener listener, TableRowElement tableRow, Map row) {
     TableCellElement cell = new TableCellElement();
 
     // inherit column hidden property
-    cell.hidden = hidden;
+    cell.hidden = htmlElement.hidden;
 
-    if (_link != null) {
+    if (link != null) {
       _addLink(row, view, listener, cell);
     }
     else {
       var value = null;
-      if (row.keys.contains(_property)) {
-        value = row[_property];
+      if (row.keys.contains(property)) {
+        value = row[property];
       }
-      value = Format.display(_type, value, _format);
+      value = Format.display(type, value, format);
       cell.appendHtml(value);
-      listener?.onTableCellValue(cell, _cls, _property, row);
+      listener?.onTableCellValue(cell, cls, property, row);
     }
     tableRow.append(cell);
   }
@@ -38,19 +31,19 @@ class UiTh extends TableCellElement with UiBind {
     Map labels = {'edit' : 'E', 'delete' : 'X', 'children' : 'se'};
     String href = null;
     String uid = row['uid'];
-    String value = Format.display(_type, row[_property], _format);
-    String text = _property == 'uid' ? labels[_link] : value;
-    switch(_link) {
+    String value = Format.display(type, row[property], format);
+    String text = property == 'uid' ? labels[link] : value;
+    switch(link) {
       case 'edit':
-        href = "/#detail/${_cls}/${uid}";
+        href = "/#detail/${cls}/${uid}";
         break;
       case 'delete':
-        href = "/#${_cls}/${uid}";
-        text = _property == 'uid' ? labels[_link] : value;
+        href = "/#${cls}/${uid}";
+        text = property == 'uid' ? labels[link] : value;
         break;
       case 'children':
-        href = "/#list/${_property}?${_cls}=${uid}";
-        text = labels[_link];
+        href = "/#list/${property}?${cls}=${uid}";
+        text = labels[link];
         break;
     }
     AnchorElement a = new AnchorElement();
@@ -58,9 +51,14 @@ class UiTh extends TableCellElement with UiBind {
     a.text = '${text}';
     a.onClick.listen((event) {
       event.preventDefault();
-      view.executeHandler(_link, false, a.href);
+      view.executeHandler(link, false, a.href);
     });
-    listener?.onTableCellLink(cell, a, _cls, _property, row);
+    listener?.onTableCellLink(cell, a, cls, property, row);
     cell.append(a);
+  }
+
+  @override
+  void update() {
+    // TODO: implement update
   }
 }

@@ -1,7 +1,7 @@
 
 part of webui;
 
-abstract class Controller implements EventBusListener {
+abstract class Controller implements EventBusListener, Observer {
   static const eventDirtyChanged = 'dirtyChanged';
   final Logger log = new Logger('Controller');
 
@@ -11,9 +11,7 @@ abstract class Controller implements EventBusListener {
   EventBus _eventBus;
 
   View get view => _views[0];
-
   List<View> get views => _views;
-
   ObjectStore get store => _store;
 
   Controller([View view]) {
@@ -26,7 +24,6 @@ abstract class Controller implements EventBusListener {
   }
 
   void addView(View view) {
-    view.store = _store;
     _views.add(view);
   }
 
@@ -60,12 +57,12 @@ abstract class Controller implements EventBusListener {
 
   // Hide all views
   void hideViews() {
-    _views.forEach((view) => view.hide());
+    _views.forEach((view) => view.hide(_store));
   }
 
   // Show all views
   void showViews() {
-    _views.forEach((view) => view.show());
+    _views.forEach((view) => view.show(_store));
   }
 
   // Tell if the controller is runable with the current address
@@ -86,5 +83,9 @@ abstract class Controller implements EventBusListener {
   void stateChanged() {
     log.fine('stateChanged: ${this}');
     _eventBus?.fire(this, new BusEvent(eventDirtyChanged, store.isDirty));
+  }
+
+  void update() {
+    // do nothing
   }
 }

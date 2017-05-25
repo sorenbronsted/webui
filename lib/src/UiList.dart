@@ -1,34 +1,46 @@
 
 part of webui;
 
-class UiList extends DivElement with UiBind implements ObjectStoreListener {
-  static const String uiTagName = 'x-list';
+class UiListListener {
+  void onListRow(AnchorElement a, Map row) {}
 
-  View _view;
-
-  UiList.created() : super.created() {
-    setBind(getAttribute('bind'));
+  void onListHref(AnchorElement a, String cls, String uid) {
+    a.href = "#${cls}/${uid}";
   }
 
-  void bind(ObjectStore store, View view) {
-    store.addListener(this, _cls);
-    _view = view;
+  void onListText(AnchorElement a, String text) {
+    a.text = text;
   }
+}
 
-  void valueChanged(String name, [String property, String uid]) {
-    children.clear();
-    List<Map> values = _view.store.getObjects(name);
+class UiList extends UiElement implements Observer {
+  UiListListener _listener = new UiListListener();
+
+  set listener(UiListListener listener) => _listener = listener;
+
+  UiList(DivElement div, [String cls]) : super(div, cls);
+
+  @override
+  void update() {
+    htmlElement.children.clear();
+    List<Map> values = _store.getObjects(cls);
     if (values.isEmpty) {
       return;
     }
-    values.forEach((Map value) {
+    UListElement list = new UListElement();
+    values.forEach((Map row) {
+      LIElement li = new LIElement();
+      list.append(li);
       var a = new AnchorElement();
-      a.appendText('${value['text']}'); //TODO must read from html tag
-      children.add(a);
+      li.append(a);
+      _listener.onListRow(a, row);
+      _listener.onListHref(a, cls, row['uid']);
+      _listener.onListText(a, row[property]);
       a.onClick.listen((event) {
         event.preventDefault();
-        _view.store.remove(_cls, value['uid']);
+        store.remove(this, cls, row['uid']);
       });
     });
+    htmlElement.append(list);
   }
 }

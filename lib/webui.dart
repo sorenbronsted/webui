@@ -25,7 +25,7 @@ part 'src/DefaultListCtrl.dart';
 part 'src/DefaultDetailView.dart';
 part 'src/DefaultDetailCtrl.dart';
 
-part 'src/UiBind.dart';
+part 'src/UiElement.dart';
 part 'src/UiInputValidator.dart';
 part 'src/UiInputValidatorListener.dart';
 part 'src/UiBootStrapInputValidatorListener.dart';
@@ -39,20 +39,9 @@ part 'src/UiSelect.dart';
 part 'src/UiList.dart';
 part 'src/UiInputState.dart';
 part 'src/UiInput.dart';
-part 'src/UiInputType.dart';
 part 'src/UiTab.dart';
-part 'src/UiSpan.dart';
+part 'src/UiText.dart';
 
 initWebUi() {
-  document.registerElement(UiTable.uiTagName, UiTable, extendsTag: 'table');
-  document.registerElement(UiTh.uiTagName, UiTh, extendsTag: 'th');
-  document.registerElement(UiForm.uiTagName, UiForm, extendsTag: 'form');
-  document.registerElement(UiInput.uiTagName, UiInput, extendsTag: 'input');
-  document.registerElement(UiTextArea.uiTagName, UiTextArea, extendsTag: 'textarea');
-  document.registerElement(UiSelect.uiTagName, UiSelect, extendsTag: 'select');
-  document.registerElement(UiList.uiTagName, UiList, extendsTag: 'div');
-  document.registerElement(UiTab.uiTagName, UiTab, extendsTag: 'a');
-  document.registerElement(UiSpan.uiTagName, UiSpan, extendsTag: 'span');
-
   initializeDateFormatting(Intl.defaultLocale, null);
 }

@@ -1,27 +1,9 @@
+Tests
+=====
+Following tests are missing:
+ - UiTab
+ - UiText
 
-View management
-===============
-
-The view should hold on the html fragment and on show and hidden operations it should be add and remove the html
-to the dom. This will will not give unsurpriced effect when views contains same id elements.
-
-Use html data- attributes to name the model data element to subscribe to. Utillize dart stream for this.
-Eg:
-	Input: data-map="Injury" data-map-key="created" data-format="dd-MM-yyyy"
-will subscribe to map named "Injury" with key "created" and format the display value
-
-Following data attributes is need:
-
-	data-map: name of map
-	data-map-key: name of map key
-	data-format: display format
-	data-uid: a specific map with a given uid
-	data-type: casenumber|datetime|number
-	data-list: name of map for eg options for select
-	data-list-key: name of map key
-
-
-
-EventBus
-========
-Utillize dart streams
+UI
+==
+Make independent of ui (bootstrap) by using w3css instead

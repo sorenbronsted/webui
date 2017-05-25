@@ -6,7 +6,7 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   static String _cssValid = "has-success";
 
   @override
-  void clear(UiInputType input) {
+  void clear(HtmlElement input) {
     var element = input.parent;
     if (element == null) {
       element = input;
@@ -17,7 +17,7 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   }
 
   @override
-  void error(UiInputType input, String msg) {
+  void error(HtmlElement input, String msg) {
     var element = input.parent;
     if (element == null) {
       element = input;
@@ -28,7 +28,7 @@ class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
   }
 
   @override
-  void valid(UiInputType input) {
+  void valid(HtmlElement input) {
     var element = input.parent;
     if (element == null) {
       element = input;

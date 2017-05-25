@@ -18,7 +18,9 @@ class Format {
   }
   
   static String display(String type, String value, [String format]) {
-    assert(type != null);
+    if (type == null) {
+      return value;
+    }
     if (value == null || value == 'null') {
       return "";
     }
@@ -29,14 +31,16 @@ class Format {
   }
 
   static String internal(String type, String value, [String format]) {
-    assert(type != null);
-    assert(value != null);
+    if (type == null) {
+      return value;
+    }
     return _execute(type, value, null, (Formatter fmt, String value, String Format) => fmt.internal(value, format));
   }
 
   static String _execute(String type, String value, String format, Function callback) {
-    assert(type != null);
-    assert(callback != null);
+    if (callback == null) {
+      return value;
+    }
 
     if (_formatters == null) {
       _formatters = new Map();

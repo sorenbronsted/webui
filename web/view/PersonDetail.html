@@ -6,77 +6,13 @@
     </form>
   </div>
   <div id="detail">
-  <form id="PersonForm" is="x-form" class="form-horizontal form-group-sm col-sm-9">
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Name</label>
-      <div class="col-sm-10">
-        <input is="x-input" type="text" bind="Person.name" class="form-control" required>
+    <form class="form-horizontal form-group-sm col-sm-9" data-class="Person">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+          <input type="text" data-property="name" class="form-control" required>
+        </div>
       </div>
-    </div>
-<!--
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Address</label>
-      <div class="col-sm-10">
-        <input is="x-input"  type="text" name="Person.address" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Zipcode</label>
-      <div class="col-sm-10">
-        <select is="x-select" class="form-control" name="Person.zipcode" options="zipcode.list" option-display="name"></select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Town</label>
-      <div class="col-sm-10">
-        <input is="x-input" type="text" name="Person.town" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Created</label>
-      <div class="col-sm-10">
-        <input is="x-input" x-type="datetime" format="dd-MM-y hh:mm:ss" name="Person.created" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Born</label>
-      <div class="col-sm-10">
-        <input is="x-input" x-type="datetime" format="dd-MM-y"  name="Person.born" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Time</label>
-      <div class="col-sm-10">
-        <input is="x-input" x-type="datetime" format="hh:mm" name="Person.time" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Height</label>
-      <div class="col-sm-10">
-        <input is="x-input" x-type="number" format="#,##0.00" name="Person.height" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Age</label>
-      <div class="col-sm-10">
-        <input  is="x-input" x-type="number" format="#,##0" name="Person.age" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Er dejlig</label>
-      <div class="col-sm-10">
-        <input  is="x-input" type="checkbox" name="Person.lovely" class="form-control">
-      </div>
-    </div>
-    -->
-  </form>
+    </form>
   </div>
 </div>

@@ -5,25 +5,15 @@
     </form>
   </div>
   <div id="list">
-      <table is="x-table" id="PersonTable" bind="Person" class="table table-condensed">
-        <thead>
-          <tr>
-            <th is="x-th" link="delete" bind="Person.uid">&nbsp;</th>
-            <th is="x-th" link="edit" bind="Person.name" sortable>Name</th>
-            <!-- th is="x-th" name="Person.address" sortable>Address</th>
-            <th is="x-th" name="Person.zipcode">Zipcode</th>
-            <th is="x-th" name="Person.town" sortable>Town</th>
-            <th is="x-th" type="datetime" name="Person.created" format="dd-MM-y hh:mm:ss" sortable>Created</th>
-            <th is="x-th" type="datetime" name="Person.born" format="dd-MM-y" sortable>Born</th>
-            <th is="x-th" type="datetime" name="Person.time" format="hh:mm" sortable>Time</th>
-            <th is="x-th" type="number" name="Person.height" format="#,##0.00" sortable>Height</th>
-            <th is="x-th" type="number" name="Person.age" format="#,##0" sortable>Age</th>
-            <th is="x-th" type="boolean" name="Person.lovely" sortable>Er dejlig?</th>
-            <th is="x-th" name="Person.sex" sortable>Køn</th -->
-           </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+    <table class="table table-condensed" data-class="Person">
+      <thead>
+        <tr>
+          <th data-link="delete" data-property="uid">&nbsp;</th>
+          <th data-link="edit" data-property="name" class="sortable">Name</th>
+         </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
   </div>
 </div>

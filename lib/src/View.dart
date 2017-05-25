@@ -8,55 +8,47 @@ abstract class View {
   Map<String, Handler> _handlers;
   String _bindId;
   String _viewName;
-  ObjectStore _store;
+  DivElement _dom;
+  List<UiElement> _bindings;
 
   bool get isValid;
-
   String get viewName => _viewName;
-
-  ObjectStore get store => _store;
+  DivElement get dom => _dom;
+  List<UiElement> get bindings => _bindings;
 
   View(String this._bindId, String this._viewName) {
     _handlers = {};
-
-    // Check if allready loaded
-    var view = document.querySelector('#${_viewName}');
-    if (view != null) {
-      return;
-    }
+    _bindings = [];
 
     LinkElement htmlFragment = document.querySelector('#${_viewName}Import');
     if (htmlFragment == null) {
       throw "#${_viewName}Import not found";
     }
-    view = htmlFragment.import.querySelector('#${_viewName}');
-    if (view == null) {
+    _dom = htmlFragment.import.querySelector('#${_viewName}');
+    if (_dom == null) {
       throw "#${_viewName} not found";
     }
-    view.hidden = true;
-    document.querySelector(_bindId).append(view);
+    bind(_dom);
   }
 
-  void show() => _hiddenState(false);
-
-  void hide() => _hiddenState(true);
-
-  void _hiddenState(bool state) {
-    DivElement div = document.querySelector('#${_viewName}');
-    if (div != null) {
-      div.hidden = state;
+  void show(ObjectStore store) {
+    var div = document.querySelector(_bindId);
+    if (div == null) {
+      throw "${_bindId} not found";
     }
+    div.children.clear();
+    div.append(_dom);
+    _bindings.forEach((UiElement elem) => elem.attach(store));
   }
 
-  set store(ObjectStore store) {
-    _store = store;
-    bind(_store);
+  void hide(ObjectStore store) {
+    _bindings.forEach((UiElement elem) => elem.detach(store));
   }
 
-  void bind(ObjectStore store);
+  void bind(DivElement dom);
 
   void bindButton(String name, bool validate) {
-    ButtonElement button = document.querySelector('#${_viewName} button[name="${name}"]');
+    ButtonElement button = _dom.querySelector('#${_viewName} button[name="${name}"]');
     if (button == null) {
       throw "Cannot find button with name {$name} in view ${_viewName}";
     }
@@ -95,10 +87,10 @@ abstract class View {
     fieldsWithError.forEach((String field, String message) {
       var elem = null;
       if (cls != null) {
-        elem = querySelector('input[bind="${cls}.${field}"]');
+        elem = _dom.querySelector('input[bind="${cls}.${field}"]');
       }
       if (elem == null) {
-        elem = querySelector('input[bind="${field}"]');
+        elem = _dom.querySelector('input[bind="${field}"]');
       }
       if (elem != null) {
         UiInputValidator._css.clear(elem);
@@ -106,4 +98,6 @@ abstract class View {
       }
     });
   }
+
+  _addBinding(UiElement elem) => _bindings.add(elem);
 }

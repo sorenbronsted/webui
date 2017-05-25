@@ -20,12 +20,13 @@ class UiInputValidator {
 
   static set css(UiInputValidatorListener css) => _css = css;
 
-  static void reset(UiInputType input) {
-    _css.clear(input);
+  static void reset(UiElement input) {
+    _css.clear(input.htmlElement);
   }
 
-  static bool validate(UiInputType input) {
+  static bool validate(UiElement uiElement) {
     var isValid = true;
+    InputElement input = uiElement.htmlElement;
 
     if (input.readOnly == true || input.disabled == true) {
       return isValid;
@@ -35,8 +36,8 @@ class UiInputValidator {
       if (input.required) {
         input.value = _required(input.value);
       }
-      var type = input.uiType;
-      var format = input.format;
+      var type = uiElement.type;
+      var format = uiElement.format;
       if (_methods.containsKey(type)) {
         input.value = _methods[type](input.value, format);
       }

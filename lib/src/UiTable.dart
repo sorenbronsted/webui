@@ -23,8 +23,7 @@ class UiDefaultTableCss implements UiTableCss {
   }
 }
 
-class UiTable extends TableElement with UiBind implements ObjectStoreListener {
-  static const String uiTagName = 'x-table';
+class UiTable extends UiElement {
   static const none = 0;
   static const asc = 1;
   static const dsc = 2;
@@ -40,31 +39,36 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
 
   static set css(UiTableCss css) => _css = css;
 
-  UiTable.created() : super.created() {
-    setBind(getAttribute('bind'));
-  }
+  UiTable(this._view, table) : super(table) {
+    if (cls == null) {
+      throw new Exception("Table must a data-class attribute");
+    }
 
-  void bind(ObjectStore store, View view) {
-    _view = view;
-    store.addListener(this, _cls);
-    querySelectorAll('#${id} th.sortable').onClick.listen((event) {
-      event.preventDefault();
-      _setSortingUi(event.target);
-      _doSort();
+    if ((htmlElement as TableElement).tHead == null || (htmlElement as TableElement).tHead.children.length != 1) {
+      throw new Exception("Must have a thead element"); //TODO make table header dynamic
+    }
+    if ((htmlElement as TableElement).tBodies.length > 1) {
+      throw new Exception("Multiple bodies not supported");
+    }
+
+    (htmlElement as TableElement).tHead.children.first.children.forEach((TableCellElement th) {
+      _view._addBinding(new UiTh(th, cls));
+      if (th.classes.contains('sortable')) {
+        th.onClick.listen((event) {
+          event.preventDefault();
+          _setSortingUi(event.target);
+          _doSort();
+        });
+      }
     });
   }
 
-  void valueChanged(String cls, [String property, String uid]) {
-    if (tHead == null || tHead.children.length != 1) {
-      throw new Exception("Must have a thead element");
-    }
-    if (tBodies.length > 1) {
-      throw new Exception("Multiple bodies not supported");
-    }
-    var body = tBodies.first;
+  @override
+  void update() {
+    var body = (htmlElement as TableElement).tBodies.first;
     body.children.clear();
 
-    Iterable<Map> objects = _view.store.getObjects(cls);
+    Iterable<Map> objects = store.getObjects(cls);
     var fragment;
     if (objects.isEmpty) {
       fragment = _noRows();
@@ -83,15 +87,18 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
 
       // Make the table row
       fragment.append(tableRow);
-      tHead.rows.first.children.forEach((UiTh column) => column.addCell(_view, _listener, tableRow, row));
+      _view.bindings.forEach((UiElement elem) {
+        if (elem is UiTh) {
+          elem.addCell(_view, _listener, tableRow, row);
+        }
+      });
     });
     return fragment;
   }
 
   DocumentFragment _noRows() {
     var tableCell = new TableCellElement();
-    var columns = tHead.querySelectorAll('th');
-    tableCell.colSpan = columns.length;
+    tableCell.colSpan = _view.bindings.length;
     tableCell.appendText('Ingen data fundet');
     tableCell.classes.add('center');
     var result = new DocumentFragment();
@@ -100,14 +107,11 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
   }
 
   void _doSort() {
-    if (tBodies.length > 1) {
-      throw "Multiple bodies not supported";
-    }
-    var body = tBodies.first;
+    var body = (htmlElement as TableElement).tBodies.first;
     if (body == null) { // nothing to sort
       return;
     }
-    var idx = tHead.rows.first.cells.indexOf(_orderBy);
+    var idx = (htmlElement as TableElement).tHead.rows.first.cells.indexOf(_orderBy);
     var tmp = new List.from(body.children);
     tmp.sort((TableRowElement a, TableRowElement b) {
       String aVal = Format.internal(_orderBy.attributes['type'], a.cells.elementAt(idx).text, _orderBy.attributes['format']);
@@ -127,7 +131,7 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
   }
 
   void _setSortingUi(TableCellElement target) {
-    if (_orderBy != null && _orderBy.attributes['bind'] == target.attributes['bind']) {
+    if (_orderBy != null && _orderBy.attributes['data-property'] == target.attributes['data-property']) {
       _direction++;
       if (_direction > 2) {
         _direction = none;
@@ -142,5 +146,4 @@ class UiTable extends TableElement with UiBind implements ObjectStoreListener {
     }
     _css.onSortColumn(_orderBy, _direction);
   }
-
 }

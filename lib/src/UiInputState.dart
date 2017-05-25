@@ -1,6 +1,6 @@
 part of webui;
 
-abstract class UiInputState {
+abstract class UiInputState extends UiElement {
   bool _isValid;
   bool _isDirty;
 
@@ -9,6 +9,8 @@ abstract class UiInputState {
 
   bool get isDirty => _isDirty;
   set isDirty(bool state) => _isDirty = state;
+
+  UiInputState(HtmlElement element, [String cls]) : super(element, cls);
 
   void resetUiState() {
     _isValid = true;

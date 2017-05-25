@@ -12,6 +12,18 @@
     <link rel="stylesheet" href="/view/css/application.css" />
     <link id="PersonListImport" rel="import" href="/view/PersonList.html">
     <link id="PersonDetailImport" rel="import" href="/view/PersonDetail.html">
+    <link id="TextAreaTestImport" rel="import" href="/view/TextAreaTest.html">
+    <link id="SelectTestImport" rel="import" href="/view/SelectTest.html">
+    <link id="InputTestImport" rel="import" href="/view/InputTest.html">
+    <link id="InputNumberTestImport" rel="import" href="/view/InputNumberTest.html">
+    <link id="InputRadioTestImport" rel="import" href="/view/InputRadioTest.html">
+    <link id="InputCheckboxTestImport" rel="import" href="/view/InputCheckboxTest.html">
+    <link id="InputCheckboxSelectionTestImport" rel="import" href="/view/InputCheckboxSelectionTest.html">
+    <link id="InputFileTestImport" rel="import" href="/view/InputFileTest.html">
+    <link id="ListTestImport" rel="import" href="/view/ListTest.html">
+
+    <script type="application/dart" src="main.dart"></script>
+    <script src="packages/browser/dart.js"></script>
   </head>
  
   <body class="col-md-12">
@@ -27,12 +39,17 @@
           <a class="navbar-brand" href="#">WebUI Example</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <!--ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Help</a></li>
-          </ul -->
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#test/textarea">TextArea</a></li>
+            <li><a href="#test/select">Select</a></li>
+            <li><a href="#test/input">Input</a></li>
+            <li><a href="#test/number">Number</a></li>
+            <li><a href="#test/radio">Radio</a></li>
+            <li><a href="#test/checkbox">Checkbox</a></li>
+            <li><a href="#test/selection">Selection</a></li>
+            <li><a href="#test/file">File</a></li>
+            <li><a href="#test/list">List</a></li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -40,9 +57,5 @@
 
     <div id="content">
     </div>   
-
-
-    <script type="application/dart" src="main.dart"></script>
-    <script src="packages/browser/dart.js"></script>
   </body>
 </html>
