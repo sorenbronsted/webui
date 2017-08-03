@@ -45,19 +45,15 @@ class UiInput extends UiInputState {
   }
 
   void _initInput() {
-    //TODO this to satisfy datepicker event (it is not nice!)
-    $(htmlElement).on('change.bs.datepicker', (QueryEvent e) {
-      isDirty = true;
-      htmlElement.focus(); // capture the focus back to this input
-      _writeStore();
-    });
-
     htmlElement.onChange.listen((Event e) {
       isDirty = true;
       _writeStore();
     });
 
     htmlElement.onFocus.listen((event) {
+      if (!isValid) {
+        return;
+      }
       UiInputValidator.reset(this);
       isValid = true;
     });

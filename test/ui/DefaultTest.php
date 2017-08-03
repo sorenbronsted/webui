@@ -62,6 +62,9 @@ class DefaultTest extends PHPUnit_Framework_TestCase {
 		self::$driver->findElement(WebDriverBy::cssSelector('input[data-property="name"]'))->click();
 		self::$driver->getKeyboard()->sendKeys('Kurt Humbuk');
 
+		self::$driver->findElement(WebDriverBy::cssSelector('input[data-property="address"]'))->click();
+		self::$driver->getKeyboard()->sendKeys('Svindelvej 1');
+
 		self::$driver->findElement(WebDriverBy::cssSelector('button[name=save]'))->click();
 
 		// Change view

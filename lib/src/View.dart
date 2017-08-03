@@ -84,18 +84,17 @@ abstract class View {
       return;
     }
     var cls = fieldsWithError['class'];
+    FormElement form = _dom.querySelector('form[data-class="${cls}"]');
+    if (form == null) {
+      throw 'Not form with data-class ${cls} found';
+    }
     fieldsWithError.forEach((String field, String message) {
-      var elem = null;
-      if (cls != null) {
-        elem = _dom.querySelector('input[bind="${cls}.${field}"]');
-      }
+      var elem = form.querySelector('input[data-property="${field}"]');
       if (elem == null) {
-        elem = _dom.querySelector('input[bind="${field}"]');
+        log.shout('input with data-property ${field} not found');
       }
-      if (elem != null) {
-        UiInputValidator._css.clear(elem);
-        UiInputValidator._css.error(elem, message);
-      }
+      UiInputValidator._css.clear(elem);
+      UiInputValidator._css.error(elem, message);
     });
   }
 

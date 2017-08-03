@@ -1,21 +1,20 @@
 <?php
 namespace ufds;
 
-use PHPUnit_Framework_TestCase;
+require_once 'test/php/settings.php';
 
-require_once 'web/settings.php';
+class PersonTest extends BaseCrud {
 
-class PersonTest extends PHPUnit_Framework_TestCase {
-	protected function setUp() {
-		Db::exec(Person::$db, 'delete from person');
+	public function __construct() {
+		parent::__construct(Person::class);
 	}
 
-	public function testOne() {
-		$p = new Person();
-		$p->name = 'Kurt Humbuk';
-		$p->save();
+	protected function updateObject($object) {
+		$object->name = 'Yrsa';
+		$object->address = 'Svindelvej 1';
+	}
 
-		$persons = Person::getAll();
-		$this->assertEquals(1, count($persons));
+	protected function createObject() {
+		return Fixture::getPerson();
 	}
 }

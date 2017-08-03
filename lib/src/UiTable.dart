@@ -6,29 +6,12 @@ abstract class UiTableListener {
   onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, Map row);
 }
 
-abstract class UiTableCss {
-  onSortColumn(TableCellElement th, int direction);
-  void clearSortColumn(TableCellElement orderBy);
-}
-
-class UiDefaultTableCss implements UiTableCss {
-  @override
-  onSortColumn(TableCellElement th, int direction) {
-    // Do nothing
-  }
-
-  @override
-  void clearSortColumn(TableCellElement orderBy) {
-    // Do nothing
-  }
-}
-
 class UiTable extends UiElement {
   static const none = 0;
   static const asc = 1;
   static const dsc = 2;
 
-  static UiTableCss _css = new UiDefaultTableCss();
+  static UiTableCss _css = new UiTableCss();
 
   UiTableListener _listener;
   TableCellElement _orderBy;
@@ -89,7 +72,7 @@ class UiTable extends UiElement {
       fragment.append(tableRow);
       _view.bindings.forEach((UiElement elem) {
         if (elem is UiTh) {
-          elem.addCell(_view, _listener, tableRow, row);
+          elem.addCell(_view, _listener, tableRow, row, _css);
         }
       });
     });

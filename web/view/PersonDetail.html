@@ -1,18 +1,15 @@
-<div id="PersonDetail">
-  <div id="functions" class="page-header">
-    <form>
-      <button name="save" class="btn btn-primary">Gem</button>
-      <button name="cancel"class="btn btn-primary">Fortryd</button>
-    </form>
+<div id="PersonDetail" class="w3-input w3-margin-top">
+  <div id="functions" class="">
+    <button name="cancel" class="w3-btn w3-indigo"><i class="material-icons">arrow_back</i></button>
+    <button name="save" class="w3-btn w3-indigo"><i class="material-icons">save</i></button>
   </div>
-  <div id="detail">
-    <form class="form-horizontal form-group-sm col-sm-9" data-class="Person">
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Name</label>
-        <div class="col-sm-10">
-          <input type="text" data-property="name" class="form-control" required>
-        </div>
-      </div>
+
+  <div id="detail" class="w3-container">
+    <form class="w3-container w3-margin-top" data-class="Person">
+      <label class="w3-text-indigo">Name</label>
+      <input type="text" data-property="name" class="w3-input" required>
+      <label class="w3-text-indigo">Address</label>
+      <input type="text" data-property="address" class="w3-input" required>
     </form>
   </div>
 </div>

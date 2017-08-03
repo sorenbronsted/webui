@@ -1,19 +1,17 @@
-<div id="PersonList">
-  <div id="functions" class="page-header">
-    <form class="form-inline">
-      <button name="create" class="btn btn-primary">Ny</button>
-    </form>
+<div id="PersonList" class="w3-input w3-margin-top">
+  <div id="functions" class="">
+      <button name="create" class="w3-btn w3-indigo"><i class="material-icons">add</i></button>
   </div>
-  <div id="list">
-    <table class="table table-condensed" data-class="Person">
-      <thead>
-        <tr>
-          <th data-link="delete" data-property="uid">&nbsp;</th>
-          <th data-link="edit" data-property="name" class="sortable">Name</th>
-         </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-  </div>
+
+  <table class="w3-table w3-striped" data-class="Person">
+    <thead>
+      <tr>
+        <th class="w3-text-indigo t-icon" data-link="delete" data-property="uid">&nbsp;</th>
+        <th class="w3-text-indigo" data-link="edit" data-property="name" class="sortable">Name</th>
+        <th class="w3-text-indigo" data-property="address" class="sortable">Address</th>
+       </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 </div>

@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiBootStrapInputValidatorListener implements UiInputValidatorListener {
+class UiInputValidatorListenerBootStrap implements UiInputValidatorListener {
   static String _cssError = "has-error";
   static String _cssValid = "has-success";
 

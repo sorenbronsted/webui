@@ -7,6 +7,7 @@ class AddPerson extends Ruckusing_Migration_Base {
 		$t = $this->create_table($this->table, array("id" => false, 'options' => ''));
 		$t->column("uid", "primary_key", array("primary_key" => true, "auto_increment" => true, "unsigned" => true, "null" => false));
 		$t->column("name","string",array("limit" => 256, "null" => true));
+		$t->column("address","string",array("limit" => 256, "null" => true));
 		$t->finish();
 	}
 

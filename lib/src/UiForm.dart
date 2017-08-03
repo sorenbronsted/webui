@@ -11,25 +11,22 @@ class UiForm extends UiElement {
 
     form.querySelectorAll('input, textarea, select, div.text, div.list, span.text').forEach((HtmlElement elem) {
       var binding;
-      switch(elem.runtimeType) {
-        case InputElement:
-          binding = new UiInput(elem, cls);
-          break;
-        case TextAreaElement:
-          binding = new UiTextArea(elem, cls);
-          break;
-        case SelectElement:
-          binding = new UiSelect(elem, cls);
-          break;
-        case DivElement:
-        case SpanElement:
-          if (elem.classes.contains('text')) {
-            binding = new UiText(elem, cls);
-          }
-          else if (elem.classes.contains('list')) {
-            binding = new UiList(elem, cls);
-          }
-          break;
+      if (elem.runtimeType == InputElement) {
+        binding = new UiInput(elem, cls);
+      }
+      else if (elem.runtimeType == TextAreaElement) {
+        binding = new UiTextArea(elem, cls);
+      }
+      else if (elem.runtimeType == SelectElement) {
+        binding = new UiSelect(elem, cls);
+      }
+      else if (elem.runtimeType == DivElement || elem.runtimeType == SpanElement) {
+        if (elem.classes.contains('text')) {
+          binding = new UiText(elem, cls);
+        }
+        else if (elem.classes.contains('list')) {
+          binding = new UiList(elem, cls);
+        }
       }
       if (binding != null) {
         _view._addBinding(binding);
@@ -38,7 +35,8 @@ class UiForm extends UiElement {
   }
 
   bool isValid () {
-    return _view.bindings.firstWhere((UiInputState input) => isValid == false, orElse: () => null) == null;
+    var firstWhere = _view.bindings.firstWhere((UiInputState input) => input.isValid == false, orElse: () => null);
+    return firstWhere == null;
   }
 
   @override

@@ -4,6 +4,8 @@ Following tests are missing:
  - UiTab
  - UiText
 
+Make UI test run from cli
+
 UI
 ==
-Make independent of ui (bootstrap) by using w3css instead
+

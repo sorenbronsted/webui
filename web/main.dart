@@ -19,8 +19,10 @@ void main() {
 
   initWebUi();
 
-  UiInputValidator.css = new UiBootStrapInputValidatorListener();
-  UiTable.css = new UiBootStrapTableCss();
+  //UiInputValidator.css = new UiInputValidatorListenerBootStrap();
+  UiInputValidator.css = new UiInputValidatorListenerW3();
+  //UiTable.css = new UiTableCssBootStrap();
+  UiTable.css = new UiTableCssW3();
 
   var bus = EventBus.instance;
   bus.register(new PersonListCtrl());

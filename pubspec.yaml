@@ -5,7 +5,6 @@ description: GUI framework for single page applications
 dependencies:
   intl: any
   logging: any
-  dquery: any
   browser: any
 dev_dependencies:
   test: any

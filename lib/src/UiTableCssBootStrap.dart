@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiBootStrapTableCss implements UiTableCss {
+class UiTableCssBootStrap implements UiTableCss {
   @override
   onSortColumn(TableCellElement th, int direction) {
     var span;
@@ -26,5 +26,21 @@ class UiBootStrapTableCss implements UiTableCss {
   @override
   void clearSortColumn(TableCellElement orderBy) {
     orderBy.children.removeLast();
+  }
+
+  @override
+  void onDeleteLinkLabels(AnchorElement a) {
+    var span = new SpanElement();
+    span.classes.add('glyphicon');
+    span.classes.add('glyphicon-remove');
+    a.append(span);
+  }
+
+  @override
+  void onEditLinkLabels(AnchorElement a) {
+    var span = new SpanElement();
+    span.classes.add('glyphicon');
+    span.classes.add('glyphicon-edit');
+    a.append(span);
   }
 }

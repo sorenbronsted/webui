@@ -4,16 +4,18 @@ class UiTh extends UiElement {
 
   String get link => htmlElement.attributes['data-link'];
 
+  String get linkClass => htmlElement.attributes['data-link-class'];
+
   UiTh(TableCellElement th, [String cls]) : super(th, cls);
 
-  void addCell(View view, UiTableListener listener, TableRowElement tableRow, Map row) {
+  void addCell(View view, UiTableListener listener, TableRowElement tableRow, Map row, UiTableCss css) {
     TableCellElement cell = new TableCellElement();
 
     // inherit column hidden property
     cell.hidden = htmlElement.hidden;
 
     if (link != null) {
-      _addLink(row, view, listener, cell);
+      _addLink(row, view, listener, cell, css);
     }
     else {
       var value = null;
@@ -27,28 +29,33 @@ class UiTh extends UiElement {
     tableRow.append(cell);
   }
 
-  void _addLink(Map row, View view, UiTableListener listener, TableCellElement cell) {
-    Map labels = {'edit' : 'E', 'delete' : 'X', 'children' : 'se'};
-    String href = null;
+  void _addLink(Map row, View view, UiTableListener listener, TableCellElement cell, UiTableCss css) {
     String uid = row['uid'];
-    String value = Format.display(type, row[property], format);
-    String text = property == 'uid' ? labels[link] : value;
+    AnchorElement a = new AnchorElement();
     switch(link) {
       case 'edit':
-        href = "/#detail/${cls}/${uid}";
+        a.href = "/#detail/${cls}/${uid}";
+        if (property == 'uid') {
+          css.onEditLinkLabels(a);
+        }
+        else {
+          a.text = row[property];
+        }
         break;
       case 'delete':
-        href = "/#${cls}/${uid}";
-        text = property == 'uid' ? labels[link] : value;
+        a.href = "/#${cls}/${uid}";
+        if (property == 'uid') {
+          css.onDeleteLinkLabels(a);
+        }
+        else {
+          a.text = row[property];
+        }
         break;
       case 'children':
-        href = "/#list/${property}?${cls}=${uid}";
-        text = labels[link];
+        a.href = "/#list/${linkClass}?${cls}=${uid}";
+        a.text = Format.display(type, row[property], format);
         break;
     }
-    AnchorElement a = new AnchorElement();
-    a.href = href;
-    a.text = '${text}';
     a.onClick.listen((event) {
       event.preventDefault();
       view.executeHandler(link, false, a.href);
