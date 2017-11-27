@@ -7,6 +7,7 @@ class Address {
 
   String _current = "";
   static Address _instance = null;
+  String _root = '/';
   
   Address._internal() {
     window.onHashChange.listen((event) {
@@ -17,7 +18,11 @@ class Address {
       }
     });
   }
-  
+
+  String get root => _root;
+
+  void set root(String root) => _root = root;
+
   static Address get instance {
     if (_instance == null) {
       _instance = new Address._internal();
@@ -43,7 +48,7 @@ class Address {
       newUrl = address;
     }
     else {
-      newUrl = "${window.location.origin}#${address}";
+      newUrl = "${window.location.origin}${_root}#${address}";
     }
     window.location.href = newUrl;
   }

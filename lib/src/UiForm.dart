@@ -9,7 +9,7 @@ class UiForm extends UiElement {
       throw new Exception("Form must have a data-class attribute");
     }
 
-    form.querySelectorAll('input, textarea, select, div.text, div.list, span.text').forEach((HtmlElement elem) {
+    form.querySelectorAll('input, textarea, select, div.text, div.list, span.text').forEach((Element elem) {
       var binding;
       if (elem.runtimeType == InputElement) {
         binding = new UiInput(elem, cls);
@@ -35,7 +35,7 @@ class UiForm extends UiElement {
   }
 
   bool isValid () {
-    var firstWhere = _view.bindings.firstWhere((UiInputState input) => input.isValid == false, orElse: () => null);
+    var firstWhere = _view.bindings.firstWhere((UiElement input) => (input as UiInputState).isValid == false, orElse: () => null);
     return firstWhere == null;
   }
 

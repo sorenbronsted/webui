@@ -34,7 +34,7 @@ class UiTable extends UiElement {
       throw new Exception("Multiple bodies not supported");
     }
 
-    (htmlElement as TableElement).tHead.children.first.children.forEach((TableCellElement th) {
+    (htmlElement as TableElement).tHead.children.first.children.forEach((Element th) {
       _view._addBinding(new UiTh(th, cls));
       if (th.classes.contains('sortable')) {
         th.onClick.listen((event) {

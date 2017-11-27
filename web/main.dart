@@ -1,7 +1,6 @@
 
 library webuiSample;
 
-import 'dart:async';
 import 'dart:html';
 import 'package:intl/intl.dart';
 import 'package:webui/webui.dart';

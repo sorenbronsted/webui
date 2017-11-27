@@ -117,7 +117,7 @@ void main() {
 
   test('Test addRemoveCollectionProperty', () {
     store.addCollectionProperty(sender, 'Dog', 'legs', 'front');
-    var property = store.getProperty('Dog', 'legs');
+    List property = store.getProperty('Dog', 'legs');
     expect(property.length, 1);
     store.addCollectionProperty(sender, 'Dog', 'legs', 'rear');
     expect(property.length, 2);
