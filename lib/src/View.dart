@@ -98,5 +98,5 @@ abstract class View {
     });
   }
 
-  _addBinding(UiElement elem) => _bindings.add(elem);
+  addBinding(UiElement elem) => _bindings.add(elem);
 }

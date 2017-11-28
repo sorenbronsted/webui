@@ -18,7 +18,7 @@ class Subject {
 		_observers.remove(observer);
 	}
 
-	void notify(Observer sender) {
+	void notify(Observer sender, Topic topic) {
 		_observers.forEach((Observer o) {
 			if (sender != o) {
 				o.update();
@@ -183,7 +183,8 @@ class ObjectStore {
 	void attach(Observer observer, Topic topic) {
 		var name = topic.toString();
 		if (name == null || name.isEmpty) {
-			throw "Observerable id must not be empty";
+			log.severe("attach: Observerable id is empty");
+			return;
 		}
 		log.fine('attach: ${name}');
 		if (_observers[name] == null) {
@@ -195,7 +196,8 @@ class ObjectStore {
 	void detach(Observer observer, Topic topic) {
 		var name = topic.toString();
 		if (name == null || name.isEmpty) {
-			throw "Observerable id must not be empty";
+			log.severe("detach: Observerable id empty");
+			return;
 		}
 		log.fine('detach: ${name}');
 		if (_observers[name] == null) {
@@ -252,7 +254,7 @@ class ObjectStore {
 
 	void _notifyListener(Observer sender, Topic topic) {
 		log.fine('notifyListener: ${topic}');
-		_observers[topic.toString()]?.notify(sender);
+		_observers[topic.toString()]?.notify(sender, topic);
 	}
 
 	void _addMap(Map object, [String name]) {

@@ -16,7 +16,7 @@ class DefaultListView extends View implements UiTableListener {
     if (table == null) {
       throw 'Table in view ${viewName} not found';
     }
-    _addBinding(new UiTable(this, table));
+    addBinding(new UiTable(this, table));
 
     try {
       bindButton('create', false);

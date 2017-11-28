@@ -2,12 +2,12 @@ part of webui;
 
 class UiTab extends UiElement implements Observer {
 
-  UiTab(View view, AnchorElement anchor) : super(anchor){
+  UiTab(View view, AnchorElement anchor) : super(anchor, 'Tab') {
 
     htmlElement.onClick.listen((event) {
       event.preventDefault();
       Uri uri = Uri.parse((htmlElement as AnchorElement).href);
-      if (uri.pathSegments.isNotEmpty && view.isValid) {
+      if (uri.fragment.isNotEmpty && view.isValid) {
         store.setProperty(this, 'Selected', 'tab', uid);
         view.executeHandler('selected', true);
       }
@@ -50,7 +50,7 @@ class UiTab extends UiElement implements Observer {
     }
     else {
       var self = store.getObject('Tab', uid);
-      (htmlElement as AnchorElement).href = self['url'];
+      (htmlElement as AnchorElement).href = "#${self['url']}";
     }
   }
 

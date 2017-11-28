@@ -35,7 +35,7 @@ class UiTable extends UiElement {
     }
 
     (htmlElement as TableElement).tHead.children.first.children.forEach((Element th) {
-      _view._addBinding(new UiTh(th, cls));
+      _view.addBinding(new UiTh(th, cls));
       if (th.classes.contains('sortable')) {
         th.onClick.listen((event) {
           event.preventDefault();

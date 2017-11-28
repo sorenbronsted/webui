@@ -29,7 +29,7 @@ class UiForm extends UiElement {
         }
       }
       if (binding != null) {
-        _view._addBinding(binding);
+        _view.addBinding(binding);
       }
     });
   }
