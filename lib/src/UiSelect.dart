@@ -1,34 +1,28 @@
 
 part of webui;
 
-class UiSelect extends UiElement implements Observer {
+class UiSelect extends UiInputElement {
   String _optionProperty;
   String _options;
   String _myvalue; //This shadows the value property, so that value can be set before any options are available
 
-  UiSelect(SelectElement select, [String cls]) : super(select, cls) {
+  UiSelect(ViewElement view, SelectElement select, [String cls]) : super(select, cls) {
     _options = htmlElement.attributes['data-list'];
     _optionProperty = htmlElement.attributes['data-list-display'];
     if (_options != null && _options.isNotEmpty && _optionProperty != null && _optionProperty.isEmpty) {
       throw "options is used so option-display is needed";
     }
     htmlElement.onChange.listen((event) {
-      store.setProperty(this, cls, property, (htmlElement as SelectElement).value, uid);
+      view.handleEvent(ViewElementEvent.Change, false, event);
     });
   }
 
-  @override
-  void update() {
-    String changedValue = _store.getProperty(cls, property, uid);
-    (htmlElement as SelectElement).value = changedValue;
-    _myvalue = changedValue;
-
+  set list(Iterable<Map> list) {
     if (_options == null) {
-      return;
+      throw "options is not define, so can not be set";
     }
 
     (htmlElement as SelectElement).children.clear();
-    Iterable<Map> list = _store.getObjects(_options);
     if (list == null || list.isEmpty) {
       return;
     }
@@ -44,19 +38,12 @@ class UiSelect extends UiElement implements Observer {
   }
 
   @override
-  attach(ObjectStore store) {
-    super.attach(store);
-    if (_options != null) {
-      store.attach(this, new Topic(_options));
-    }
-  }
+  String get value => (htmlElement as SelectElement).value;
 
   @override
-  detach(ObjectStore store) {
-    super.detach(store);
-    if (_options != null) {
-      store.detach(this, new Topic(_options));
-    }
+  set value(String value) {
+    (htmlElement as SelectElement).value = value;
+    _myvalue = value;
   }
 }
 

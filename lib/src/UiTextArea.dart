@@ -1,13 +1,13 @@
 part of webui;
 
-class UiTextArea extends UiInputState {
+class UiTextArea extends UiInputElement {
 
-  UiTextArea(TextAreaElement input, [String inheritCls]) : super(input, inheritCls) {
+  UiTextArea(ViewElement view, TextAreaElement input, String inheritCls) : super(input, inheritCls) {
     htmlElement.onBlur.listen((Event e) {
       if (isDirty) {
-        _doValidate();
+        validate();
         if (isValid) {
-          _store.setProperty(this, cls, property, Format.internal(type, (htmlElement as TextAreaElement).value, ""), uid);
+          //TODO _store.setProperty(this, cls, property, Format.internal(type, (htmlElement as TextAreaElement).value, ""), uid);
           isDirty = false;
         }
       }
@@ -22,14 +22,11 @@ class UiTextArea extends UiInputState {
     resetUiState();
   }
 
-  @override
-  void update() {
-    resetUiState();
-    (htmlElement as TextAreaElement).value = Format.display(type, store.getProperty(cls, property), "");
-    UiInputValidator.reset(this);
-  }
+  String get value => Format.internal(type, (htmlElement as TextAreaElement).value);
 
-  bool _doValidate() {
-    return UiInputValidator.validate(this);
+  set value(String value) {
+    resetUiState();
+    (htmlElement as TextAreaElement).value = Format.display(type, value, "");
+    UiInputValidator.reset(this);
   }
 }

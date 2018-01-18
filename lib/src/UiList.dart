@@ -13,17 +13,16 @@ class UiListListener {
   }
 }
 
-class UiList extends UiElement implements Observer {
+class UiList extends UiElement {
+  ViewElement _view;
   UiListListener _listener = new UiListListener();
 
   set listener(UiListListener listener) => _listener = listener;
 
-  UiList(DivElement div, [String cls]) : super(div, cls);
+  UiList(this._view, DivElement div, [String cls]) : super(div, cls);
 
-  @override
-  void update() {
+  set list(List values) {
     htmlElement.children.clear();
-    List<Map> values = _store.getObjects(cls);
     if (values.isEmpty) {
       return;
     }
@@ -37,10 +36,14 @@ class UiList extends UiElement implements Observer {
       _listener.onListHref(a, cls, row['uid']);
       _listener.onListText(a, row[property]);
       a.onClick.listen((event) {
-        event.preventDefault();
-        store.remove(this, cls, row['uid']);
+        _view.handleEvent(ViewElementEvent.Change, false, event);
       });
     });
     htmlElement.append(list);
+  }
+
+  @override
+  void showError(Map fieldsWithError) {
+    // Do nothing
   }
 }

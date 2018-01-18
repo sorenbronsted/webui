@@ -1,33 +1,35 @@
+library webui_demo;
 
-library webuiSample;
+// DART HTML Library
+import 'package:logging/logging.dart';
+import 'package:webui/webui.dart' as ui;
 
-import 'dart:html';
-import 'package:intl/intl.dart';
-import 'package:webui/webui.dart';
+// PureMVC Framework for Dart
+import 'package:puremvc/puremvc.dart' as mvc;
 
-part 'PersonListView.dart';
-part 'PersonListCtrl.dart';
-part 'PersonDetailView.dart';
-part 'PersonDetailCtrl.dart';
-part 'TestView.dart';
-part 'TestCtrl.dart';
+// Model Tier
+part 'src/model/person.dart';
+
+// View Tier
+part 'src/view/personview.dart';
+
+// Controller Tier
+part 'src/controller/commands.dart';
+part 'src/controller/app.dart';
 
 void main() {
-  String locale = 'da_DK';
-  Intl.defaultLocale = locale;
+  Logger.root.level = Level.FINE;
+  Logger.root.onRecord.listen((LogRecord rec) {
+    print('${rec.level.name}: ${rec.time}: ${rec.loggerName}: ${rec.message}');
+  });
 
-  initWebUi();
+  ui.UiInputValidator.css = new ui.UiInputValidatorListenerW3();
 
-  //UiInputValidator.css = new UiInputValidatorListenerBootStrap();
-  UiInputValidator.css = new UiInputValidatorListenerW3();
-  //UiTable.css = new UiTableCssBootStrap();
-  UiTable.css = new UiTableCssW3();
+  // Get a unique multiton Facade instance for the application
+  mvc.IFacade facade = mvc.Facade.getInstance(AppNotes.Appname);
 
-  var bus = EventBus.instance;
-  bus.register(new PersonListCtrl());
-  bus.register(new PersonDetailCtrl());
-  bus.register(new TestCtrl());
-
-  Address.instance.goto("/");
-  Address.instance.goto("list/Person");
+  // Startup the application's PureMVC core
+  facade.registerCommand(ui.AppEvent.Startup, () => new StartupCommand());
+  facade.sendNotification(ui.AppEvent.Startup);
+  facade.sendNotification(ui.AppEvent.Goto, 'list/${Person.NAME}');
 }

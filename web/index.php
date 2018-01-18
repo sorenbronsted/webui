@@ -11,7 +11,7 @@ try {
 		echo Rest::run($_SERVER, $_REQUEST);
 	}
 	else {
-		readfile(__DIR__.'/view/main.html');
+		readfile(__DIR__.'/html/main.html');
 	}
 }
 catch(Exception $e) {

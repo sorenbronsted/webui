@@ -4,9 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c1e9ca46f24831674f3cfb0e0bf52786",
-    "content-hash": "b82b30d1f9a76501d29f88cdcad7ca7a",
+    "content-hash": "678b81de3e74674cf353dd6eeacac605",
     "packages": [
+        {
+            "name": "facebook/webdriver",
+            "version": "1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/php-webdriver.git",
+                "reference": "eadb0b7a7c3e6578185197fd40158b08c3164c83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/eadb0b7a7c3e6578185197fd40158b08c3164c83",
+                "reference": "eadb0b7a7c3e6578185197fd40158b08c3164c83",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-zip": "*",
+                "php": "^5.5 || ~7.0",
+                "symfony/process": "^2.8 || ^3.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "php-mock/php-mock-phpunit": "^1.1",
+                "phpunit/phpunit": "4.6.* || ~5.0",
+                "satooshi/php-coveralls": "^1.0",
+                "squizlabs/php_codesniffer": "^2.6"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-community": "1.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Facebook\\WebDriver\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "A PHP client for Selenium WebDriver",
+            "homepage": "https://github.com/facebook/php-webdriver",
+            "keywords": [
+                "facebook",
+                "php",
+                "selenium",
+                "webdriver"
+            ],
+            "time": "2017-04-28T14:54:49+00:00"
+        },
         {
             "name": "ruckusing/ruckusing-migrations",
             "version": "dev-master",
@@ -58,7 +109,56 @@
                 "issues": "https://github.com/ruckus/ruckusing-migrations/issues",
                 "source": "https://github.com/ruckus/ruckusing-migrations"
             },
-            "time": "2016-05-19 14:00:01"
+            "time": "2016-05-19T14:00:01+00:00"
+        },
+        {
+            "name": "symfony/process",
+            "version": "v2.8.33",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/process.git",
+                "reference": "ea3226daa3c6789efa39570bfc6e5d55f7561a0a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/process/zipball/ea3226daa3c6789efa39570bfc6e5d55f7561a0a",
+                "reference": "ea3226daa3c6789efa39570bfc6e5d55f7561a0a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Process\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Process Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-01-03T07:36:31+00:00"
         },
         {
             "name": "ufds/libcommon",
@@ -80,7 +180,7 @@
                 "UFDS privat"
             ],
             "description": "UFDS common library",
-            "time": "2017-01-10 13:09:31"
+            "time": "2017-01-10T13:09:31+00:00"
         },
         {
             "name": "ufds/libdatabase",
@@ -88,7 +188,7 @@
             "source": {
                 "type": "git",
                 "url": "http://dev/git/ufds/libdatabase.git",
-                "reference": "b9ed961bc398419f5192f6fcf8fa2083a3b2a2e6"
+                "reference": "97be98de2f46ec147ff35360ac5c492f6007ce73"
             },
             "require": {
                 "ruckusing/ruckusing-migrations": "dev-master",
@@ -106,7 +206,7 @@
                 "UFDS privat"
             ],
             "description": "Generel ORM mapper baseret på PDO",
-            "time": "2016-12-09 09:10:17"
+            "time": "2017-09-14T08:54:52+00:00"
         },
         {
             "name": "ufds/librest",
@@ -114,7 +214,7 @@
             "source": {
                 "type": "git",
                 "url": "http://dev/git/ufds/librest.git",
-                "reference": "623a2bd3a8639935d83211ac374900a8a5da6600"
+                "reference": "c8c153bdbeb005d0d86a0b2b3036c814424031f8"
             },
             "require": {
                 "ufds/libcommon": "dev-master",
@@ -137,7 +237,7 @@
                 "UFDS privat"
             ],
             "description": "UFDS standard rest api",
-            "time": "2017-01-09 08:52:26"
+            "time": "2017-01-25T15:03:46+00:00"
         },
         {
             "name": "ufds/libtypes",
@@ -145,7 +245,7 @@
             "source": {
                 "type": "git",
                 "url": "http://dev/git/ufds/libtypes.git",
-                "reference": "6c0a668b54d5a2fdab763cfaafbaca21dcc70e16"
+                "reference": "b0729e0a6224c649195597269ace563a2b216161"
             },
             "require": {
                 "ufds/libcommon": "dev-master"
@@ -162,7 +262,7 @@
                 "UFDS privat"
             ],
             "description": "UFDS standard types",
-            "time": "2016-12-09 13:11:30"
+            "time": "2017-12-15T12:08:00+00:00"
         },
         {
             "name": "ufds/libutil",
@@ -170,7 +270,7 @@
             "source": {
                 "type": "git",
                 "url": "http://dev/git/ufds/libutil.git",
-                "reference": "7fa45eda0e8fa99771a1da71fdb32d46bb1e6f8a"
+                "reference": "ec3f0e338bc9fb6284708e9e494af997f3f6b501"
             },
             "require": {
                 "ufds/libcommon": "dev-master"
@@ -190,7 +290,7 @@
                 "UFDS privat"
             ],
             "description": "Package of utils",
-            "time": "2016-08-05 11:47:16"
+            "time": "2017-04-05T08:59:27+00:00"
         }
     ],
     "packages-dev": [],
@@ -209,6 +309,6 @@
     "platform": [],
     "platform-dev": [],
     "platform-overrides": {
-        "php": "5.4"
+        "php": "5.5"
     }
 }

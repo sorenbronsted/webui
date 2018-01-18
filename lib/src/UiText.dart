@@ -1,12 +1,16 @@
 part of webui;
 
-class UiText extends UiElement implements Observer {
+class UiText extends UiElement {
 
-	UiText(HtmlElement elem, [String cls]) : super(elem, cls);
+	UiText(ViewElement view, HtmlElement elem, [String cls]) : super(elem, cls);
 
-	@override
-	void update() {
+	set value(String value) {
 		htmlElement.children.clear();
-		htmlElement.appendText(Format.display(type, store.getProperty(cls, property, uid).toString(), format));
+		htmlElement.appendText(Format.display(type, value, format));
 	}
+
+  @override
+  void showError(Map fieldsWithError) {
+    // Do nothing
+  }
 }

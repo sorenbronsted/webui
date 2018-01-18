@@ -6,9 +6,11 @@ class Person extends ModelObject {
 		'uid'  => Property::INT,
 		'name' => Property::STRING,
 		'address' => Property::STRING,
+		'zipcode' => Property::STRING,
+		'town' => Property::STRING,
 	];
 
-	private static $mandatories = ['name', 'address'];
+	private static $mandatories = ['name', 'address', 'zipcode', 'town'];
 
 	protected function getProperties() {
 		return self::$properties;

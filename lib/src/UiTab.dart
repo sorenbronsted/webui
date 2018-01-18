@@ -1,22 +1,23 @@
 part of webui;
 
-class UiTab extends UiElement implements Observer {
+class UiTab extends UiElement {
 
-  UiTab(View view, AnchorElement anchor) : super(anchor, 'Tab') {
+  UiTab(AnchorElement anchor) : super(anchor, 'Tab') {
 
     htmlElement.onClick.listen((event) {
+      /* TODO
       event.preventDefault();
       Uri uri = Uri.parse((htmlElement as AnchorElement).href);
       if (uri.fragment.isNotEmpty && view.isValid) {
         store.setProperty(this, 'Selected', 'tab', uid);
         view.executeHandler('selected', true);
       }
+      */
     });
   }
 
-  @override
   void update() {
-    //TODO this is depends on bootstrap
+    /*TODO this is depends on bootstrap
     if (cls == 'Selected' && property == 'tab') {
       var selectedUid = store.getProperty(cls, property);
       var selected = store.getObject('Tab', selectedUid);
@@ -52,19 +53,11 @@ class UiTab extends UiElement implements Observer {
       var self = store.getObject('Tab', uid);
       (htmlElement as AnchorElement).href = "#${self['url']}";
     }
+    */
   }
 
   @override
-  attach(ObjectStore store) {
-    super.attach(store);
-    store.attach(this, new Topic('Selected', 'tab'));
+  void showError(Map fieldsWithError) {
+    // Do nothing
   }
-
-  @override
-  detach(ObjectStore store) {
-    super.detach(store);
-    store.detach(this, new Topic('Selected', 'tab'));
-  }
-
-
 }

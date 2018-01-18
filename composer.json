@@ -4,7 +4,7 @@
   "license": "Private",
   "config": {
     "platform": {
-      "php": "5.4"
+      "php": "5.5"
     },
     "secure-http": false
   },
@@ -19,7 +19,8 @@
     "ufds/libtypes": "dev-master",
     "ufds/libcommon": "dev-master",
     "ufds/librest": "dev-master",
-    "ufds/libutil": "dev-master"
+    "ufds/libutil": "dev-master",
+    "facebook/webdriver": "1.4.1"
   },
   
   "repositories": [
@@ -31,4 +32,3 @@
     {"type": "vcs", "url": "http://dev/git/ufds/libcommon.git"}
   ]
 }
-

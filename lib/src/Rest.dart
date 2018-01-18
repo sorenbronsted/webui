@@ -5,13 +5,15 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:convert';
 import 'package:logging/logging.dart';
-import 'EventBus.dart';
 
 typedef void RestError(String text);
 
+class RestEvent {
+  static const String Start = 'Start';
+  static const String Done = 'Done';
+}
+
 class Rest {
-  static String eventRequestStart = 'RequestStart';
-  static String eventRequestDone = 'RequestDone';
   final Logger log = new Logger('Rest');
 
   static Rest _instance;
@@ -32,30 +34,6 @@ class Rest {
   }
 
   set errorHandler(RestError handler) => _errorHandler = handler;
-  
-  Future load(String url) {
-    Completer c = new Completer();
-    var req = new HttpRequest();
-    req.open('GET', url);
-    req.onReadyStateChange.listen((Event e) {
-      if (req.readyState == HttpRequest.HEADERS_RECEIVED) {
-        EventBus.instance.fire(this, new BusEvent(eventRequestStart));
-      }
-      else if (req.readyState == HttpRequest.DONE) {
-        EventBus.instance.fire(this, new BusEvent(eventRequestDone));
-        switch (req.status) {
-          case 0:
-          case 200:
-            c.complete(req.responseText);
-            break;
-          default:
-            _errorHandler("Ups! http result code: ${req.status}");
-        }
-      }
-    });
-    req.send();
-    return c.future;
-  }
   
   Future get(String url) {
     return _execute('GET', url);
@@ -81,10 +59,10 @@ class Rest {
     var req = new HttpRequest();
     req.onReadyStateChange.listen((Event e) {
       if (req.readyState == HttpRequest.OPENED) {
-        EventBus.instance.fire(this, new BusEvent(eventRequestStart));
+        //TODO EventBus.instance.fire(this, new BusEvent(RestEvent.Start));
       }
       else if (req.readyState == HttpRequest.DONE) {
-        EventBus.instance.fire(this, new BusEvent(eventRequestDone));
+        //TODO EventBus.instance.fire(this, new BusEvent(RestEvent.Done));
         switch (req.status) {
           case 0:
           case 200:

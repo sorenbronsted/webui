@@ -1,114 +1,96 @@
 part of webui;
 
-class UiInput extends UiInputState {
+class UiInput extends UiInputElement {
+  final Logger log = new Logger('UiInput');
 
-  UiInput(InputElement input, [String parentCls]) : super(input, parentCls) {
+  UiInput(ViewElement view, InputElement input, [String parentCls]) : super(input, parentCls) {
     switch(input.type) {
       case 'file':
-        _initFile();
+        _initFile(view);
         break;
       case 'checkbox':
-        _initCheckbox();
+        _initCheckbox(view);
         break;
       case 'radio':
-        _initRadio();
+        _initRadio(view);
         break;
       default:
-        _initInput();
+        _initInput(view);
     }
     resetUiState();
   }
 
-  @override
-  void update() {
+  String get value {
+    InputElement input = htmlElement;
+    switch(input.type) {
+      case 'file':
+        break;
+      case 'checkbox':
+      case 'radio':
+        return input.checked ? '1' : '0';
+      default:
+        return Format.internal(type, (htmlElement as InputElement).value);
+    }
+    return '';
+  }
+
+  set value(String value) {
     resetUiState();
     InputElement input = htmlElement;
     switch(input.type) {
       case 'file':
         break;
       case 'checkbox':
-        if (type == 'selection') {
-          List values = store.getProperty(cls, property, uid);
-          input.checked = (values.contains(input.value));
-        }
-        else {
-          input.checked = (input.value == store.getProperty(cls, property, uid));
-        }
-        break;
       case 'radio':
-        input.checked = (input.value == store.getProperty(cls, property, uid));
+        input.checked = (input.value == value);
         break;
       default:
-        input.value = Format.display(type, store.getProperty(cls, property, uid), format);
+        input.value = Format.display(type, value, format);
     }
     UiInputValidator.reset(this);
   }
 
-  void _initInput() {
-    htmlElement.onChange.listen((Event e) {
-      isDirty = true;
-      _writeStore();
-    });
+  void _initInput(ViewElement view) {
 
     htmlElement.onFocus.listen((event) {
-      if (!isValid) {
-        return;
-      }
       UiInputValidator.reset(this);
       isValid = true;
+      log.fine("onFocus: isValid ${isValid} isDirty ${isDirty}");
     });
 
     htmlElement.onKeyUp.listen((event) => isDirty = true);
 
     htmlElement.onKeyDown.listen((event) {
       if (event.keyCode == 13) {
-        _writeStore();
+        log.fine("onKeyDown: isValid ${isValid} isDirty ${isDirty}");
+        view.handleEvent(ViewElementEvent.Change, true, event);
       }
+    });
+
+    htmlElement.onChange.listen((Event event) {
+      isDirty = true;
+      isValid = UiInputValidator.validate(this);
+      log.fine("onChange: isValid ${isValid} isDirty ${isDirty}");
+      view.handleEvent(ViewElementEvent.Change, true, event);
     });
   }
 
-  void _initRadio() {
+  void _initRadio(ViewElement view) {
     (htmlElement as InputElement).name = '${cls}.${property}'; // name must set for radio button to work
-    htmlElement.onChange.listen((Event e) {
-      store.setProperty(this, cls, property, (htmlElement as InputElement).value, uid);
+    htmlElement.onChange.listen((Event event) {
+      view.handleEvent(ViewElementEvent.Change, true, event);
     });
   }
 
-  void _initCheckbox() {
-    htmlElement.onChange.listen((Event e) {
-      if (type == 'selection') {
-        if ((htmlElement as InputElement).checked == true) {
-          store.addCollectionProperty(this, cls, property, (htmlElement as InputElement).value, uid);
-        }
-        else {
-          store.removeCollectionProperty(this, cls, property, (htmlElement as InputElement).value, uid);
-        }
-      }
-      else {
-        var value = ((htmlElement as InputElement).checked == true ? '1' : '0');
-        store.setProperty(this, cls, property, value, uid);
-      }
+  void _initCheckbox(ViewElement view) {
+    htmlElement.onChange.listen((Event event) {
+      view.handleEvent(ViewElementEvent.Change, false, event);
     });
   }
 
-  void _initFile() {
+  void _initFile(ViewElement view) {
     htmlElement.onChange.listen((event) {
-      event.preventDefault();
-      store.setProperty(this, cls, property, (htmlElement as InputElement).files);
+      view.handleEvent(ViewElementEvent.Change, false, event);
     });
-  }
-
-  bool _doValidate() {
-    return UiInputValidator.validate(this);
-  }
-
-  void _writeStore() {
-    if (isDirty) {
-      validate();
-      if (isValid) {
-        store.setProperty(this, cls, property, Format.internal(type, (htmlElement as InputElement).value, format), uid);
-        isDirty = false;
-      }
-    }
   }
 }
