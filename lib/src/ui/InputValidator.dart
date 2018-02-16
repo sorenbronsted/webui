@@ -1,14 +1,14 @@
 
 part of webui;
 
-class UiValidationException {
+class ValidationException {
   String _msg;
 
-  UiValidationException(String this._msg);
+  ValidationException(String this._msg);
   String toString() => _msg;
 }
 
-class UiInputValidator {
+class InputValidator {
   static Map _methods = {
     "datetime" : _datetime,
     "casenumber" : _caseNumber,
@@ -16,17 +16,19 @@ class UiInputValidator {
     "email" : _email
   };
 
-  static UiInputValidatorListener _css = new UiInputValidatorListener();
+  static UiInputCss _css = new UiInputCss();
 
-  static set css(UiInputValidatorListener css) => _css = css;
+  static set css(UiInputCss css) => _css = css;
 
-  static void reset(UiElement input) {
-    _css.clear(input.htmlElement);
+  static UiInputCss get css => _css;
+
+  static void reset(ElementWrapper input) {
+    _css.clear(input._htmlElement);
   }
 
-  static bool validate(UiElement uiElement) {
+  static bool validate(ElementWrapper element) {
     var isValid = true;
-    InputElement input = uiElement.htmlElement;
+    InputElement input = element._htmlElement;
 
     if (input.readOnly == true || input.disabled == true) {
       return isValid;
@@ -36,14 +38,14 @@ class UiInputValidator {
       if (input.required) {
         input.value = _required(input.value);
       }
-      var type = uiElement.type;
-      var format = uiElement.format;
+      var type = element.type;
+      var format = element.format;
       if (_methods.containsKey(type)) {
         input.value = _methods[type](input.value, format);
       }
       _css.valid(input);
     }
-    on UiValidationException catch(e) {
+    on ValidationException catch(e) {
       _css.error(input, e.toString());
       isValid = false;
     }
@@ -52,7 +54,7 @@ class UiInputValidator {
 
   static String _required(String input) {
     if (input.trim().isEmpty) {
-      throw new UiValidationException("Skal udfyldelse");
+      throw new ValidationException("Skal udfyldelse");
     }
     return input;
   }
@@ -66,7 +68,7 @@ class UiInputValidator {
     try {
       var parts = value.split(new RegExp(r' +'));
       if (parts.length < 1 || parts.length > 2) {
-        throw new UiValidationException(msg);
+        throw new ValidationException(msg);
       }
       if (parts.length == 1) {
         if (format.contains(new RegExp(r'[dMy]'))) {
@@ -82,7 +84,7 @@ class UiInputValidator {
       }
     }
     catch(e) {
-      throw new UiValidationException(msg);
+      throw new ValidationException(msg);
     }
   }
 
@@ -122,11 +124,11 @@ class UiInputValidator {
           test = new DateTime(now.year, now.month, now.day, hh, mm, ss);
           break;
         default:
-          throw new UiValidationException(msg);
+          throw new ValidationException(msg);
       }
     }
     on FormatException {
-      throw new UiValidationException(msg);
+      throw new ValidationException(msg);
     }
     return new DateFormat(format).format(test);
   }
@@ -181,11 +183,11 @@ class UiInputValidator {
           test = new DateTime(yy, mm, dd);
           break;
         default:
-          throw new UiValidationException(msg);
+          throw new ValidationException(msg);
       }
     }
     on FormatException {
-      throw new UiValidationException(msg);
+      throw new ValidationException(msg);
     }
     return new DateFormat(format).format(test);
   }
@@ -201,7 +203,7 @@ class UiInputValidator {
       if (value.indexOf("/") >= 0) {
         var tmp = value.split("/");
         if (tmp.length != 2) {
-          throw new UiValidationException(msg);
+          throw new ValidationException(msg);
         }
         var year = int.parse(tmp[1]);
         if (year < 100) {
@@ -218,11 +220,11 @@ class UiInputValidator {
         number = int.parse(value);
       }
       if (number < 19000001 || number > 21009999) {
-        throw new UiValidationException(msg);
+        throw new ValidationException(msg);
       }
     }
     on FormatException {
-      throw new UiValidationException(msg);
+      throw new ValidationException(msg);
     }
     return input;
   }
@@ -238,7 +240,7 @@ class UiInputValidator {
       }
     }
     on FormatException {
-      throw new UiValidationException(msg);
+      throw new ValidationException(msg);
     }
     return input;
   }
@@ -248,7 +250,7 @@ class UiInputValidator {
     var reg = new RegExp("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}\$");
     var value = input.trim().toLowerCase();
     if (!value.isEmpty && !reg.hasMatch(value)) {
-      throw new UiValidationException(msg);
+      throw new ValidationException(msg);
     }
     return input;
   }

@@ -2,7 +2,7 @@
 import "package:test/test.dart";
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import "../lib/src/Formatter.dart";
+import "../lib/src/ui/Formatter.dart";
 
 void main() {
   initializeDateFormatting("da_DK", null);

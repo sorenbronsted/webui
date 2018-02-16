@@ -6,24 +6,22 @@ abstract class UiTableListener {
   onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, Map row);
 }
 
-class UiTable extends UiElement {
+class Table extends ContainerWrapper {
   static const none = 0;
   static const asc = 1;
   static const dsc = 2;
 
-  static UiTableCss _css = new UiTableCss();
+  static TableCss _css = new TableCss();
 
   UiTableListener _listener;
   TableCellElement _orderBy;
   int _direction = none;
-  List<UiTh> _columns = [];
-  ViewElement _view;
-  
+
   set listener(UiTableListener listener) => _listener = listener;
 
-  static set css(UiTableCss css) => _css = css;
+  static set css(TableCss css) => _css = css;
 
-  UiTable(this._view, TableElement table) : super(table) {
+  Table(View view, TableElement table) : super(view, table) {
     if (table.tHead == null || table.tHead.children.length != 1) {
       throw new Exception("Must have a thead element"); //TODO make table header dynamic
     }
@@ -31,10 +29,9 @@ class UiTable extends UiElement {
       throw new Exception("Multiple bodies not supported");
     }
 
-    table.tHead.children.first.children.forEach((Element th) {
-      _columns.add(new UiTh(th, cls));
-      if (th.classes.contains('sortable')) {
-        th.onClick.listen((event) {
+    _elements.forEach((ElementWrapper elem) {
+      if (_htmlElement.classes.contains('sortable')) {
+        _htmlElement.onClick.listen((event) {
           event.preventDefault();
           _setSortingUi(event.target);
           _doSort();
@@ -43,11 +40,10 @@ class UiTable extends UiElement {
     });
   }
 
-  set rows(Iterable<Map> rows) {
-    if (!_view.isVisible()) {
-      return;
-    }
-    var body = (htmlElement as TableElement).tBodies.first;
+  set value(Object value) {
+    Iterable<Map> rows = value;
+
+    var body = (_htmlElement as TableElement).tBodies.first;
     body.children.clear();
 
     var fragment;
@@ -68,8 +64,9 @@ class UiTable extends UiElement {
 
       // Make the table row
       fragment.append(tableRow);
-      _columns.forEach((UiTh elem) {
-         elem.addCell(_view, _listener, tableRow, row, _css);
+      _elements.forEach((ElementWrapper element) {
+        TableCellElement td = (element as Th).makeCell(row, _listener, _css);
+        tableRow.append(td);
       });
     });
     return fragment;
@@ -77,7 +74,7 @@ class UiTable extends UiElement {
 
   DocumentFragment _noRows() {
     var tableCell = new TableCellElement();
-    tableCell.colSpan = _columns.length;
+    tableCell.colSpan = _elements.length;
     tableCell.appendText('Ingen data fundet');
     tableCell.classes.add('center');
     var result = new DocumentFragment();
@@ -86,11 +83,11 @@ class UiTable extends UiElement {
   }
 
   void _doSort() {
-    var body = (htmlElement as TableElement).tBodies.first;
+    var body = (_htmlElement as TableElement).tBodies.first;
     if (body == null) { // nothing to sort
       return;
     }
-    var idx = (htmlElement as TableElement).tHead.rows.first.cells.indexOf(_orderBy);
+    var idx = (_htmlElement as TableElement).tHead.rows.first.cells.indexOf(_orderBy);
     var tmp = new List.from(body.children);
     tmp.sort((TableRowElement a, TableRowElement b) {
       String aVal = Format.internal(_orderBy.attributes['type'], a.cells.elementAt(idx).text, _orderBy.attributes['format']);
@@ -124,10 +121,5 @@ class UiTable extends UiElement {
       _direction = asc;
     }
     _css.onSortColumn(_orderBy, _direction);
-  }
-
-  @override
-  void showError(Map fieldsWithError) {
-    // Do nothing
   }
 }

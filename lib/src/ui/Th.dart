@@ -1,21 +1,21 @@
 part of webui;
 
-class UiTh extends UiElement {
+class Th extends ElementWrapper {
 
-  String get link => htmlElement.attributes['data-link'];
+  String get link => _htmlElement.attributes['data-link'];
 
-  String get linkClass => htmlElement.attributes['data-link-class'];
+  String get linkClass => _htmlElement.attributes['data-link-class'];
 
-  UiTh(TableCellElement th, [String cls]) : super(th, cls);
+  Th(View view, TableCellElement th, [String cls]) : super(view, th, cls);
 
-  void addCell(ViewElement view, UiTableListener listener, TableRowElement tableRow, Map row, UiTableCss css) {
+  TableCellElement makeCell(Map row, UiTableListener listener, TableCss css) {
     TableCellElement cell = new TableCellElement();
 
     // inherit column hidden property
-    cell.hidden = htmlElement.hidden;
+    cell.hidden = _htmlElement.hidden;
 
     if (link != null) {
-      _addLink(view, row, listener, cell, css);
+      _addLink(row, listener, cell, css);
     }
     else {
       var value = null;
@@ -26,13 +26,12 @@ class UiTh extends UiElement {
       cell.appendHtml(value);
       listener?.onTableCellValue(cell, cls, property, row);
     }
-    tableRow.append(cell);
+    return cell;
   }
 
-  void _addLink(ViewElement view, Map row, UiTableListener listener, TableCellElement cell, UiTableCss css) {
-    String uid = row['uid'];
+  void _addLink(Map row, UiTableListener listener, TableCellElement cell, TableCss css) {
+    int uid = row['uid'];
     AnchorElement a = new AnchorElement();
-    String name = ViewElementEvent.Link;
     switch(link) {
       case 'edit':
         a.href = "/#detail/${cls}/${uid}";
@@ -51,7 +50,6 @@ class UiTh extends UiElement {
         else {
           a.text = row[property];
         }
-        name = ViewElementEvent.Delete;
         break;
       case 'children':
         a.href = "/#list/${linkClass}?${cls}=${uid}";
@@ -59,14 +57,15 @@ class UiTh extends UiElement {
         break;
     }
     a.onClick.listen((event) {
-      view.handleEvent(name, false, event);
+      event.preventDefault();
+      _view.fire(_view.eventClick, new ElementValue(cls, link, uid, a.href));
     });
     listener?.onTableCellLink(cell, a, cls, property, row);
     cell.append(a);
   }
 
   @override
-  void showError(Map fieldsWithError) {
+  set value(Object object) {
     // Do nothing
   }
 }

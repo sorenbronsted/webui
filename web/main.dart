@@ -1,21 +1,9 @@
 library webui_demo;
 
-// DART HTML Library
 import 'package:logging/logging.dart';
-import 'package:webui/webui.dart' as ui;
+import 'package:webui/webui.dart';
 
-// PureMVC Framework for Dart
-import 'package:puremvc/puremvc.dart' as mvc;
-
-// Model Tier
-part 'src/model/person.dart';
-
-// View Tier
-part 'src/view/personview.dart';
-
-// Controller Tier
-part 'src/controller/commands.dart';
-part 'src/controller/app.dart';
+part 'src/person.dart';
 
 void main() {
   Logger.root.level = Level.FINE;
@@ -23,13 +11,16 @@ void main() {
     print('${rec.level.name}: ${rec.time}: ${rec.loggerName}: ${rec.message}');
   });
 
-  ui.UiInputValidator.css = new ui.UiInputValidatorListenerW3();
+  initWebUi();
 
-  // Get a unique multiton Facade instance for the application
-  mvc.IFacade facade = mvc.Facade.getInstance(AppNotes.Appname);
+  InputValidator.css = new UiInputValidatorListenerW3();
 
-  // Startup the application's PureMVC core
-  facade.registerCommand(ui.AppEvent.Startup, () => new StartupCommand());
-  facade.sendNotification(ui.AppEvent.Startup);
-  facade.sendNotification(ui.AppEvent.Goto, 'list/${Person.NAME}');
+  Repo.instance.add(new Router());
+  Repo.instance.add(new RouterCtrl(new RouterView()));
+  Repo.instance.add(new Person());
+  Repo.instance.add(new PersonListCtrl(new View('PersonList')));
+  Repo.instance.add(new PersonDetailCtrl(new View('PersonDetail')));
+
+  Router router = Repo.instance.getByType(Router);
+  router.goto(Uri.parse('list/Person'));
 }

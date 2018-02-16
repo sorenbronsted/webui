@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiTableCss {
+class TableCss {
 	onSortColumn(TableCellElement th, int direction) {}
 	void clearSortColumn(TableCellElement orderBy) {}
 	void onEditLinkLabels(AnchorElement a) => a.text = 'E';

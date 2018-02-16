@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiTableCssW3 implements UiTableCss {
+class TableCssW3 implements TableCss {
   @override
   onSortColumn(TableCellElement th, int direction) {
     var span;
@@ -15,10 +15,10 @@ class UiTableCssW3 implements UiTableCss {
 
     span.classes.clear();
     span.classes.add('material-icons');
-    if (direction == UiTable.asc) {
+    if (direction == Table.asc) {
       span.add("arrow drop down");
     }
-    else if (direction == UiTable.dsc) {
+    else if (direction == Table.dsc) {
       span.add("arrow drop up");
     }
   }

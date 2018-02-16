@@ -1,11 +1,10 @@
 name: webui
-version: 5.0.0
+version: 6.0.0
 author: Søren Brønsted
 description: GUI framework for single page applications
 dependencies:
   intl: any
   logging: any
   browser: any
-  puremvc: any
 dev_dependencies:
   test: any

@@ -1,9 +1,9 @@
 
 part of webui;
 
-class UiInputValidatorListener {
-  static String _cssError = "error";
-  static String _cssValid = "valid";
+class UiInputValidatorListenerW3 implements UiInputCss {
+  static String _cssError = "w3-border-red";
+  static String _cssValid = "w3-border-green";
 
   // Remove all Css validation
   void clear(HtmlElement input) {
@@ -21,5 +21,15 @@ class UiInputValidatorListener {
   // set css valid validation
   void valid(HtmlElement input) {
     input.classes.add(_cssValid);
+  }
+
+  @override
+  void hide(HtmlElement input) {
+    input.hidden = true;
+  }
+
+  @override
+  void show(HtmlElement input) {
+    input.hidden = false;
   }
 }

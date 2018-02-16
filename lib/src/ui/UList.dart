@@ -1,7 +1,6 @@
-
 part of webui;
 
-class UiListListener {
+class UListListener {
   void onListRow(AnchorElement a, Map row) {}
 
   void onListHref(AnchorElement a, String cls, String uid) {
@@ -13,15 +12,16 @@ class UiListListener {
   }
 }
 
-class UiList extends UiElement {
-  ViewElement _view;
-  UiListListener _listener = new UiListListener();
+class UList extends ContainerWrapper {
+  UListListener _listener = new UListListener();
 
-  set listener(UiListListener listener) => _listener = listener;
+  set listener(UListListener listener) => _listener = listener;
 
-  UiList(this._view, DivElement div, [String cls]) : super(div, cls);
+  UList(View view, DivElement div, [String cls]) : super(view, div, cls);
 
-  set list(List values) {
+  set value(Object value) {
+    throw "Not Implemented";
+/*
     htmlElement.children.clear();
     if (values.isEmpty) {
       return;
@@ -36,14 +36,10 @@ class UiList extends UiElement {
       _listener.onListHref(a, cls, row['uid']);
       _listener.onListText(a, row[property]);
       a.onClick.listen((event) {
-        _view.handleEvent(ViewElementEvent.Change, false, event);
+        _view.handleEvent(UiViewElementEvent.Change, false, event, this);
       });
     });
     htmlElement.append(list);
-  }
-
-  @override
-  void showError(Map fieldsWithError) {
-    // Do nothing
+    */
   }
 }

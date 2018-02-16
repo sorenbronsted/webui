@@ -1,19 +1,19 @@
 
 part of webui;
 
-class UiSelect extends UiInputElement {
+class Select extends InputBase {
   String _optionProperty;
   String _options;
   String _myvalue; //This shadows the value property, so that value can be set before any options are available
 
-  UiSelect(ViewElement view, SelectElement select, [String cls]) : super(select, cls) {
-    _options = htmlElement.attributes['data-list'];
-    _optionProperty = htmlElement.attributes['data-list-display'];
+  Select(View view, SelectElement select, [String cls]) : super(view, select, cls) {
+    _options = _htmlElement.attributes['data-list'];
+    _optionProperty = _htmlElement.attributes['data-list-display'];
     if (_options != null && _options.isNotEmpty && _optionProperty != null && _optionProperty.isEmpty) {
       throw "options is used so option-display is needed";
     }
-    htmlElement.onChange.listen((event) {
-      view.handleEvent(ViewElementEvent.Change, false, event);
+    _htmlElement.onChange.listen((event) {
+      view.validateAndfire(view.eventPropertyChanged, false, value);
     });
   }
 
@@ -22,7 +22,7 @@ class UiSelect extends UiInputElement {
       throw "options is not define, so can not be set";
     }
 
-    (htmlElement as SelectElement).children.clear();
+    (_htmlElement as SelectElement).children.clear();
     if (list == null || list.isEmpty) {
       return;
     }
@@ -33,16 +33,16 @@ class UiSelect extends UiInputElement {
       option.appendText(row[_optionProperty]);
       options.append(option);
     });
-    htmlElement.append(options);
-    (htmlElement as SelectElement).value = _myvalue;
+    _htmlElement.append(options);
+    (_htmlElement as SelectElement).value = _myvalue;
   }
 
   @override
-  String get value => (htmlElement as SelectElement).value;
+  Object get value => (_htmlElement as SelectElement).value;
 
   @override
-  set value(String value) {
-    (htmlElement as SelectElement).value = value;
+  set value(Object value) {
+    (_htmlElement as SelectElement).value = value;
     _myvalue = value;
   }
 }

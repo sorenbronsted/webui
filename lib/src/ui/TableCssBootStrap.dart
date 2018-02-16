@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiTableCssBootStrap implements UiTableCss {
+class TableCssBootStrap implements TableCss {
   @override
   onSortColumn(TableCellElement th, int direction) {
     var span;
@@ -15,10 +15,10 @@ class UiTableCssBootStrap implements UiTableCss {
 
     span.classes.clear();
     span.classes.add("glyphicon");
-    if (direction == UiTable.asc) {
+    if (direction == Table.asc) {
       span.classes.add("glyphicon-triangle-top");
     }
-    else if (direction == UiTable.dsc) {
+    else if (direction == Table.dsc) {
       span.classes.add("glyphicon-triangle-bottom");
     }
   }
