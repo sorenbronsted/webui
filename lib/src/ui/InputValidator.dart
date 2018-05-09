@@ -9,24 +9,29 @@ class ValidationException {
 }
 
 class InputValidator {
+  static Logger _log = new Logger('${InputValidator}');
+
   static Map _methods = {
+    "date" : _date,
+    "time" : _time,
     "datetime" : _datetime,
     "casenumber" : _caseNumber,
     "number" : _number,
     "email" : _email
   };
 
-  static UiInputCss _css = new UiInputCss();
+  static InputCss _css = new InputCss();
 
-  static set css(UiInputCss css) => _css = css;
+  static set css(InputCss css) => _css = css;
 
-  static UiInputCss get css => _css;
+  static InputCss get css => _css;
 
   static void reset(ElementWrapper input) {
     _css.clear(input._htmlElement);
   }
 
   static bool validate(ElementWrapper element) {
+    _log.fine('validate: element: ${element}');
     var isValid = true;
     InputElement input = element._htmlElement;
 
@@ -38,8 +43,8 @@ class InputValidator {
       if (input.required) {
         input.value = _required(input.value);
       }
-      var type = element.type;
-      var format = element.format;
+      var type = element._type;
+      var format = element._format;
       if (_methods.containsKey(type)) {
         input.value = _methods[type](input.value, format);
       }
@@ -49,6 +54,7 @@ class InputValidator {
       _css.error(input, e.toString());
       isValid = false;
     }
+    _log.fine('validate: isValid: ${isValid}');
     return isValid;
   }
 

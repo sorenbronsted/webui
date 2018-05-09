@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiInputValidatorListenerBootStrap implements UiInputCss {
+class InputValidatorListenerBootStrap implements InputCss {
   static String _cssError = "has-error";
   static String _cssValid = "has-success";
   static String _cssHidden = "hidden";
@@ -47,6 +47,7 @@ class UiInputValidatorListenerBootStrap implements UiInputCss {
     }
     element.classes.add(_cssHidden);
   }
+
   @override
   void show(HtmlElement input) {
     var element = input.parent;

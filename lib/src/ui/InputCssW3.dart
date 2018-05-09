@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiInputValidatorListenerW3 implements UiInputCss {
+class InputValidatorListenerW3 implements InputCss {
   static String _cssError = "w3-border-red";
   static String _cssValid = "w3-border-green";
 

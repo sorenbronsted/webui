@@ -29,9 +29,11 @@ class Table extends ContainerWrapper {
       throw new Exception("Multiple bodies not supported");
     }
 
-    _elements.forEach((ElementWrapper elem) {
-      if (_htmlElement.classes.contains('sortable')) {
-        _htmlElement.onClick.listen((event) {
+    table.tHead.querySelectorAll('[data-property]').forEach((Element element) {
+      ElementWrapper ew = ElementFactory.make(view, element, _cls);
+      _elements.add(ew);
+      if (ew is Th && ew._htmlElement.classes.contains('sortable')) {
+        ew._htmlElement.onClick.listen((event) {
           event.preventDefault();
           _setSortingUi(event.target);
           _doSort();
@@ -40,7 +42,15 @@ class Table extends ContainerWrapper {
     });
   }
 
-  set value(Object value) {
+  @override
+  void populate(Type type, Object value) {
+    if (_cls != type.toString()) {
+      return;
+    }
+
+    if (value is! Iterable) {
+      return;
+    }
     Iterable<Map> rows = value;
 
     var body = (_htmlElement as TableElement).tBodies.first;

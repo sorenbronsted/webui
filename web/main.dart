@@ -13,10 +13,11 @@ void main() {
 
   initWebUi();
 
-  InputValidator.css = new UiInputValidatorListenerW3();
+  InputValidator.css = new InputValidatorListenerW3();
 
   Repo.instance.add(new Router());
   Repo.instance.add(new RouterCtrl(new RouterView()));
+  Repo.instance.add(new CurrentViewState());
   Repo.instance.add(new Person());
   Repo.instance.add(new PersonListCtrl(new View('PersonList')));
   Repo.instance.add(new PersonDetailCtrl(new View('PersonDetail')));

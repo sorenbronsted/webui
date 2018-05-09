@@ -3,7 +3,13 @@ part of webui;
 class Router extends Proxy {
 	ListQueue<Uri> _history;
 
-  void goto(Uri uri) {
+	Uri get uri => _history.isNotEmpty ? _history.first : null;
+
+	Router() {
+		_history = new ListQueue<Uri>();
+	}
+
+	void goto(Uri uri) {
   	log.fine('goto uri: ${uri}');
   	if (_history.isNotEmpty && _history.first.toString() == uri.toString()) {
   		return;
@@ -11,10 +17,6 @@ class Router extends Proxy {
 		_history.addFirst(uri); // push
   	fire(eventReadOk, _history.first);
   }
-
-	Router() {
-		_history = new ListQueue<Uri>();
-	}
 
 	@override
   void setProperty(ElementValue element) {
@@ -25,7 +27,7 @@ class Router extends Proxy {
   }
 
   @override
-  void read(int uid) {
+  void read([int uid]) {
     throw "Not implemented";
   }
 
@@ -57,7 +59,10 @@ class RouterView extends ViewBase {
   @override
   Set<String> get classes => ['${Router}'].toSet();
 
-  @override
+	@override
+	Set<String> get dataLists => [].toSet();
+
+	@override
   void populate(Type sender, Object value) {
   	String fragment = value.toString();
 		if (fragment == null || fragment.isEmpty) {
@@ -72,9 +77,6 @@ class RouterView extends ViewBase {
 		}
 		window.location.href = newUrl;
   }
-
-  @override
-  bool get isVisible => true;
 }
 
 class RouterCtrl extends Controller {

@@ -19,12 +19,12 @@ class Th extends ElementWrapper {
     }
     else {
       var value = null;
-      if (row.keys.contains(property)) {
-        value = row[property];
+      if (row.keys.contains(_property)) {
+        value = row[_property];
       }
-      value = Format.display(type, value, format);
+      value = Format.display(_type, value, _format);
       cell.appendHtml(value);
-      listener?.onTableCellValue(cell, cls, property, row);
+      listener?.onTableCellValue(cell, _cls, _property, row);
     }
     return cell;
   }
@@ -34,38 +34,38 @@ class Th extends ElementWrapper {
     AnchorElement a = new AnchorElement();
     switch(link) {
       case 'edit':
-        a.href = "/#detail/${cls}/${uid}";
-        if (property == 'uid') {
+        a.href = "/#detail/${_cls}/${uid}";
+        if (_property == 'uid') {
           css.onEditLinkLabels(a);
         }
         else {
-          a.text = row[property];
+          a.text = Format.display(_type, row[_property], _format);
         }
         break;
       case 'delete':
-        a.href = "/#detail/${cls}/${uid}";
-        if (property == 'uid') {
+        a.href = "/#detail/${_cls}/${uid}";
+        if (_property == 'uid') {
           css.onDeleteLinkLabels(a);
         }
         else {
-          a.text = row[property];
+          a.text = Format.display(_type, row[_property], _format);
         }
         break;
       case 'children':
-        a.href = "/#list/${linkClass}?${cls}=${uid}";
-        a.text = Format.display(type, row[property], format);
+        a.href = "/#list/${linkClass}?${_cls}=${uid}";
+        a.text = Format.display(_type, row[_property], _format);
         break;
     }
     a.onClick.listen((event) {
       event.preventDefault();
-      _view.fire(_view.eventClick, new ElementValue(cls, link, uid, a.href));
+      _view.fire(link, new ElementValue(_cls, _property, uid, a.href));
     });
-    listener?.onTableCellLink(cell, a, cls, property, row);
+    listener?.onTableCellLink(cell, a, _cls, _property, row);
     cell.append(a);
   }
 
   @override
-  set value(Object object) {
+  void populate(Type type, Object object) {
     // Do nothing
   }
 }

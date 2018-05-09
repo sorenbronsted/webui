@@ -1,86 +1,133 @@
 part of webui;
 
-abstract class ViewBase extends Subject {
+class CurrentViewState extends Proxy {
+	bool _isDirty = false;
+	bool _isValid = true;
+	String _currentView;
 
-	String eventPropertyChanged = 'PropertyChanged';
-	String eventClick = 'Click';
+	bool get isDirty => _isDirty;
+	bool get isValid => _isValid;
+	String get currentView => _currentView;
+
+  @override
+  void read([int uid]) {} // Do nothing, because this is not server based
+
+  @override
+  void setProperty(ElementValue elem) {
+  	log.fine('setProperty: ${elem}');
+  	switch (elem.property) {
+			case 'currentView':
+				if (_currentView != elem.value) { // Change of view results in state reset
+					_currentView = elem.value;
+					_isDirty = false;
+					_isValid = true;
+				}
+				break;
+			case 'isDirty':
+				_isDirty = elem.value;
+				break;
+			case 'isValid':
+				_isValid = elem.value;
+				break;
+			default:
+				throw "Unknown property ${elem.property}";
+		}
+  }
+}
+
+abstract class ViewBase extends Subject {
+	Logger log;
+
+	bool _isDirty = false;
+	bool _isValid = true;
+
+	String get eventPropertyChanged => '${runtimeType}/PropertyChanged';
+	String get eventClick => '${runtimeType}/Click';
 
 	Set<String> get classes;
-	bool get isVisible;
+	Set<String> get dataLists;
+
+	bool get isDirty => _isDirty;
+	bool get isValid => _isValid;
+
+	set isDirty(bool state) {
+		_isDirty = state;
+		fire(eventPropertyChanged, new ElementValue('${CurrentViewState}', 'isDirty', null, _isDirty));
+	}
+
+	set isValid(bool state) {
+		_isValid = state;
+		fire(eventPropertyChanged, new ElementValue('${CurrentViewState}', 'isValid', null, _isValid));
+	}
+
+	ViewBase() {
+		log = new Logger(runtimeType.toString());
+	}
 
 	void populate(Type sender, Object value);
 }
 
 class View extends ViewBase {
 
-	DivElement _dom;
-	DivElement _binding;
-	List<ElementWrapper> _elements = [];
+	RootWrapper _root; // root entry point for bindings
+	DivElement _binding; // where to attch _root
+	String _viewName; // name of view used when load or queried
 
-	View(String viewName, [String bindId = '#content']) {
-		LinkElement htmlFragment = document.querySelector('#${viewName}Import');
+	View(this._viewName, [String bindId = '#content']) {
+		log.fine('View importing ${_viewName}');
+		LinkElement htmlFragment = document.querySelector('#${_viewName}Import');
 		if (htmlFragment == null) {
-			throw "#${viewName}Import not found";
+			throw "#${_viewName}Import not found";
 		}
-		_dom = htmlFragment.import.querySelector('#${viewName}');
-		if (_dom == null) {
-			throw "#${viewName} not found";
+		DivElement dom = htmlFragment.import.querySelector('#${_viewName}');
+		if (dom == null) {
+			throw "#${_viewName} not found";
 		}
 		_binding = document.querySelector(bindId);
 		if (_binding == null) {
 			throw "${bindId} not found";
 		}
-		_bind();
+		_root = new RootWrapper(this, dom);
+	}
+
+	View.bind(this._viewName) {
+		log.fine('View binding ${_viewName}');
+		DivElement dom = querySelector('#${_viewName}');
+		if (dom == null) {
+			throw "#${_viewName} not found";
+		}
+		_root = new RootWrapper(this, dom);
 	}
 
 	@override
-	Set<String> get classes {
-		Set<String> result = new HashSet();
-		_elements.forEach((ElementWrapper elem) => result.add(elem.cls));
-		return result;
-	}
-
-  bool get isDirty {
-		var first = _elements.firstWhere((ElementWrapper input) => input.isDirty, orElse: () => null);
-		log.fine('isDirty: first: ${first}');
-		return first != null;
-	}
-
-	bool get isValid {
-		var first = _elements.firstWhere((ElementWrapper input) => !input.isValid, orElse: () => null);
-		log.fine('isValid: first: ${first}');
-		return first == null;
-	}
+	Set<String> get classes => _root.collectClasses(new HashSet());
 
 	@override
-	bool get isVisible => _binding.children.isNotEmpty && _binding.children.first == _dom;
+	Set<String> get dataLists => _root.collectDataLists(new HashSet());
+
+	bool get _isVisible {
+		if (_binding == null) { // When view.bind contruct is used it is allways null
+			return true;
+		}
+		return _binding.children.isNotEmpty && _binding.children.first == _root._htmlElement;
+	}
 
 	@override
 	void populate(Type sender, Object value) {
-		log.fine(('populate sender ${sender} isVisible ${isVisible}'));
-		if (!isVisible) {
+		log.fine(('populate sender ${sender} isVisible ${_isVisible}'));
+		if (!_isVisible) {
 			return;
 		}
-		_elements.forEach((ElementWrapper element) {
-			if (element.cls == sender.toString()) {
-				element.value = value;
-			}
-		});
+		_root.populate(sender, value);
 	}
 
 	void show() {
-		if (isVisible) {
+		if (_isVisible) {
 			return;
 		}
 		_binding.children.clear();
-		_binding.append(_dom);
-	}
-
-	void _bind() {
-		_dom.querySelectorAll("form[data-class], table[data-class], button").forEach((Element elem) {
-			ElementWrapper binding = ElementFactory.make(this, elem);
-			_elements.add(binding);
-		});
+		_binding.append(_root._htmlElement);
+		fire(eventPropertyChanged, new ElementValue('${CurrentViewState}', 'currentView', null, _viewName));
 	}
 
   void showErrors(Object error) {
@@ -89,18 +136,20 @@ class View extends ViewBase {
 			if (fieldsWithError == null) {
 				return;
 			}
-			_elements.forEach((ElementWrapper element) => element.showError(fieldsWithError));
+			_root.showError(fieldsWithError);
+			isValid = false;
+			isDirty = true;
 		}
 		else if (error is String) {
 			window.alert(error);
 		}
 	}
 
-	void validateAndfire(String name, isValidRequired, [Object body]) {
+	void validateAndfire(String eventName, isValidRequired, [Object body]) {
+		log.fine('validateAndfire: eventName: ${eventName}, isValidRequired: ${isValidRequired} isValid: ${isValid}');
 		if (isValidRequired == true && isValid == false) {
 			return;
 		}
-		super.fire(name, body);
+		super.fire(eventName, body);
 	}
 }
-

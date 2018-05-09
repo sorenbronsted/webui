@@ -5,11 +5,11 @@ class ElementFactory {
 	static Map<Type, Function> _makers = {
 		FormElement: _form,
 		TableElement: _table,
+		DivElement: _div,
 		InputElement: _input,
 		SelectElement: _select,
 		SpanElement: _text,
 		TextAreaElement: _textarea,
-		DivElement: _text,
 		ButtonElement: _button,
 		TableCellElement: _th,
 		AnchorElement: _anchor,
@@ -23,14 +23,20 @@ class ElementFactory {
 		return maker(view, element, parentCls);
 	}
 
+	// Containers
 	static ElementWrapper _form(View view, HtmlElement element, [String parentCls]) {
-		return new Form(view, element);
+		return new PropertyContainer(view, element);
 	}
 
 	static ElementWrapper _table(View view, HtmlElement element, [String parentCls]) {
 		return new Table(view, element);
 	}
 
+	static ElementWrapper _div(View view, HtmlElement element, [String parentCls]) {
+		return new PropertyContainer(view, element);
+	}
+
+	// Elements
 	static ElementWrapper _input(View view, HtmlElement element, [String parentCls]) {
 		return new Input(view, element, parentCls);
 	}

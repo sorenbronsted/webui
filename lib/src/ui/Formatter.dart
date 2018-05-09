@@ -54,6 +54,8 @@ class Format {
   }
   
   static _loadFormatters() {
+    addFormatter("date", new DateTimeFmt());
+    addFormatter("time", new DateTimeFmt());
     addFormatter("datetime", new DateTimeFmt());
     addFormatter("number", new NumberFmt());
     addFormatter("casenumber", new CaseNumberFmt());

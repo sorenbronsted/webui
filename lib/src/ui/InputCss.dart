@@ -1,7 +1,7 @@
 
 part of webui;
 
-class UiInputCss {
+class InputCss {
   static String _cssError = "error";
   static String _cssValid = "valid";
 

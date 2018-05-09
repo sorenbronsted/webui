@@ -19,6 +19,7 @@ class Input extends InputBase {
     resetUiState();
   }
 
+  @override
   String get value {
     InputElement input = _htmlElement;
     switch(input.type) {
@@ -28,12 +29,20 @@ class Input extends InputBase {
       case 'radio':
         return input.checked ? '1' : '0';
       default:
-        return Format.internal(type, (_htmlElement as InputElement).value);
+        return Format.internal(_type, (_htmlElement as InputElement).value);
     }
     return '';
   }
 
-  set value(Object value) {
+  @override
+  void populate(Type sender, Object object) {
+    if (_cls != sender.toString()) {
+      return;
+    }
+
+    Map values = object;
+    _uid = values['uid'];
+
     resetUiState();
     InputElement input = _htmlElement;
     switch(input.type) {
@@ -41,10 +50,10 @@ class Input extends InputBase {
         break;
       case 'checkbox':
       case 'radio':
-        input.checked = (input.value == value);
+        input.checked = (input.value == values[_property]);
         break;
       default:
-        input.value = Format.display(type, value, format);
+        input.value = Format.display(_type, values[_property], _format);
     }
     InputValidator.reset(this);
   }
@@ -62,6 +71,15 @@ class Input extends InputBase {
       isDirty = true;
     });
 
+    _htmlElement.onBlur.listen((event) {
+      event.preventDefault();
+      isValid = validate();
+      _log.fine("onBlur: isValid ${isValid} isDirty ${isDirty}");
+      if (isValid) {
+        view.validateAndfire(view.eventPropertyChanged, true, elementValue);
+      }
+    });
+
     _htmlElement.onKeyDown.listen((event) {
       if (event.keyCode == 13) {
         _log.fine("onKeyDown: isValid ${isValid} isDirty ${isDirty}");
@@ -72,14 +90,13 @@ class Input extends InputBase {
     _htmlElement.onChange.listen((Event event) {
       event.preventDefault();
       isDirty = true;
-      isValid = validate();
       _log.fine("onChange: isValid ${isValid} isDirty ${isDirty}");
-      view.validateAndfire(view.eventPropertyChanged, true, elementValue);
+      //view.validateAndfire(view.eventPropertyChanged, true, elementValue);
     });
   }
 
   void _initRadio(View view) {
-    (_htmlElement as InputElement).name = '${cls}.${property}'; // name must set for radio button to work
+    (_htmlElement as InputElement).name = '${_cls}.${_property}'; // name must set for radio button to work
     _htmlElement.onChange.listen((Event event) {
       event.preventDefault();
       view.validateAndfire(view.eventPropertyChanged, false, elementValue);

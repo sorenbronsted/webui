@@ -6,14 +6,21 @@ class Button extends ElementWrapper {
 		if (button.name == null || button.name.isEmpty) {
 			throw "Button must have name";
 		}
-		_htmlElement.attributes['data-property'] = button.name;
+		bool validate = true;
+		if (button.attributes.containsKey('data-validate')) {
+			validate = button.attributes['data-validate'].toLowerCase() != 'false';
+		}
+		_property = button.name;
 		button.onClick.listen((Event event) {
 			event.preventDefault();
-			view.validateAndfire(_view.eventClick, true, elementValue);
+			view.validateAndfire(_property, validate, elementValue);
 		});
 	}
 
-  set value(Object object) 	{
+  void populate(Type type, Object object) 	{
+		if (_cls != type.toString()) {
+			return;
+		}
 		if (object is Map) {
 			uid = object['uid'];
 		}

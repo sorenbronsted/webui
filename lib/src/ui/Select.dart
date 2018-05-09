@@ -13,7 +13,7 @@ class Select extends InputBase {
       throw "options is used so option-display is needed";
     }
     _htmlElement.onChange.listen((event) {
-      view.validateAndfire(view.eventPropertyChanged, false, value);
+      view.validateAndfire(view.eventPropertyChanged, false, elementValue);
     });
   }
 
@@ -41,9 +41,26 @@ class Select extends InputBase {
   Object get value => (_htmlElement as SelectElement).value;
 
   @override
-  set value(Object value) {
-    (_htmlElement as SelectElement).value = value;
-    _myvalue = value;
+  void populate(Type type, Object object) {
+    if (_cls == type.toString()) {
+      Map values = object;
+      uid = values['uid'];
+      (_htmlElement as SelectElement).value = values[_property];
+      _myvalue = values[_property];
+      InputValidator.reset(this);
+    }
+    else if (_options == type.toString()) {
+      list = object;
+      (_htmlElement as SelectElement).value = _myvalue;
+    }
+  }
+
+  @override
+  Set<String> collectDataLists(Set<String> result) {
+    if (_options != null) {
+      result.add(_options);
+    }
+    return result;
   }
 }
 

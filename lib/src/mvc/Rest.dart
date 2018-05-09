@@ -8,11 +8,6 @@ import 'package:logging/logging.dart';
 
 typedef void RestError(String text);
 
-class RestEvent {
-  static const String Start = 'Start';
-  static const String Done = 'Done';
-}
-
 class Rest {
   final Logger log = new Logger('Rest');
 
