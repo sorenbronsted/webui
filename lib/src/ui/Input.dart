@@ -40,8 +40,8 @@ class Input extends InputBase {
       return;
     }
 
-    Map values = object;
-    _uid = values['uid'];
+    DataClass data = object;
+    _uid = data.uid;
 
     resetUiState();
     InputElement input = _htmlElement;
@@ -50,10 +50,10 @@ class Input extends InputBase {
         break;
       case 'checkbox':
       case 'radio':
-        input.checked = (input.value == values[_property]);
+        input.checked = (input.value == data.get(_property));
         break;
       default:
-        input.value = Format.display(_type, values[_property], _format);
+        input.value = Format.display(_type, data.get(_property), _format);
     }
     InputValidator.reset(this);
   }

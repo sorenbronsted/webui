@@ -20,13 +20,8 @@ class Anchor extends ElementWrapper {
     if (_cls != type.toString()) {
       return;
     }
-
+    DataClass data = object;
     AnchorElement a = _htmlElement;
-    if (object is Map) {
-      a.href = '#${object[uid]}';
-    }
-    else {
-      a.href = '#${object}';
-    }
+    a.href = '#${data.uid}';
   }
 }

@@ -9,12 +9,12 @@ class Text extends ElementWrapper {
 			return;
 		}
 
-		if (value is! Map) {
+		if (value is! DataClass) {
 			return;
 		}
-		Map values = value;
+		DataClass values = value;
 
 		_htmlElement.children.clear();
-		_htmlElement.appendText(Format.display(_type, values[_property], _format));
+		_htmlElement.appendText(Format.display(_type, values.get(_property), _format));
 	}
 }

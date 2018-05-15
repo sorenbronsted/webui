@@ -8,7 +8,7 @@ class Th extends ElementWrapper {
 
   Th(View view, TableCellElement th, [String cls]) : super(view, th, cls);
 
-  TableCellElement makeCell(Map row, UiTableListener listener, TableCss css) {
+  TableCellElement makeCell(DataClass row, UiTableListener listener, TableCss css) {
     TableCellElement cell = new TableCellElement();
 
     // inherit column hidden property
@@ -19,8 +19,8 @@ class Th extends ElementWrapper {
     }
     else {
       var value = null;
-      if (row.keys.contains(_property)) {
-        value = row[_property];
+      if (row.get(_property) != null) {
+        value = row.get(_property);
       }
       value = Format.display(_type, value, _format);
       cell.appendHtml(value);
@@ -29,8 +29,8 @@ class Th extends ElementWrapper {
     return cell;
   }
 
-  void _addLink(Map row, UiTableListener listener, TableCellElement cell, TableCss css) {
-    int uid = row['uid'];
+  void _addLink(DataClass row, UiTableListener listener, TableCellElement cell, TableCss css) {
+    int uid = row.uid;
     AnchorElement a = new AnchorElement();
     switch(link) {
       case 'edit':
@@ -39,7 +39,7 @@ class Th extends ElementWrapper {
           css.onEditLinkLabels(a);
         }
         else {
-          a.text = Format.display(_type, row[_property], _format);
+          a.text = Format.display(_type, row.get(_property), _format);
         }
         break;
       case 'delete':
@@ -48,12 +48,12 @@ class Th extends ElementWrapper {
           css.onDeleteLinkLabels(a);
         }
         else {
-          a.text = Format.display(_type, row[_property], _format);
+          a.text = Format.display(_type, row.get(_property), _format);
         }
         break;
       case 'children':
         a.href = "/#list/${linkClass}?${_cls}=${uid}";
-        a.text = Format.display(_type, row[_property], _format);
+        a.text = Format.display(_type, row.get(_property), _format);
         break;
     }
     a.onClick.listen((event) {

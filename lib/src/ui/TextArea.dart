@@ -25,14 +25,14 @@ class TextArea extends InputBase {
       return;
     }
 
-    Map values = value;
-    if (!values.containsKey(_property)) {
+    DataClass data = value;
+    if (data.get(_property) == null) {
       return;
     }
-    _uid = values['uid'];
+    _uid = data.uid;
 
     resetUiState();
-    (_htmlElement as TextAreaElement).value = Format.display(_type, values[_property], "");
+    (_htmlElement as TextAreaElement).value = Format.display(_type, data.get(_property), "");
     InputValidator.reset(this);
   }
 }

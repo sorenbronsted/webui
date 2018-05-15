@@ -17,7 +17,7 @@ class Select extends InputBase {
     });
   }
 
-  set list(Iterable<Map> list) {
+  set list(Iterable<DataClass> list) {
     if (_options == null) {
       throw "options is not define, so can not be set";
     }
@@ -27,10 +27,10 @@ class Select extends InputBase {
       return;
     }
     var options = new DocumentFragment();
-    list.forEach((Map row) {
+    list.forEach((DataClass row) {
       var option = new OptionElement();
-      option.value = row['uid'].toString();
-      option.appendText(row[_optionProperty]);
+      option.value = row.uid.toString();
+      option.appendText(row.get(_optionProperty));
       options.append(option);
     });
     _htmlElement.append(options);
@@ -43,10 +43,10 @@ class Select extends InputBase {
   @override
   void populate(Type type, Object object) {
     if (_cls == type.toString()) {
-      Map values = object;
-      uid = values['uid'];
-      (_htmlElement as SelectElement).value = values[_property];
-      _myvalue = values[_property];
+      DataClass data = object;
+      uid = data.uid;
+      (_htmlElement as SelectElement).value = data.get(_property);
+      _myvalue = data.get(_property);
       InputValidator.reset(this);
     }
     else if (_options == type.toString()) {

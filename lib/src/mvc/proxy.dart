@@ -1,52 +1,18 @@
 part of webui;
 
-abstract class Proxy extends Subject {
+class Proxy extends Subject {
 
-	String get cls => runtimeType.toString();
-	String get eventReadOk => '${cls}/ReadOk';
-	String get eventReadFail => '${cls}/ReadFail';
+	Map<int, DataClass> _objects;
 
-	void read([int uid]);
-	void setProperty(ElementValue value);
-}
-
-class ReadProxy extends Proxy {
-
-	List _objects = null;
-
-  @override
-  void read([int uid]) {
-		if (_objects != null) {
-			fire(eventReadOk, _objects);
-		}
-		else {
-			Rest.instance.get('/rest/${cls}').then((List objects) {
-				_objects = [];
-				objects.forEach((Map object) => _objects.add(object['${cls}']));
-				fire(eventReadOk, _objects);
-			}).catchError((error) {
-				fire(eventReadFail, error);
-			});
-		}
-  }
-
-  @override
-  void setProperty(ElementValue value) {
-    // Do nothing
-  }
-}
-
-class CrudProxy extends Proxy {
-	Map<int, Map> _objects;
-
-	CrudProxy() {
+	Proxy() {
 		_objects = {};
 	}
 
-	Map<int, Map> get objects => _objects;
-
+	String get cls => runtimeType.toString();
 	String get eventCreateOk => '${cls}/CreateOk';
 	String get eventCreateFail => '${cls}/CreateFail';
+	String get eventReadOk => '${cls}/ReadOk';
+	String get eventReadFail => '${cls}/ReadFail';
 	String get eventUpdateOk => '${cls}/UpdateOk';
 	String get eventUpdateFail => '${cls}/UpdateFail';
 	String get eventDeleteOk => '${cls}/DeleteOk';
@@ -54,17 +20,16 @@ class CrudProxy extends Proxy {
 
 	@override
 	void setProperty(ElementValue element) {
-		_objects[element.uid][element.property] = element.value;
+		_objects[element.uid].set(element.property, element.value);
 	}
 
 	void create() {
 		log.fine('create');
-		var uid = 0;
-		_objects[uid] = {'uid':uid};
-		fire(eventCreateOk, _objects[uid]);
+		var data = new DataClass({'uid':0});
+		_objects[data.uid] = data;
+		fire(eventCreateOk, _objects[data.uid]);
 	}
 
-	@override
 	void read([int uid]) {
 		log.fine('read uid:${uid}');
 		if (uid != null) {
@@ -81,7 +46,7 @@ class CrudProxy extends Proxy {
 			Rest.instance.get('/rest/${cls}${params}').then((List objects) {
 				_objects.clear();
 				objects.forEach((Map object) {
-					_objects[object['${cls}']['uid']] = object['${cls}'];
+					_objects[object['${cls}']['uid']] = new DataClass(object['${cls}']);
 				});
 				fire(eventReadOk, _objects.values);
 			}).catchError((error) {
@@ -101,7 +66,7 @@ class CrudProxy extends Proxy {
 
 	void update(int uid) {
 		log.fine('update uid:${uid}');
-		Rest.instance.post('/rest/${cls}/${uid}', _objects[uid]).then((_) {
+		Rest.instance.post('/rest/${cls}/${uid}', _objects[uid].asMap()).then((_) {
 			fire(eventUpdateOk);
 		}).catchError((error) {
 			fire(eventUpdateFail, error);

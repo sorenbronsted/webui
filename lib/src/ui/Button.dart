@@ -21,8 +21,8 @@ class Button extends ElementWrapper {
 		if (_cls != type.toString()) {
 			return;
 		}
-		if (object is Map) {
-			uid = object['uid'];
+		if (object is DataClass) {
+			uid = object.uid;
 		}
 	}
 }

@@ -8,5 +8,5 @@ class PersonDetailCtrl extends CrudController {
 	PersonDetailCtrl(ViewBase view) : super(Uri.parse('detail/person'), view);
 }
 
-class Person extends CrudProxy {
+class Person extends Proxy {
 }

@@ -19,6 +19,7 @@ part 'src/mvc/view.dart';
 part 'src/mvc/control.dart';
 part 'src/mvc/router.dart';
 part 'src/mvc/Repo.dart';
+part 'src/mvc/DataClass.dart';
 
 part 'src/ui/Button.dart';
 part 'src/ui/ElementWrapper.dart';

@@ -1,9 +1,9 @@
 part of webui;
 
 abstract class UiTableListener {
-  onTableRow(TableRowElement tableRow, Map row);
-  onTableCellValue(TableCellElement cell, String cls, String property, Map row);
-  onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, Map row);
+  onTableRow(TableRowElement tableRow, DataClass row);
+  onTableCellValue(TableCellElement cell, String cls, String property, DataClass row);
+  onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, DataClass row);
 }
 
 class Table extends ContainerWrapper {
@@ -51,7 +51,7 @@ class Table extends ContainerWrapper {
     if (value is! Iterable) {
       return;
     }
-    Iterable<Map> rows = value;
+    Iterable<DataClass> rows = value;
 
     var body = (_htmlElement as TableElement).tBodies.first;
     body.children.clear();
@@ -66,7 +66,7 @@ class Table extends ContainerWrapper {
     body.append(fragment);
   }
 
-  DocumentFragment _addRows(Iterable<Map> rows) {
+  DocumentFragment _addRows(Iterable<DataClass> rows) {
     var fragment = new DocumentFragment();
     rows.forEach((row) {
       var tableRow = new TableRowElement();

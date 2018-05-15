@@ -65,7 +65,7 @@ class CrudController extends Controller {
 		_views.forEach((ViewBase view) {
 			view.classes.forEach((String cls) {
 				Proxy proxy = Repo.instance.getByName(cls);
-				if (proxy != null && proxy is CrudProxy) {
+				if (proxy != null && proxy is Proxy) {
 					addEventHandler(proxy.eventCreateOk, populate);
 					addEventHandler(proxy.eventCreateFail, fail);
 					addEventHandler(proxy.eventUpdateOk, back);
@@ -85,7 +85,7 @@ class CrudController extends Controller {
 			return;
 		}
 
-		CrudProxy proxy = Repo.instance.getByName(uri.pathSegments[1]);
+		Proxy proxy = Repo.instance.getByName(uri.pathSegments[1]);
 		if (proxy == null) {
 			throw "No proxy found for cls: ${uri.pathSegments[1]}";
 		}
@@ -159,7 +159,7 @@ class CrudController extends Controller {
 
 	void update(Type sender, ElementValue element) {
 		log.fine('update sender ${sender} element value: ${element}');
-		CrudProxy proxy = Repo.instance.getByName(element.cls);
+		Proxy proxy = Repo.instance.getByName(element.cls);
 		if (proxy == null) {
 			log.info('click, no proxy found for cls: ${element.cls}');
 			return;
@@ -169,7 +169,7 @@ class CrudController extends Controller {
 
 	void delete(Type sender, ElementValue element) {
 		log.fine('delete sender ${sender} element value: ${element}');
-		CrudProxy proxy = Repo.instance.getByName(element.cls);
+		Proxy proxy = Repo.instance.getByName(element.cls);
 		if (proxy == null) {
 			log.info('click, no proxy found for cls: ${element.cls}');
 			return;
@@ -194,7 +194,7 @@ class CrudController extends Controller {
 
 	void find(Type sender, ElementValue element) {
 		log.fine('find sender ${sender} element value: ${element}');
-		CrudProxy proxy = Repo.instance.getByName(element.cls);
+		Proxy proxy = Repo.instance.getByName(element.cls);
 		if (proxy == null) {
 			log.info('click, no proxy found for cls: ${element.cls}');
 			return;
