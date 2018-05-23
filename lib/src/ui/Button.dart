@@ -17,12 +17,12 @@ class Button extends ElementWrapper {
 		});
 	}
 
-  void populate(Type type, Object object) 	{
-		if (_cls != type.toString()) {
+  void populate(Type sender, Object object) 	{
+		if (_cls != sender.toString()) {
 			return;
 		}
 		if (object is DataClass) {
-			uid = object.uid;
+			_uid = object.uid;
 		}
 	}
 }

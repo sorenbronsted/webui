@@ -43,7 +43,7 @@ abstract class ElementWrapper {
 
 	set uid(int uid) => _uid = uid;
 
-	void populate(Type type, Object object);
+	void populate(Type sender, Object object);
 
 	void showError(Map namedErrors) {}
 
@@ -66,8 +66,8 @@ abstract class ContainerWrapper extends ElementWrapper {
 	ContainerWrapper(View view, HtmlElement root, [String parentCls]) : super(view, root, parentCls);
 
 	@override
-	void populate(Type type, Object object) {
-		_elements.forEach((ElementWrapper elem) => elem.populate(type, object));
+	void populate(Type sender, Object object) {
+		_elements.forEach((ElementWrapper elem) => elem.populate(sender, object));
 	}
 
 	@override
@@ -99,5 +99,23 @@ abstract class ContainerWrapper extends ElementWrapper {
 	@override
 	void showError(Map namedErrors) {
 		_elements.forEach((ElementWrapper element) => element.showError(namedErrors));
+	}
+}
+
+class DataPropertyContainer extends ContainerWrapper {
+	DataPropertyContainer(View view, HtmlElement root) : super(view, root) {
+		root.querySelectorAll('[data-property]').forEach((Element element) {
+			ElementWrapper ew = ElementFactory.make(view, element, _cls);
+			_elements.add(ew);
+		});
+	}
+}
+
+class DataClassWrapper extends ContainerWrapper {
+	DataClassWrapper(View view, DivElement root) : super(view, root) {
+		root.querySelectorAll('form[data-class], table[data-class], div[data-class], button[data-class], ul[data-class]').forEach((Element elem) {
+			ElementWrapper binding = ElementFactory.make(view, elem);
+			_elements.add(binding);
+		});
 	}
 }

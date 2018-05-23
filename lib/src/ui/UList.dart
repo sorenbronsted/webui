@@ -1,45 +1,23 @@
 part of webui;
 
-class UListListener {
-  void onListRow(AnchorElement a, Map row) {}
-
-  void onListHref(AnchorElement a, String cls, String uid) {
-    a.href = "#${cls}/${uid}";
-  }
-
-  void onListText(AnchorElement a, String text) {
-    a.text = text;
-  }
-}
-
 class UList extends ContainerWrapper {
-  UListListener _listener = new UListListener();
 
-  set listener(UListListener listener) => _listener = listener;
+	UList(View view, UListElement ulist, [String cls]) : super(view, ulist, cls) {
+		ulist.querySelectorAll('[data-property]').forEach(
+				(Element element) => _elements.add(ElementFactory.make(view, element, _cls))
+		);
+	}
 
-  UList(View view, DivElement div, [String cls]) : super(view, div, cls);
+	@override
+	void populate(Type sender, Object object) {
+		if (object is! Iterable) {
+			return;
+		}
 
-  set value(Object value) {
-    throw "Not Implemented";
-/*
-    htmlElement.children.clear();
-    if (values.isEmpty) {
-      return;
-    }
-    UListElement list = new UListElement();
-    values.forEach((Map row) {
-      LIElement li = new LIElement();
-      list.append(li);
-      var a = new AnchorElement();
-      li.append(a);
-      _listener.onListRow(a, row);
-      _listener.onListHref(a, cls, row['uid']);
-      _listener.onListText(a, row[property]);
-      a.onClick.listen((event) {
-        _view.handleEvent(UiViewElementEvent.Change, false, event, this);
-      });
-    });
-    htmlElement.append(list);
-    */
-  }
+		(object as Iterable).forEach((DataClass data) {
+			_elements.forEach((ElementWrapper element) {
+				element.populate(sender, data);
+			});
+		});
+	}
 }

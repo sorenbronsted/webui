@@ -8,14 +8,14 @@ class Th extends ElementWrapper {
 
   Th(View view, TableCellElement th, [String cls]) : super(view, th, cls);
 
-  TableCellElement makeCell(DataClass row, UiTableListener listener, TableCss css) {
+  TableCellElement makeCell(DataClass row, TableCss css) {
     TableCellElement cell = new TableCellElement();
 
     // inherit column hidden property
     cell.hidden = _htmlElement.hidden;
 
     if (link != null) {
-      _addLink(row, listener, cell, css);
+      _addLink(row, cell, css);
     }
     else {
       var value = null;
@@ -24,12 +24,14 @@ class Th extends ElementWrapper {
       }
       value = Format.display(_type, value, _format);
       cell.appendHtml(value);
-      listener?.onTableCellValue(cell, _cls, _property, row);
+      if (_view is TableListener) {
+        (_view as TableListener).onTableCellValue(cell, _cls, _property, row);
+      }
     }
     return cell;
   }
 
-  void _addLink(DataClass row, UiTableListener listener, TableCellElement cell, TableCss css) {
+  void _addLink(DataClass row, TableCellElement cell, TableCss css) {
     int uid = row.uid;
     AnchorElement a = new AnchorElement();
     switch(link) {
@@ -60,12 +62,14 @@ class Th extends ElementWrapper {
       event.preventDefault();
       _view.fire(link, new ElementValue(_cls, _property, uid, a.href));
     });
-    listener?.onTableCellLink(cell, a, _cls, _property, row);
+    if (_view is TableListener) {
+      (_view as TableListener).onTableCellLink(cell, a, _cls, _property, row);
+    }
     cell.append(a);
   }
 
   @override
-  void populate(Type type, Object object) {
+  void populate(Type sender, Object object) {
     // Do nothing
   }
 }

@@ -6,6 +6,7 @@ class ElementFactory {
 		FormElement: _form,
 		TableElement: _table,
 		DivElement: _div,
+		UListElement: _list,
 		InputElement: _input,
 		SelectElement: _select,
 		SpanElement: _text,
@@ -25,7 +26,7 @@ class ElementFactory {
 
 	// Containers
 	static ElementWrapper _form(View view, HtmlElement element, [String parentCls]) {
-		return new PropertyContainer(view, element);
+		return new DataPropertyContainer(view, element);
 	}
 
 	static ElementWrapper _table(View view, HtmlElement element, [String parentCls]) {
@@ -33,7 +34,11 @@ class ElementFactory {
 	}
 
 	static ElementWrapper _div(View view, HtmlElement element, [String parentCls]) {
-		return new PropertyContainer(view, element);
+		return new DataPropertyContainer(view, element);
+	}
+
+	static ElementWrapper _list(View view, HtmlElement element, [String parentCls]) {
+		return new UList(view, element);
 	}
 
 	// Elements

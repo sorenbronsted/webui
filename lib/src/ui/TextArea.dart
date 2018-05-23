@@ -20,15 +20,12 @@ class TextArea extends InputBase {
 
   Object get value => Format.internal(_type, (_htmlElement as TextAreaElement).value);
 
-  void populate(Type cls, Object value) {
-    if (_cls != cls.toString()) {
+  void populate(Type sender, Object value) {
+    if (_cls != sender.toString()) {
       return;
     }
 
     DataClass data = value;
-    if (data.get(_property) == null) {
-      return;
-    }
     _uid = data.uid;
 
     resetUiState();

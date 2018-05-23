@@ -41,15 +41,15 @@ class Select extends InputBase {
   Object get value => (_htmlElement as SelectElement).value;
 
   @override
-  void populate(Type type, Object object) {
-    if (_cls == type.toString()) {
+  void populate(Type sender, Object object) {
+    if (_cls == sender.toString()) {
       DataClass data = object;
       uid = data.uid;
       (_htmlElement as SelectElement).value = data.get(_property);
       _myvalue = data.get(_property);
       InputValidator.reset(this);
     }
-    else if (_options == type.toString()) {
+    else if (_options == sender.toString()) {
       list = object;
       (_htmlElement as SelectElement).value = _myvalue;
     }

@@ -4,8 +4,8 @@ class Text extends ElementWrapper {
 
 	Text(View view, HtmlElement elem, [String cls]) : super(view, elem, cls);
 
-	void populate(Type cls, Object value) {
-		if (_cls != cls.toString()) {
+	void populate(Type sender, Object value) {
+		if (_cls != sender.toString()) {
 			return;
 		}
 

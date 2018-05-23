@@ -102,7 +102,7 @@ class CrudController extends Controller {
 		_views.forEach((view) {
 			(view as View).show();
 
-			// read data for display
+			// read datalist which are M-1 relations to proxy
 			view.dataLists.forEach((String name) {
 				log.fine('loading datalist: ${name}');
 				Proxy proxy = Repo.instance.getByName(name);
@@ -120,13 +120,24 @@ class CrudController extends Controller {
 			}
 			else {
 				proxy.read(int.parse(uri.pathSegments.last));
+				// read other data-class which relation is 1-M to this proxy
+				_views.forEach((view) {
+					view.classes.forEach((name) {
+						if (name == proxy.cls) {
+							return;
+						}
+						log.fine('loading dataclasses: ${name}');
+						Proxy related = Repo.instance.getByName(name);
+						related.read(int.parse(uri.pathSegments.last));
+					});
+				});
 			}
 		}
 
-		onShow();
+		onShow(uri);
 	}
 
-	void onShow()  {}
+	void onShow(Uri uri)  {}
 
 	void back(Type sender, Object value) {
 		log.fine('back sender: ${sender}');

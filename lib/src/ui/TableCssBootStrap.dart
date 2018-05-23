@@ -32,7 +32,7 @@ class TableCssBootStrap implements TableCss {
   void onDeleteLinkLabels(AnchorElement a) {
     var span = new SpanElement();
     span.classes.add('glyphicon');
-    span.classes.add('glyphicon-remove');
+    span.classes.add('glyphicon-trash');
     a.append(span);
   }
 

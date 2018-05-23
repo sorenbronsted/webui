@@ -22,9 +22,8 @@ part 'src/mvc/Repo.dart';
 part 'src/mvc/DataClass.dart';
 
 part 'src/ui/Button.dart';
-part 'src/ui/ElementWrapper.dart';
+part 'src/ui/wrapper.dart';
 part 'src/ui/ElementFactory.dart';
-part 'src/ui/PropertyContainer.dart';
 part 'src/ui/Input.dart';
 part 'src/ui/InputCss.dart';
 part 'src/ui/InputCssBootStrap.dart';
@@ -32,7 +31,6 @@ part 'src/ui/InputCssW3.dart';
 part 'src/ui/InputBase.dart';
 part 'src/ui/InputValidator.dart';
 part 'src/ui/UList.dart';
-part 'src/ui/RootWrapper.dart';
 part 'src/ui/Select.dart';
 part 'src/ui/Anchor.dart';
 part 'src/ui/Table.dart';

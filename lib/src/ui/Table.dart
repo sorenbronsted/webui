@@ -1,6 +1,6 @@
 part of webui;
 
-abstract class UiTableListener {
+abstract class TableListener {
   onTableRow(TableRowElement tableRow, DataClass row);
   onTableCellValue(TableCellElement cell, String cls, String property, DataClass row);
   onTableCellLink(TableCellElement cell, AnchorElement link, String cls, String property, DataClass row);
@@ -13,11 +13,8 @@ class Table extends ContainerWrapper {
 
   static TableCss _css = new TableCss();
 
-  UiTableListener _listener;
   TableCellElement _orderBy;
   int _direction = none;
-
-  set listener(UiTableListener listener) => _listener = listener;
 
   static set css(TableCss css) => _css = css;
 
@@ -43,8 +40,8 @@ class Table extends ContainerWrapper {
   }
 
   @override
-  void populate(Type type, Object value) {
-    if (_cls != type.toString()) {
+  void populate(Type sender, Object value) {
+    if (_cls != sender.toString()) {
       return;
     }
 
@@ -70,12 +67,14 @@ class Table extends ContainerWrapper {
     var fragment = new DocumentFragment();
     rows.forEach((row) {
       var tableRow = new TableRowElement();
-      _listener?.onTableRow(tableRow, row);
+      if (_view is TableListener) {
+        (_view as TableListener).onTableRow(tableRow, row);
+      }
 
       // Make the table row
       fragment.append(tableRow);
       _elements.forEach((ElementWrapper element) {
-        TableCellElement td = (element as Th).makeCell(row, _listener, _css);
+        TableCellElement td = (element as Th).makeCell(row, _css);
         tableRow.append(td);
       });
     });

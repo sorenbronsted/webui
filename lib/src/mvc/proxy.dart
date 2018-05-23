@@ -18,7 +18,21 @@ class Proxy extends Subject {
 	String get eventDeleteOk => '${cls}/DeleteOk';
 	String get eventDeleteFail => '${cls}/DeleteFail';
 
-	@override
+	void addData(DataClass data) => _objects[data.uid] = data;
+
+	void addDataList(List<Map> rows) {
+		_objects.clear();
+		rows.forEach((Map object) {
+			addData(new DataClass(object['${cls}']));
+		});
+	}
+
+	void removeData(int uid) => _objects.remove(uid);
+
+	DataClass getData(int uid) => _objects[uid];
+
+	Iterable<DataClass> getDataList() => _objects.values;
+
 	void setProperty(ElementValue element) {
 		_objects[element.uid].set(element.property, element.value);
 	}
@@ -34,7 +48,7 @@ class Proxy extends Subject {
 		log.fine('read uid:${uid}');
 		if (uid != null) {
 			if (_objects[uid] != null) {
-				fire(eventReadOk, _objects[uid]);
+				fire(eventReadOk, getData(uid));
 			}
 			else {
 				fire(eventReadFail, '${runtimeType} not found, uid: ${uid}');
@@ -43,12 +57,9 @@ class Proxy extends Subject {
 		else {
 			String params = getReadByParameters();
 			log.fine('read: params: ${params}');
-			Rest.instance.get('/rest/${cls}${params}').then((List objects) {
-				_objects.clear();
-				objects.forEach((Map object) {
-					_objects[object['${cls}']['uid']] = new DataClass(object['${cls}']);
-				});
-				fire(eventReadOk, _objects.values);
+			Rest.instance.get('/rest/${cls}${params}').then((List rows) {
+				addDataList(rows);
+				fire(eventReadOk, getDataList());
 			}).catchError((error) {
 				fire(eventReadFail, error);
 			});

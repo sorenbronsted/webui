@@ -69,7 +69,7 @@ abstract class ViewBase extends Subject {
 
 class View extends ViewBase {
 
-	RootWrapper _root; // root entry point for bindings
+	DataClassWrapper _root; // root entry point for bindings
 	DivElement _binding; // where to attch _root
 	String _viewName; // name of view used when load or queried
 
@@ -87,7 +87,7 @@ class View extends ViewBase {
 		if (_binding == null) {
 			throw "${bindId} not found";
 		}
-		_root = new RootWrapper(this, dom);
+		_root = new DataClassWrapper(this, dom);
 	}
 
 	View.bind(this._viewName) {
@@ -96,7 +96,7 @@ class View extends ViewBase {
 		if (dom == null) {
 			throw "#${_viewName} not found";
 		}
-		_root = new RootWrapper(this, dom);
+		_root = new DataClassWrapper(this, dom);
 	}
 
 	@override
