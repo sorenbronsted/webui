@@ -2,22 +2,22 @@ part of webui;
 
 class ElementFactory {
 
-	static Map<Type, Function> _makers = {
-		FormElement: _form,
-		TableElement: _table,
-		DivElement: _div,
-		UListElement: _list,
-		InputElement: _input,
-		SelectElement: _select,
-		SpanElement: _text,
-		TextAreaElement: _textarea,
-		ButtonElement: _button,
-		TableCellElement: _th,
-		AnchorElement: _anchor,
+	static Map<String, Function> _makers = {
+		'FORM': _form,
+		'TABLE': _table,
+		'DIV': _div,
+		'UL': _list,
+		'INPUT': _input,
+		'SELECT': _select,
+		'SPAN': _text,
+		'TEXTAREA': _textarea,
+		'BUTTON': _button,
+		'TH': _th,
+		'A': _anchor,
 	};
 
 	static ElementWrapper make(View view, HtmlElement element, [String parentCls]) {
-		Function maker = _makers[element.runtimeType];
+		Function maker = _makers[element.tagName];
 		if (maker == null) {
 			throw "Factory method for type ${element.runtimeType} not found";
 		}
