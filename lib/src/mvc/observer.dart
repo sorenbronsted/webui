@@ -17,7 +17,7 @@ class Observer {
 	void handleEvent(Type sender, String eventName, Object body) {
 		log.fine('handleEvent: ${eventName}');
 		if (!_handlers.containsKey(eventName)) {
-			log.fine('handleEvent: no handler found for event: ${eventName}');
+			log.warning('handleEvent: no handler found for event: ${eventName}');
 			return;
 		}
 		Function handler = _handlers[eventName];

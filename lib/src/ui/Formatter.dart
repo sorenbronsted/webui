@@ -16,7 +16,7 @@ class Format {
     _formatters[classId] = formatter;
   }
   
-  static String display(String type, String value, [String format]) {
+  static String display(String type, Object value, [String format]) {
     if (type == null) {
       return value;
     }

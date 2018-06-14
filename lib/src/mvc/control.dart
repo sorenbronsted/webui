@@ -1,5 +1,6 @@
 part of webui;
 
+//TODO merge Controller and CrudController into one controller
 class Controller extends Observer {
 	List<ViewBase> _views;
 
@@ -61,6 +62,7 @@ class CrudController extends Controller {
 		addEventHandler('cancel', cancel);
 		addEventHandler('edit', edit);
 		addEventHandler('find', find);
+		addEventHandler('children', children);
 
 		_views.forEach((ViewBase view) {
 			view.classes.forEach((String cls) {
@@ -120,13 +122,13 @@ class CrudController extends Controller {
 			}
 			else {
 				proxy.read(int.parse(uri.pathSegments.last));
-				// read other data-class which relation is 1-M to this proxy
+				// read other data-class with relation 1-M to this proxy
 				_views.forEach((view) {
 					view.classes.forEach((name) {
 						if (name == proxy.cls) {
 							return;
 						}
-						log.fine('loading dataclasses: ${name}');
+						log.fine('loading related dataclass: ${name}');
 						Proxy related = Repo.instance.getByName(name);
 						related.read(int.parse(uri.pathSegments.last));
 					});
@@ -211,6 +213,12 @@ class CrudController extends Controller {
 			return;
 		}
 		proxy.read();
+	}
+
+	void children(Type sender, ElementValue element) {
+		log.fine('children sender ${sender} element value: ${element}');
+		Router router = Repo.instance.getByType(Router);
+		router.goto(Uri.parse('list/${element.cls}?${element.property}=${element.uid}'));
 	}
 }
 
