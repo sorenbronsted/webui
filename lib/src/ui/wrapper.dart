@@ -113,7 +113,7 @@ class DataPropertyContainer extends ContainerWrapper {
 
 class DataClassWrapper extends ContainerWrapper {
 	DataClassWrapper(View view, DivElement root) : super(view, root) {
-		root.querySelectorAll('form[data-class], table[data-class], div[data-class], button[data-class], ul[data-class]').forEach((Element elem) {
+		root.querySelectorAll('form[data-class], table[data-class], div[data-class], button, ul[data-class]').forEach((Element elem) {
 			ElementWrapper binding = ElementFactory.make(view, elem);
 			_elements.add(binding);
 		});

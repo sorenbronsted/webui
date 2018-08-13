@@ -1,4 +1,5 @@
 .idea
+.dart_tool
 debian/files
 debian/*debhelper*
 debian/*substvars*

@@ -6,6 +6,9 @@ class Button extends ElementWrapper {
 		if (button.name == null || button.name.isEmpty) {
 			throw "Button must have name";
 		}
+		if (cls.isEmpty) {
+			throw "Button must have a data-class";
+		}
 		bool validate = true;
 		if (button.attributes.containsKey('data-validate')) {
 			validate = button.attributes['data-validate'].toLowerCase() != 'false';
