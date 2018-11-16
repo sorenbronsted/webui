@@ -6,7 +6,7 @@ class Button extends ElementWrapper {
 		if (button.name == null || button.name.isEmpty) {
 			throw "Button must have name";
 		}
-		if (cls.isEmpty) {
+		if (_cls == null || _cls.isEmpty) {
 			throw "Button must have a data-class";
 		}
 		bool validate = true;
