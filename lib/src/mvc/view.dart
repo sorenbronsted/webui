@@ -88,6 +88,7 @@ class View extends ViewBase {
 			throw "${bindId} not found";
 		}
 		_root = new DataClassWrapper(this, dom);
+		onInit(dom);
 	}
 
 	View.bind(this._viewName) {
@@ -98,6 +99,8 @@ class View extends ViewBase {
 		}
 		_root = new DataClassWrapper(this, dom);
 	}
+
+	void onInit(DivElement div) {}
 
 	@override
 	Set<String> get classes => _root.collectClasses(new HashSet());

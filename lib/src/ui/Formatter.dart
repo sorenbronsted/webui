@@ -17,14 +17,14 @@ class Format {
   }
   
   static String display(String type, Object value, [String format]) {
-    if (type == null) {
-      return value;
-    }
     if (value == null || value == 'null') {
       return "";
     }
     if (value is! String) {
       value = '${value}';
+    }
+    if (type == null) {
+      return value;
     }
     return _execute(type, value, format, (Formatter fmt, String value, String format) => fmt.display(value, format));
   }
